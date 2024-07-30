@@ -1,0 +1,40 @@
+version: "3.9"
+
+services:
+  server:
+    container_name: ticketyours_server
+    build:
+      context: ./
+      dockerfile: Dockerfile.dev
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./:/app
+      - /app/node_modules
+    restart: "unless-stopped"
+    networks:
+      - backend
+    depends_on:
+      - postgres
+
+  postgres:
+    container_name: ticketyours_postgres
+    image: postgres:alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: saurabhxrt
+      POSTGRES_DB: saurabhxrt
+    ports:
+      - "5432:5432"
+    networks:
+      - backend
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+networks:
+  backend:
+    driver: bridge
+
+volumes:
+  postgres_data:
+    driver: local
