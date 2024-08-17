@@ -141,7 +141,8 @@ function _ts_generator(thisArg, body) {
         };
     }
 }
-import ShowtimeSlot from '../models/Showtime_slot.js';
+import { Showtime } from "../PGmodels/Showtime/Showtime.js";
+import { SeatStatus } from "../PGmodels/TheatorSeats/Seats.js";
 export var SeatDetailService = /*#__PURE__*/ function() {
     "use strict";
     function SeatDetailService() {
@@ -149,150 +150,50 @@ export var SeatDetailService = /*#__PURE__*/ function() {
     }
     _create_class(SeatDetailService, [
         {
-            key: "getSeatDetailsByShowtimeId",
-            value: function getSeatDetailsByShowtimeId(showtimeId) {
+            key: "reserveseatStatus",
+            value: function reserveseatStatus(data) {
                 return _async_to_generator(function() {
-                    var showtime, error;
+                    var showtimeId, seatRow, seatNumber, status, showtime, updatedseatstatus, error;
                     return _ts_generator(this, function(_state) {
                         switch(_state.label){
                             case 0:
+                                showtimeId = data.showtimeId, seatRow = data.seatRow, seatNumber = data.seatNumber, status = data.status;
+                                _state.label = 1;
+                            case 1:
                                 _state.trys.push([
-                                    0,
-                                    2,
+                                    1,
+                                    4,
                                     ,
-                                    3
+                                    5
                                 ]);
                                 return [
                                     4,
-                                    ShowtimeSlot.findById(showtimeId)
+                                    Showtime.findByPk(showtimeId)
                                 ];
-                            case 1:
+                            case 2:
                                 showtime = _state.sent();
                                 if (!showtime) {
                                     throw new Error("Showtime not found");
                                 }
-                                //   const totalSeats = showtime.seats.length;
-                                //   const availableSeats = showtime.seats.filter(seat => seat.status === 'available').length;
-                                //   const bookedSeats = showtime.seats.filter(seat => seat.status === 'booked').length;
-                                //   const seatDetails = {
-                                //     totalSeats,
-                                //     availableSeats,
-                                //     bookedSeats,
-                                //     seatPrices: showtime.seats.map(seat => ({
-                                //       seat_number: seat.seat_number,
-                                //       seat_type: seat.seat_type,
-                                //       price: seat.price,
-                                //       status: seat.status
-                                //     }))
-                                //   };
-                                // return seatDetails;
-                                return [
-                                    2,
-                                    showtime
-                                ];
-                            case 2:
-                                error = _state.sent();
-                                console.error("Error fetching seat details for showtime ".concat(showtimeId, ":"), error);
-                                throw new Error("Failed to fetch seat details for showtime ".concat(showtimeId));
-                            case 3:
-                                return [
-                                    2
-                                ];
-                        }
-                    });
-                })();
-            }
-        },
-        {
-            key: "lockSeats",
-            value: function lockSeats(showtimeId, seatNumbers) {
-                var lockDuration = arguments.length > 2 && arguments[2] !== void 0 ? arguments[2] : 10;
-                return _async_to_generator(function() {
-                    var lockedUntil, showtime;
-                    return _ts_generator(this, function(_state) {
-                        switch(_state.label){
-                            case 0:
-                                lockedUntil = new Date();
-                                lockedUntil.setMinutes(lockedUntil.getMinutes() + lockDuration);
                                 return [
                                     4,
-                                    ShowtimeSlot.findById(showtimeId)
-                                ];
-                            case 1:
-                                showtime = _state.sent();
-                                if (!showtime) {
-                                    throw new Error('Showtime not found');
-                                }
-                                seatNumbers.forEach(function(seatNumber) {
-                                    var seat = showtime.seats.find(function(seat) {
-                                        return seat.seat_number === seatNumber;
-                                    });
-                                    if (seat && seat.status === 'available') {
-                                        seat.status = 'locked';
-                                        seat.locked_until = lockedUntil;
-                                    }
-                                });
-                                return [
-                                    4,
-                                    showtime.save()
-                                ];
-                            case 2:
-                                _state.sent();
-                                return [
-                                    2,
-                                    showtime
-                                ];
-                        }
-                    });
-                })();
-            }
-        },
-        {
-            key: "releaseExpiredLocks",
-            value: function releaseExpiredLocks() {
-                return _async_to_generator(function() {
-                    var now, showtimes;
-                    return _ts_generator(this, function(_state) {
-                        switch(_state.label){
-                            case 0:
-                                now = new Date();
-                                return [
-                                    4,
-                                    ShowtimeSlot.find({
-                                        'seats.locked_until': {
-                                            $lte: now
-                                        }
+                                    SeatStatus.create({
+                                        seatRow: seatRow,
+                                        seatNumber: seatNumber,
+                                        status: status
                                     })
                                 ];
-                            case 1:
-                                showtimes = _state.sent();
-                                showtimes.forEach(function() {
-                                    var _ref = _async_to_generator(function(showtime) {
-                                        return _ts_generator(this, function(_state) {
-                                            switch(_state.label){
-                                                case 0:
-                                                    showtime.seats.forEach(function(seat) {
-                                                        if (seat.status === 'locked' && seat.locked_until <= now) {
-                                                            seat.status = 'available';
-                                                            seat.locked_until = undefined;
-                                                        }
-                                                    });
-                                                    return [
-                                                        4,
-                                                        showtime.save()
-                                                    ];
-                                                case 1:
-                                                    _state.sent();
-                                                    return [
-                                                        2
-                                                    ];
-                                            }
-                                        });
-                                    });
-                                    return function(showtime) {
-                                        return _ref.apply(this, arguments);
-                                    };
-                                }());
+                            case 3:
+                                updatedseatstatus = _state.sent();
+                                return [
+                                    2,
+                                    updatedseatstatus
+                                ];
+                            case 4:
+                                error = _state.sent();
+                                console.error(error);
+                                throw new Error("error updating setstatus");
+                            case 5:
                                 return [
                                     2
                                 ];

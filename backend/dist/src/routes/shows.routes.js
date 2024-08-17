@@ -1,7 +1,7 @@
 import express from "express";
-import { getShowtimeSlots } from "../controllers/showtimeslot.js";
-import { getSeatDetails } from "../controllers/seatdetails.js";
+import { getShowtimesByScreenIdController } from "../controllers/showtimeslot.js";
+import { getShowtimesByScreenIdAndDateController } from "../controllers/showtimeslot.js";
 var router = express.Router();
-router.get("/showtimes/:movieId/:cinemaHallId", getShowtimeSlots);
-router.get("/seatdetails/:showtimeId", getSeatDetails);
+router.get("/showtimes/:screenId", getShowtimesByScreenIdController);
+router.get("/showtimesbydate/:screenId", getShowtimesByScreenIdAndDateController);
 export default router;

@@ -1,5 +1,4 @@
 import mongoose, { Schema } from 'mongoose';
-// Define the Movie schema
 var movieSchema = new Schema({
     title: {
         type: String,
@@ -40,7 +39,6 @@ var movieSchema = new Schema({
         required: true
     }
 });
-// Update `updated_at` field before saving
 movieSchema.pre('save', function(next) {
     this.updated_at = new Date();
     next();

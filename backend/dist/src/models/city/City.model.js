@@ -1,5 +1,5 @@
 import mongoose, { Schema } from "mongoose";
-// Define the City schema
+// City schema
 var citymodelSchema = new Schema({
     name: {
         type: String,

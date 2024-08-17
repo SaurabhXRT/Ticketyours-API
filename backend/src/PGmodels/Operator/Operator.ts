@@ -1,23 +1,42 @@
-import { Model, DataTypes } from 'sequelize';
-import { centralDatabase } from '../../config/dbconfig.js';
+import { Model, DataTypes } from "sequelize";
+import { centralDatabase } from "../../config/dbconfig.js";
 
-class CinemaOperator extends Model {}
+class CinemaOperator extends Model {
+  public id!: string;
+  public name!: string;
+  public city_name!: string;
+  public email!: string;
+  public passwordHash!: string;
+  public phone!: string;
+  public dob?: string;
+  public profileImage?: string;
+  public govIdType?: string;
+  public govIdNumber?: string;
+  public govIdImage?: string;
+
+  // Timestamps
+  public readonly createdAt!: Date;
+  public readonly updatedAt!: Date;
+}
 
 CinemaOperator.init(
   {
     id: {
-      type: DataTypes.UUID,
-      primaryKey: true,
-      defaultValue: DataTypes.UUIDV4,
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
+      primaryKey: true
     },
     name: {
       type: DataTypes.STRING,
       allowNull: false,
     },
+    city_name: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
     email: {
       type: DataTypes.STRING,
       allowNull: false,
-      unique: true,
     },
     passwordHash: {
       type: DataTypes.STRING,
@@ -29,11 +48,11 @@ CinemaOperator.init(
     },
     dob: {
       type: DataTypes.DATEONLY,
-      allowNull: true, 
+      allowNull: true,
     },
     profileImage: {
       type: DataTypes.STRING,
-      allowNull: true, 
+      allowNull: true,
     },
     govIdType: {
       type: DataTypes.STRING,
@@ -41,26 +60,16 @@ CinemaOperator.init(
     },
     govIdNumber: {
       type: DataTypes.STRING,
-      allowNull: true, 
+      allowNull: true,
     },
     govIdImage: {
       type: DataTypes.STRING,
-      allowNull: true, 
-    },
-    createdAt: {
-      type: DataTypes.DATE,
-      allowNull: false,
-      defaultValue: DataTypes.NOW,
-    },
-    updatedAt: {
-      type: DataTypes.DATE,
-      allowNull: false,
-      defaultValue: DataTypes.NOW,
+      allowNull: true,
     },
   },
   {
     sequelize: centralDatabase.getInstance(),
-    modelName: 'CinemaOperator',
+    modelName: "CinemaOperator",
     timestamps: true,
   }
 );

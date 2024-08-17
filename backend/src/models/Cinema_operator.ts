@@ -1,7 +1,6 @@
 import mongoose, { Document, Schema } from "mongoose";
 import { ObjectId } from "mongodb";
 
-// Define the interface for the CinemaOperator schema
 interface CinemaOperator extends Document {
   name: string;
   email: string;
@@ -12,7 +11,6 @@ interface CinemaOperator extends Document {
   updated_at: Date;
 }
 
-// Define the CinemaOperator schema
 const cinemaOperatorSchema = new Schema<CinemaOperator>({
   name: {
     type: String,
@@ -47,7 +45,6 @@ const cinemaOperatorSchema = new Schema<CinemaOperator>({
   },
 });
 
-// Update `updated_at` field before saving
 cinemaOperatorSchema.pre<CinemaOperator>("save", function (next) {
   this.updated_at = new Date();
   next();

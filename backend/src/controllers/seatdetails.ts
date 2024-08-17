@@ -2,15 +2,23 @@ import { SeatDetailService } from '../services/SeatDetailService.js';
 
 const seatDetailService = new SeatDetailService();
 
-export const getSeatDetails = async (req: any, res: any) => {
+export const reserveSeatStatus = async (req: any, res: any) => {
+   // #swagger.description = 'reserved the seat'
   const { showtimeId } = req.params;
+  const {seatRow, seatNumber, status} = req.body;
+  const seatdata = {
+    showtimeId,
+    seatRow, 
+    seatNumber, 
+    status
+  }
 
   try {
-    const seatDetails = await seatDetailService.getSeatDetailsByShowtimeId(showtimeId);
+    const seatReserved = await seatDetailService.reserveseatStatus(seatdata);
     res.status(200).json({
-      code: "seatdetails/fetch-success",
-      message: "Seat details fetched successfully",
-      data: seatDetails,
+      code: "seatdetails/seat-reserved",
+      message: "Seat status updated to reserved successfully",
+      data: seatReserved,
     });
   } catch (error) {
     res.status(404).json({

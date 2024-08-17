@@ -83,12 +83,12 @@ var MovieCrew = /*#__PURE__*/ function(Model) {
 }(Model);
 MovieCrew.init({
     movieId: {
-        type: DataTypes.UUID,
-        primaryKey: true
+        type: DataTypes.INTEGER,
+        allowNull: false
     },
     crewId: {
-        type: DataTypes.UUID,
-        primaryKey: true
+        type: DataTypes.INTEGER,
+        allowNull: false
     }
 }, {
     sequelize: centralDatabase.getInstance(),

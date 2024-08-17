@@ -1,10 +1,9 @@
 import mongoose, { Document, Schema } from "mongoose";
 
-// Define the interface for the City schema
+// interface for the City schema
 export interface CityModel extends Document {
   name: string;
   state: string;
-  // Optionally add other fields as needed
   // country: string;
   cinemaHalls: mongoose.Schema.Types.ObjectId[];
   cinemaMovies: mongoose.Schema.Types.ObjectId[];
@@ -13,7 +12,7 @@ export interface CityModel extends Document {
   updatedAt: Date;
 }
 
-// Define the City schema
+// City schema
 const citymodelSchema = new Schema<CityModel>(
   {
     name: {
@@ -41,14 +40,13 @@ const citymodelSchema = new Schema<CityModel>(
         ref: "MovieInCinemaHall",
       },
     ],
-    // Optionally define additional fields
     // country: {
     //     type: String,
     //     required: true
     // }
   },
   {
-    timestamps: true, // Automatically add createdAt and updatedAt fields
+    timestamps: true, 
   }
 );
 

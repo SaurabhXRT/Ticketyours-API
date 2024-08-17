@@ -193,8 +193,9 @@ function _ts_generator(thisArg, body) {
         };
     }
 }
-import CinemaHall from "../models/cinema_hall/CinemaHall.js";
-import CityModel from "../models/city/City.model.js";
+import { CinemaHall } from "../PGmodels/CinemaHall/Cinemahall.js";
+import { CityCinemaHall } from "../PGmodels/City/CityCinemhalll.js";
+//import { City } from "../models/city/City.js";
 export var AddCinemaHallservice = /*#__PURE__*/ function() {
     "use strict";
     function AddCinemaHallservice() {
@@ -205,80 +206,67 @@ export var AddCinemaHallservice = /*#__PURE__*/ function() {
             key: "addcinemahall",
             value: function addcinemahall(data) {
                 return _async_to_generator(function() {
-                    var session, newCinemaHall, error;
+                    var transaction, newCinemaHall, error;
                     return _ts_generator(this, function(_state) {
                         switch(_state.label){
                             case 0:
                                 return [
                                     4,
-                                    CinemaHall.startSession()
+                                    CinemaHall.sequelize.transaction()
                                 ];
                             case 1:
-                                session = _state.sent();
-                                session.startTransaction();
+                                transaction = _state.sent();
                                 _state.label = 2;
                             case 2:
                                 _state.trys.push([
                                     2,
                                     6,
-                                    8,
-                                    9
+                                    ,
+                                    8
                                 ]);
                                 return [
                                     4,
-                                    CinemaHall.create([
-                                        _object_spread_props(_object_spread({}, data), {
-                                            created_at: new Date(),
-                                            updated_at: new Date()
-                                        })
-                                    ], {
-                                        session: session
+                                    CinemaHall.create(_object_spread_props(_object_spread({}, data), {
+                                        createdAt: new Date(),
+                                        updatedAt: new Date()
+                                    }), {
+                                        transaction: transaction
                                     })
                                 ];
                             case 3:
                                 newCinemaHall = _state.sent();
-                                // Update the city with the new cinema hall's ID
                                 return [
                                     4,
-                                    CityModel.findOneAndUpdate({
-                                        cityId: data.city_id
+                                    CityCinemaHall.create({
+                                        cityId: data.cityId,
+                                        cinemaHallId: newCinemaHall.id
                                     }, {
-                                        $push: {
-                                            cinemahalls: newCinemaHall[0]._id
-                                        }
-                                    }, {
-                                        new: true,
-                                        session: session
+                                        transaction: transaction
                                     })
                                 ];
                             case 4:
                                 _state.sent();
                                 return [
                                     4,
-                                    session.commitTransaction()
+                                    transaction.commit()
                                 ];
                             case 5:
                                 _state.sent();
                                 return [
                                     2,
-                                    newCinemaHall[0].toJSON()
+                                    newCinemaHall.toJSON()
                                 ];
                             case 6:
                                 error = _state.sent();
                                 return [
                                     4,
-                                    session.abortTransaction()
+                                    transaction.rollback()
                                 ];
                             case 7:
                                 _state.sent();
                                 console.error("Error adding cinema hall:", error);
                                 throw new Error("Failed to add cinema hall");
                             case 8:
-                                session.endSession();
-                                return [
-                                    7
-                                ];
-                            case 9:
                                 return [
                                     2
                                 ];
@@ -288,8 +276,8 @@ export var AddCinemaHallservice = /*#__PURE__*/ function() {
             }
         },
         {
-            key: "findCinemaHallByName",
-            value: function findCinemaHallByName(name) {
+            key: "findCinemaHallByNameAndOperator",
+            value: function findCinemaHallByNameAndOperator(name, operatorId) {
                 return _async_to_generator(function() {
                     var cinemaHall, error;
                     return _ts_generator(this, function(_state) {
@@ -304,7 +292,10 @@ export var AddCinemaHallservice = /*#__PURE__*/ function() {
                                 return [
                                     4,
                                     CinemaHall.findOne({
-                                        name: name
+                                        where: {
+                                            name: name,
+                                            operatorId: operatorId
+                                        }
                                     })
                                 ];
                             case 1:
@@ -315,8 +306,8 @@ export var AddCinemaHallservice = /*#__PURE__*/ function() {
                                 ];
                             case 2:
                                 error = _state.sent();
-                                console.error("Error finding cinema hall with name ".concat(name, ":"), error);
-                                throw new Error("Failed to find cinema hall with name ".concat(name));
+                                console.error("Error finding cinema hall with name ".concat(name, " and operatorId ").concat(operatorId, ":"), error);
+                                throw new Error("Failed to find cinema hall with name ".concat(name, " and operatorId ").concat(operatorId));
                             case 3:
                                 return [
                                     2

@@ -1,6 +1,6 @@
 import mongoose, { Document, Schema } from 'mongoose';
 
-// Define the interface for the Booking schema
+// interface for the Booking schema
 interface Booking extends Document {
   user_id: mongoose.Types.ObjectId;
   movie_id: mongoose.Types.ObjectId;
@@ -14,7 +14,7 @@ interface Booking extends Document {
   updated_at: Date; 
 }
 
-// Define the Booking schema
+
 const bookingSchema = new Schema<Booking>({
   user_id: {
     type: Schema.Types.ObjectId,
@@ -63,7 +63,6 @@ const bookingSchema = new Schema<Booking>({
   }
 });
 
-// Update `updated_at` field before saving
 bookingSchema.pre<Booking>('save', function(next) {
   this.updated_at = new Date();
   next();

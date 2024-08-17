@@ -133,6 +133,7 @@ export var register = function() {
         return _ts_generator(this, function(_state) {
             switch(_state.label){
                 case 0:
+                    // #swagger.description = 'Register a new user'
                     body = req.body;
                     userCredentials = {
                         name: body.name,
@@ -225,6 +226,7 @@ export var login = function() {
         return _ts_generator(this, function(_state) {
             switch(_state.label){
                 case 0:
+                    // #swagger.description = 'login with phone and password for a user' 
                     body = req.body;
                     userCredentials = {
                         phone: body.phone,
@@ -309,6 +311,7 @@ export var logout = function() {
         return _ts_generator(this, function(_state) {
             switch(_state.label){
                 case 0:
+                    // #swagger.description = 'logout a user'
                     token = req.headers.authorization;
                     if (!token) {
                         res.status(400).send({

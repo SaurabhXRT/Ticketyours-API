@@ -1,9 +1,7 @@
 import mongoose, { Document, Schema } from 'mongoose';
 
-// Define the interface for the booking schema
 interface IBooking extends Document {
   booking_id: mongoose.Types.ObjectId;
-  // Uncomment and define the additional fields if needed
   // movie_id: mongoose.Types.ObjectId;
   // showtime_id: mongoose.Types.ObjectId;
   // booking_date: Date;
@@ -12,7 +10,6 @@ interface IBooking extends Document {
   // payment_id: mongoose.Types.ObjectId;
 }
 
-// Define the interface for the user schema
 interface User extends Document {
   name: string;
   email: string;
@@ -24,7 +21,6 @@ interface User extends Document {
   updated_at: Date;
 }
 
-// Define the booking schema
 const bookingSchema = new Schema<IBooking>({
   booking_id: {
     type: Schema.Types.ObjectId,
@@ -61,7 +57,6 @@ const bookingSchema = new Schema<IBooking>({
   // }
 }, { _id: false });
 
-// Define the user schema
 const userSchema = new Schema<User>({
   name: {
     type: String,
@@ -98,7 +93,6 @@ const userSchema = new Schema<User>({
   }
 });
 
-// Update `updated_at` field before saving
 userSchema.pre<User>('save', function(next) {
   this.updated_at = new Date();
   next();

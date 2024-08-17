@@ -1,8 +1,4 @@
-import fs from 'fs';
-import path from 'path';
-import mongoose from 'mongoose';
-import Movie from '../models/Movies.js';  
-
+import { Movie } from '../PGmodels/Movie/Movie.js';
 
 const moviesData = [
     {
@@ -194,25 +190,18 @@ const moviesData = [
     }
 ];
 
-
 const seedMovies = async (): Promise<void> => {
-   
     try {
-        await Movie.deleteMany({});
-
+       
         for (const movie of moviesData) {
-            const newMovie = new Movie({
+            await Movie.create({
                 title: movie.title,
                 description: movie.description,
                 genre: movie.genre,
                 duration: movie.duration,
-                release_date: movie.release_date,
-                end_date: movie.release_date, 
-                poster_url: movie.poster_url,
-                created_at: new Date(),
-                updated_at: new Date(),
+                releaseDate: movie.release_date,
+                posterUrl: movie.poster_url
             });
-            await newMovie.save();
         }
 
         console.log('Database seeded with movies!');
@@ -221,6 +210,5 @@ const seedMovies = async (): Promise<void> => {
         process.exit(1); 
     }
 };
-
 
 export default seedMovies;

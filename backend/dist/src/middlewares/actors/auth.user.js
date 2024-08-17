@@ -1,4 +1,3 @@
-//import { Request, Response, NextFunction } from 'express';
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {
     try {
         var info = gen[key](arg);
@@ -142,7 +141,7 @@ function _ts_generator(thisArg, body) {
         };
     }
 }
-import UserModel from '../../models/User.js';
+import { User } from '../PGmodels/User/User.js';
 export var UserMiddleware = /*#__PURE__*/ function() {
     "use strict";
     function UserMiddleware() {
@@ -165,7 +164,7 @@ export var UserMiddleware = /*#__PURE__*/ function() {
                                 ]);
                                 return [
                                     4,
-                                    UserModel.findById(req.userId)
+                                    User.findByPk(req.userId)
                                 ];
                             case 1:
                                 user = _state.sent();
@@ -183,6 +182,7 @@ export var UserMiddleware = /*#__PURE__*/ function() {
                                 ];
                             case 2:
                                 error = _state.sent();
+                                console.error("Error verifying user:", error);
                                 return [
                                     2,
                                     res.status(401).send("Unauthorized: User verification failed")

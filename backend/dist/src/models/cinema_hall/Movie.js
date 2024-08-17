@@ -1,5 +1,5 @@
 import { Schema } from "mongoose";
-// Define the Movie schema
+// Movie schema
 var movieSchema = new Schema({
     movie_id: {
         type: Schema.Types.ObjectId,

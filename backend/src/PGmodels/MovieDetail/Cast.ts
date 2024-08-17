@@ -1,14 +1,16 @@
 import { Model, DataTypes } from 'sequelize';
 import { centralDatabase } from "../../config/dbconfig.js";
 
-class Cast extends Model {}
+class Cast extends Model {
+   
+}
 
 Cast.init(
   {
     id: {
-      type: DataTypes.UUID,
-      primaryKey: true,
-      defaultValue: DataTypes.UUIDV4,
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
+      primaryKey: true
     },
     name: {
       type: DataTypes.STRING,

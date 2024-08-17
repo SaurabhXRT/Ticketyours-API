@@ -126,8 +126,28 @@ import dotenv from "dotenv-flow";
 dotenv.config();
 import logger from "../logger/logger.js";
 import { User } from "./User/User.js";
-import { City } from "./City/Citymodel.js";
-import { LoginSession } from "./LoginSession/Loginsession.js";
+import { City } from "./City/City.js";
+import { UserLoginSession } from "./LoginSession/User.Loginsession.js";
+import { CinemaOperator } from "./Operator/Operator.js";
+import { Movie } from "./Movie/Movie.js";
+import { Cast } from "./MovieDetail/Cast.js";
+import { MovieCast } from "./Movie/MovieCast.js";
+import { Crew } from "./MovieDetail/Crew.js";
+import { MovieCrew } from "./Movie/MovieCrew.js";
+import { OperatorLoginSession } from "./LoginSession/Operator.Loginsession.js";
+import { CinemaHall } from "./CinemaHall/Cinemahall.js";
+import { CityCinemaHall } from "./City/CityCinemhalll.js";
+import { CityCheck } from "./CityCheck/CityCheck.js";
+import { MovieInTheatre } from "./MovieInTheatre/Movieintheatre.js";
+import { CinemaHallMovie } from "./CinemaHall/CinemahallMovie.js";
+import { CityMovie } from "./City/CityMovie.js";
+import { CinemaHallImage } from "./CinemaHall/CinemaHallImage.js";
+import { CinemaHallReview } from "./CinemaHallreview/Review.js";
+import { Screen } from "./Theatorscreens/Screen.js";
+import { MovieScreen } from "./Theatorscreens/MovieScreen.js";
+import { TheatreLayout } from "./TheatorLayout/TheatorLayout.js";
+import { Showtime } from "./Showtime/Showtime.js";
+import { SeatStatus } from "./TheatorSeats/Seats.js";
 export function initDatabase(db, dbOptions) {
     return _initDatabase.apply(this, arguments);
 }
@@ -144,9 +164,7 @@ function _initDatabase() {
                     _state.sent();
                     return [
                         4,
-                        User.sync({
-                            force: true
-                        })
+                        User.sync()
                     ];
                 case 2:
                     _state.sent();
@@ -160,19 +178,310 @@ function _initDatabase() {
                     logger.log("city model initiated successfully");
                     return [
                         4,
-                        LoginSession.sync()
+                        UserLoginSession.sync()
                     ];
                 case 4:
                     _state.sent();
                     logger.log("loginsession model initiated successfully");
-                    User.hasMany(LoginSession, {
-                        foreignKey: 'userId',
-                        as: 'loginSessions'
+                    return [
+                        4,
+                        CinemaOperator.sync()
+                    ];
+                case 5:
+                    _state.sent();
+                    logger.log("cinemoperator model initiated successfully");
+                    return [
+                        4,
+                        Movie.sync()
+                    ];
+                case 6:
+                    _state.sent();
+                    logger.log("movie model initiated successfully");
+                    return [
+                        4,
+                        Cast.sync()
+                    ];
+                case 7:
+                    _state.sent();
+                    logger.log("cast model initiated succesfully");
+                    return [
+                        4,
+                        MovieCast.sync()
+                    ];
+                case 8:
+                    _state.sent();
+                    logger.log("moviecast model initiated successfully");
+                    return [
+                        4,
+                        Crew.sync()
+                    ];
+                case 9:
+                    _state.sent();
+                    logger.log("crew model initiated successfully");
+                    return [
+                        4,
+                        MovieCrew.sync()
+                    ];
+                case 10:
+                    _state.sent();
+                    logger.log("moviecrew model initiated successfully");
+                    return [
+                        4,
+                        OperatorLoginSession.sync()
+                    ];
+                case 11:
+                    _state.sent();
+                    logger.log("operatorloginsesion created successfully");
+                    return [
+                        4,
+                        CinemaHall.sync()
+                    ];
+                case 12:
+                    _state.sent();
+                    logger.log("CinemaHall model initiated successfully");
+                    return [
+                        4,
+                        CityCinemaHall.sync()
+                    ];
+                case 13:
+                    _state.sent();
+                    logger.log("CityCinemaHall model initiated successfully");
+                    Movie.belongsToMany(Cast, {
+                        through: MovieCast,
+                        foreignKey: "movieId",
+                        as: "casts"
                     });
-                    LoginSession.belongsTo(User, {
-                        foreignKey: 'userId',
-                        as: 'user'
+                    Cast.belongsToMany(Movie, {
+                        through: MovieCast,
+                        foreignKey: "castId",
+                        as: "movies"
                     });
+                    Movie.belongsToMany(Crew, {
+                        through: MovieCrew,
+                        foreignKey: "movieId",
+                        as: "crews"
+                    });
+                    Crew.belongsToMany(Movie, {
+                        through: MovieCrew,
+                        foreignKey: "crewId",
+                        as: "movies"
+                    });
+                    User.hasMany(UserLoginSession, {
+                        foreignKey: "userId",
+                        as: "userloginSessions"
+                    });
+                    UserLoginSession.belongsTo(User, {
+                        foreignKey: "userId",
+                        as: "user"
+                    });
+                    CinemaOperator.hasMany(OperatorLoginSession, {
+                        foreignKey: "operatorId",
+                        as: "operatorloginsessions"
+                    });
+                    OperatorLoginSession.belongsTo(CinemaOperator, {
+                        foreignKey: "operatorId",
+                        as: "operator"
+                    });
+                    City.belongsToMany(CinemaHall, {
+                        through: CityCinemaHall,
+                        foreignKey: "cityId",
+                        as: "cinemaHalls"
+                    });
+                    CinemaHall.belongsToMany(City, {
+                        through: CityCinemaHall,
+                        foreignKey: "cinemaHallId",
+                        as: "cities"
+                    });
+                    CityCinemaHall.belongsTo(CinemaHall, {
+                        foreignKey: "cinemaHallId",
+                        as: "cinemaHall"
+                    });
+                    CityCinemaHall.belongsTo(City, {
+                        foreignKey: "cityId",
+                        as: "city"
+                    });
+                    return [
+                        4,
+                        CityCheck.sync()
+                    ];
+                case 14:
+                    _state.sent();
+                    logger.log("citycheck model initiated successfully");
+                    return [
+                        4,
+                        MovieInTheatre.sync()
+                    ];
+                case 15:
+                    _state.sent();
+                    logger.log("movieintheatre model initiated successfullyy");
+                    return [
+                        4,
+                        CityMovie.sync()
+                    ];
+                case 16:
+                    _state.sent();
+                    logger.log("citymovie model initiuated successfully");
+                    return [
+                        4,
+                        CinemaHallMovie.sync()
+                    ];
+                case 17:
+                    _state.sent();
+                    logger.log("cinemhall movie initiated successfully");
+                    MovieInTheatre.belongsTo(Movie, {
+                        foreignKey: "movieId",
+                        as: "movie"
+                    });
+                    Movie.hasMany(MovieInTheatre, {
+                        foreignKey: "movieId",
+                        as: "movieInTheatres"
+                    });
+                    CinemaHallMovie.belongsTo(CinemaHall, {
+                        foreignKey: "cinemaHallId",
+                        as: "cinemaHall"
+                    });
+                    CinemaHallMovie.belongsTo(MovieInTheatre, {
+                        foreignKey: "CinemahallmovieId",
+                        as: "movieInTheatre"
+                    });
+                    CinemaHall.hasMany(CinemaHallMovie, {
+                        foreignKey: "cinemaHallId",
+                        as: "cinemaHallMovies"
+                    });
+                    MovieInTheatre.hasMany(CinemaHallMovie, {
+                        foreignKey: "CinemahallmovieId",
+                        as: "cinemaHallMovies"
+                    });
+                    CityCheck.belongsTo(CinemaHall, {
+                        foreignKey: "cinemaHallId",
+                        as: "cinemaHall"
+                    });
+                    CityCheck.belongsTo(Movie, {
+                        foreignKey: "movieId",
+                        as: "movie"
+                    });
+                    CityCheck.belongsTo(City, {
+                        foreignKey: "cityId",
+                        as: "city"
+                    });
+                    CityMovie.belongsTo(Movie, {
+                        foreignKey: "movieId",
+                        as: "movie"
+                    });
+                    CityMovie.belongsTo(City, {
+                        foreignKey: "cityId",
+                        as: "city"
+                    });
+                    return [
+                        4,
+                        CinemaHallImage.sync()
+                    ];
+                case 18:
+                    _state.sent();
+                    logger.log("cinemhallimage model created successfully");
+                    CinemaHall.hasMany(CinemaHallImage, {
+                        foreignKey: "cinemaHallId",
+                        as: "images"
+                    });
+                    CinemaHallImage.belongsTo(CinemaHall, {
+                        foreignKey: "cinemaHallId",
+                        as: "cinemaHall"
+                    });
+                    return [
+                        4,
+                        CinemaHallReview.sync()
+                    ];
+                case 19:
+                    _state.sent();
+                    logger.log("cinemhallreview model initiated successfully");
+                    CinemaHall.hasMany(CinemaHallReview, {
+                        foreignKey: "cinemaHallId",
+                        as: "reviews"
+                    });
+                    CinemaHallReview.belongsTo(CinemaHall, {
+                        foreignKey: "cinemaHallId",
+                        as: "cinemaHall"
+                    });
+                    return [
+                        4,
+                        Screen.sync()
+                    ];
+                case 20:
+                    _state.sent();
+                    logger.log("screen model initiated successfully");
+                    return [
+                        4,
+                        MovieScreen.sync()
+                    ];
+                case 21:
+                    _state.sent();
+                    logger.log("moviescreen model inityiated successfully");
+                    Screen.hasOne(MovieScreen, {
+                        foreignKey: "screenId"
+                    });
+                    MovieScreen.belongsTo(Screen, {
+                        foreignKey: "screenId"
+                    });
+                    MovieInTheatre.hasMany(MovieScreen, {
+                        foreignKey: "CinemahallmovieId"
+                    });
+                    MovieScreen.belongsTo(MovieInTheatre, {
+                        foreignKey: "CinemahallmovieId"
+                    });
+                    return [
+                        4,
+                        TheatreLayout.sync()
+                    ];
+                case 22:
+                    _state.sent();
+                    logger.log("theatrelayout model initiated successfully");
+                    TheatreLayout.belongsTo(CinemaHall, {
+                        foreignKey: 'cinemaHallId',
+                        as: 'cinemaHall'
+                    });
+                    CinemaHall.hasOne(TheatreLayout, {
+                        foreignKey: 'cinemaHallId',
+                        as: 'theatreLayouts'
+                    });
+                    return [
+                        4,
+                        Showtime.sync()
+                    ];
+                case 23:
+                    _state.sent();
+                    logger.log("showtime model has been initialised successfully");
+                    return [
+                        4,
+                        SeatStatus.sync()
+                    ];
+                case 24:
+                    _state.sent();
+                    logger.log("seatstatus model has been iniotialized successfully");
+                    Showtime.hasMany(SeatStatus, {
+                        foreignKey: 'showtimeId',
+                        as: 'seatStatuses'
+                    });
+                    SeatStatus.belongsTo(Showtime, {
+                        foreignKey: 'showtimeId',
+                        as: 'showtime'
+                    });
+                    Screen.hasMany(Showtime, {
+                        foreignKey: 'screenId',
+                        as: 'showtimes'
+                    });
+                    Showtime.belongsTo(Screen, {
+                        foreignKey: 'screenId',
+                        as: 'screen'
+                    });
+                    CinemaHall.hasMany(Showtime, {
+                        foreignKey: "cinemaHallId",
+                        as: "showtimes"
+                    });
+                    Showtime.belongsTo(CinemaHall, {
+                        foreignKey: "cinemaHallId",
+                        as: "cinemhalls"
+                    });
+                    logger.log("All models and associations have been successfully initiated");
                     return [
                         2
                     ];

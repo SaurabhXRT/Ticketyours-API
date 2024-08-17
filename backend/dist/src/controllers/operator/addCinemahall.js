@@ -130,23 +130,23 @@ export var addcinemahall = function() {
         return _ts_generator(this, function(_state) {
             switch(_state.label){
                 case 0:
+                    // #swagger.description = 'register a cinemhall by the operator and authorization is required'
                     body = req.body;
-                    operatorId = req.operator._id;
+                    operatorId = req.operatorId;
                     cinemhalldata = {
                         name: body.name,
-                        operator_id: operatorId,
-                        street: body.street,
-                        city_id: body.cityId,
+                        operatorId: operatorId,
+                        location: body.location,
                         state: body.state,
                         zipcode: body.zipcode,
-                        total_seats: body.totalseats
+                        cityId: body.cityId
                     };
-                    if (!body.name || !body.totalSeats) {
+                    if (!body.name || !body.location || !body.zipcode) {
                         return [
                             2,
                             res.status(400).json({
                                 code: "fields/empty",
-                                message: "All fields ( name, totalSeats) are required"
+                                message: "All fields ( name, location,zipcode) are required"
                             })
                         ];
                     }
@@ -160,7 +160,7 @@ export var addcinemahall = function() {
                     ]);
                     return [
                         4,
-                        service.findCinemaHallByName(cinemhalldata.name)
+                        service.findCinemaHallByNameAndOperator(cinemhalldata.name, operatorId)
                     ];
                 case 2:
                     existingCinemaHall = _state.sent();
@@ -169,7 +169,7 @@ export var addcinemahall = function() {
                             2,
                             res.status(400).json({
                                 code: "cinema-hall/alreadyexists",
-                                message: "cinemahall with this name already exists"
+                                message: "A cinema hall with this name is already registered by this operator"
                             })
                         ];
                     }

@@ -1,4 +1,3 @@
-//import { Request, Response, NextFunction } from 'express';
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {
     try {
         var info = gen[key](arg);
@@ -142,7 +141,7 @@ function _ts_generator(thisArg, body) {
         };
     }
 }
-import OperatorModel from '../../models/Cinema_operator.js';
+import { CinemaOperator } from '../../PGmodels/Operator/Operator.js';
 export var OperatorMiddleware = /*#__PURE__*/ function() {
     "use strict";
     function OperatorMiddleware() {
@@ -165,7 +164,7 @@ export var OperatorMiddleware = /*#__PURE__*/ function() {
                                 ]);
                                 return [
                                     4,
-                                    OperatorModel.findById(req.userId)
+                                    CinemaOperator.findByPk(req.operatorId)
                                 ];
                             case 1:
                                 operator = _state.sent();
@@ -183,6 +182,7 @@ export var OperatorMiddleware = /*#__PURE__*/ function() {
                                 ];
                             case 2:
                                 error = _state.sent();
+                                console.error("Error verifying operator:", error);
                                 return [
                                     2,
                                     res.status(401).send("Unauthorized: Operator verification failed")

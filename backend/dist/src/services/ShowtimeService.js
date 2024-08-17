@@ -141,18 +141,16 @@ function _ts_generator(thisArg, body) {
         };
     }
 }
-import ShowtimeSlot from '../models/Showtime_slot.js';
-import CinemaHall from "../models/cinema_hall/CinemaHall.js";
-import MovieInCinemaHall from "../models/Moviemodel.js";
-export var ShowtimeSlotService = /*#__PURE__*/ function() {
+import { Showtime } from '../PGmodels/Showtime/Showtime.js';
+export var ShowtimeService = /*#__PURE__*/ function() {
     "use strict";
-    function ShowtimeSlotService() {
-        _class_call_check(this, ShowtimeSlotService);
+    function ShowtimeService() {
+        _class_call_check(this, ShowtimeService);
     }
-    _create_class(ShowtimeSlotService, [
+    _create_class(ShowtimeService, [
         {
-            key: "getShowtimesByMovieIdAndCinemaHallId",
-            value: function getShowtimesByMovieIdAndCinemaHallId(movieId, cinemaHallId) {
+            key: "getShowtimesByScreenId",
+            value: function getShowtimesByScreenId(screenId) {
                 return _async_to_generator(function() {
                     var showtimes, error;
                     return _ts_generator(this, function(_state) {
@@ -166,9 +164,10 @@ export var ShowtimeSlotService = /*#__PURE__*/ function() {
                                 ]);
                                 return [
                                     4,
-                                    ShowtimeSlot.find({
-                                        movie_id: movieId,
-                                        cinema_hall_id: cinemaHallId
+                                    Showtime.findAll({
+                                        where: {
+                                            screenId: screenId
+                                        }
                                     })
                                 ];
                             case 1:
@@ -179,8 +178,8 @@ export var ShowtimeSlotService = /*#__PURE__*/ function() {
                                 ];
                             case 2:
                                 error = _state.sent();
-                                console.error("Error fetching showtimes for movie ".concat(movieId, " and cinema hall ").concat(cinemaHallId, ":"), error);
-                                throw new Error("Failed to fetch showtimes for movie ".concat(movieId, " and cinema hall ").concat(cinemaHallId));
+                                console.error("Error fetching showtimes for screen ".concat(screenId, ":"), error);
+                                throw new Error("Failed to fetch showtimes for screen ".concat(screenId));
                             case 3:
                                 return [
                                     2
@@ -191,8 +190,8 @@ export var ShowtimeSlotService = /*#__PURE__*/ function() {
             }
         },
         {
-            key: "getShowtimesByCinemaHallId",
-            value: function getShowtimesByCinemaHallId(cinemaHallId) {
+            key: "getShowtimesByScreenIdAndDate",
+            value: function getShowtimesByScreenIdAndDate(screenId, selectedDate) {
                 return _async_to_generator(function() {
                     var showtimes, error;
                     return _ts_generator(this, function(_state) {
@@ -206,8 +205,11 @@ export var ShowtimeSlotService = /*#__PURE__*/ function() {
                                 ]);
                                 return [
                                     4,
-                                    ShowtimeSlot.find({
-                                        cinema_hall_id: cinemaHallId
+                                    Showtime.findAll({
+                                        where: {
+                                            screenId: screenId,
+                                            showTimeDate: selectedDate
+                                        }
                                     })
                                 ];
                             case 1:
@@ -218,188 +220,9 @@ export var ShowtimeSlotService = /*#__PURE__*/ function() {
                                 ];
                             case 2:
                                 error = _state.sent();
-                                console.error("Error fetching showtimes for cinema hall ".concat(cinemaHallId, ":"), error);
-                                throw new Error("Failed to fetch showtimes for cinema hall ".concat(cinemaHallId));
+                                console.error("Error fetching showtimes for screen ".concat(screenId, " and date ").concat(selectedDate, ":"), error);
+                                throw new Error("Failed to fetch showtimes for screen ".concat(screenId, " and date ").concat(selectedDate));
                             case 3:
-                                return [
-                                    2
-                                ];
-                        }
-                    });
-                })();
-            }
-        },
-        {
-            key: "getShowtimesByMovieIdAndCinemaHallIdAndDate",
-            value: function getShowtimesByMovieIdAndCinemaHallIdAndDate(movieId, cinemaHallId, selectedDate) {
-                return _async_to_generator(function() {
-                    var showtimes, error;
-                    return _ts_generator(this, function(_state) {
-                        switch(_state.label){
-                            case 0:
-                                _state.trys.push([
-                                    0,
-                                    2,
-                                    ,
-                                    3
-                                ]);
-                                return [
-                                    4,
-                                    ShowtimeSlot.find({
-                                        movie_id: movieId,
-                                        cinema_hall_id: cinemaHallId,
-                                        date: selectedDate
-                                    })
-                                ];
-                            case 1:
-                                showtimes = _state.sent();
-                                return [
-                                    2,
-                                    showtimes
-                                ];
-                            case 2:
-                                error = _state.sent();
-                                console.error("Error fetching showtimes for movie ".concat(movieId, ", cinema hall ").concat(cinemaHallId, ", and date ").concat(selectedDate, ":"), error);
-                                throw new Error("Failed to fetch showtimes for movie ".concat(movieId, ", cinema hall ").concat(cinemaHallId, ", and date ").concat(selectedDate));
-                            case 3:
-                                return [
-                                    2
-                                ];
-                        }
-                    });
-                })();
-            }
-        },
-        {
-            key: "getShowtimeById",
-            value: function getShowtimeById(showtimeId) {
-                return _async_to_generator(function() {
-                    var showtime, error;
-                    return _ts_generator(this, function(_state) {
-                        switch(_state.label){
-                            case 0:
-                                _state.trys.push([
-                                    0,
-                                    2,
-                                    ,
-                                    3
-                                ]);
-                                return [
-                                    4,
-                                    ShowtimeSlot.findById(showtimeId)
-                                ];
-                            case 1:
-                                showtime = _state.sent();
-                                if (!showtime) {
-                                    throw new Error("Showtime with ID ".concat(showtimeId, " not found"));
-                                }
-                                return [
-                                    2,
-                                    showtime
-                                ];
-                            case 2:
-                                error = _state.sent();
-                                console.error("Error fetching showtime with ID ".concat(showtimeId, ":"), error);
-                                throw new Error("Failed to fetch showtime with ID ".concat(showtimeId));
-                            case 3:
-                                return [
-                                    2
-                                ];
-                        }
-                    });
-                })();
-            }
-        },
-        {
-            key: "getMovieDetailsByShowtimeId",
-            value: function getMovieDetailsByShowtimeId(showtimeId) {
-                return _async_to_generator(function() {
-                    var showtime, movie, error;
-                    return _ts_generator(this, function(_state) {
-                        switch(_state.label){
-                            case 0:
-                                _state.trys.push([
-                                    0,
-                                    3,
-                                    ,
-                                    4
-                                ]);
-                                return [
-                                    4,
-                                    ShowtimeSlot.findById(showtimeId).populate('movie_id')
-                                ];
-                            case 1:
-                                showtime = _state.sent();
-                                if (!showtime) {
-                                    throw new Error("Showtime with ID ".concat(showtimeId, " not found"));
-                                }
-                                return [
-                                    4,
-                                    MovieInCinemaHall.findById(showtime.movie_id)
-                                ];
-                            case 2:
-                                movie = _state.sent();
-                                if (!movie) {
-                                    throw new Error("Movie with ID ".concat(showtime.movie_id, " not found"));
-                                }
-                                return [
-                                    2,
-                                    movie
-                                ];
-                            case 3:
-                                error = _state.sent();
-                                console.error("Error fetching movie details for showtime with ID ".concat(showtimeId, ":"), error);
-                                throw new Error("Failed to fetch movie details for showtime with ID ".concat(showtimeId));
-                            case 4:
-                                return [
-                                    2
-                                ];
-                        }
-                    });
-                })();
-            }
-        },
-        {
-            key: "getCinemaDetailsByShowtimeId",
-            value: function getCinemaDetailsByShowtimeId(showtimeId) {
-                return _async_to_generator(function() {
-                    var showtime, cinemaHall, error;
-                    return _ts_generator(this, function(_state) {
-                        switch(_state.label){
-                            case 0:
-                                _state.trys.push([
-                                    0,
-                                    3,
-                                    ,
-                                    4
-                                ]);
-                                return [
-                                    4,
-                                    ShowtimeSlot.findById(showtimeId).populate('cinema_hall_id')
-                                ];
-                            case 1:
-                                showtime = _state.sent();
-                                if (!showtime) {
-                                    throw new Error("Showtime with ID ".concat(showtimeId, " not found"));
-                                }
-                                return [
-                                    4,
-                                    CinemaHall.findById(showtime.cinema_hall_id)
-                                ];
-                            case 2:
-                                cinemaHall = _state.sent();
-                                if (!cinemaHall) {
-                                    throw new Error("Cinema hall with ID ".concat(showtime.cinema_hall_id, " not found"));
-                                }
-                                return [
-                                    2,
-                                    cinemaHall
-                                ];
-                            case 3:
-                                error = _state.sent();
-                                console.error("Error fetching cinema hall details for showtime with ID ".concat(showtimeId, ":"), error);
-                                throw new Error("Failed to fetch cinema hall details for showtime with ID ".concat(showtimeId));
-                            case 4:
                                 return [
                                     2
                                 ];
@@ -409,5 +232,5 @@ export var ShowtimeSlotService = /*#__PURE__*/ function() {
             }
         }
     ]);
-    return ShowtimeSlotService;
+    return ShowtimeService;
 }();

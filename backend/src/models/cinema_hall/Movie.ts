@@ -1,12 +1,12 @@
 import mongoose, { Document, Schema } from "mongoose";
 
-// Define the interface for the Movie schema
+// interface for the Movie schema
 interface Movie extends Document {
   movie_id: mongoose.Types.ObjectId;
   //showtime_slots: Array<{ showtime_slot_id: mongoose.Types.ObjectId }>;
 }
 
-// Define the Movie schema
+// Movie schema
 const movieSchema = new Schema<Movie>(
   {
     movie_id: {

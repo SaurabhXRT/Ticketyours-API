@@ -5,35 +5,35 @@ import { AddCinemaHallservice } from "../../services/AddCinemaHallservice.js";
 const service = new AddCinemaHallservice;
 
 export const addcinemahall = async (req: Request, res: Response) => {
+  // #swagger.description = 'register a cinemhall by the operator and authorization is required'
     const body = req.body;
-    const operatorId = req.operator._id;
+    const operatorId = req.operatorId;
     const cinemhalldata = {
         name: body.name,
-        operator_id: operatorId,
-        street: body.street,
-        city_id: body.cityId,
+        operatorId: operatorId,
+        location: body.location,
         state: body.state,
         zipcode: body.zipcode,
-        total_seats: body.totalseats
+        cityId: body.cityId
     }
   
-  if (!body.name || !body.totalSeats) {
+  if (!body.name || !body.location || !body.zipcode) {
     return res.status(400).json({
       code: "fields/empty",
-      message: "All fields ( name, totalSeats) are required",
+      message: "All fields ( name, location,zipcode) are required",
     });
   }
 
   try {
 
-    // Check if a cinema hall with the same name already exists
-    const existingCinemaHall = await service.findCinemaHallByName(cinemhalldata.name);
+    const existingCinemaHall = await service.findCinemaHallByNameAndOperator(cinemhalldata.name, operatorId);
     if (existingCinemaHall) {
-        return res.status(400).json({
-            code: "cinema-hall/alreadyexists",
-            message: "cinemahall with this name already exists",
-          });
+      return res.status(400).json({
+        code: "cinema-hall/alreadyexists",
+        message: "A cinema hall with this name is already registered by this operator",
+      });
     }
+
     const newCinemaHall = await service.addcinemahall(cinemhalldata);
 
     res.status(201).json({

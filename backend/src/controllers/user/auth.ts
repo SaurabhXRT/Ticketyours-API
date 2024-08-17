@@ -7,6 +7,7 @@ const router = express.Router();
 
 
 export const register = async (req: any, res: any) => {
+   // #swagger.description = 'Register a new user'
   const body = req.body;
   const userCredentials = {
     name: body.name,
@@ -56,7 +57,7 @@ export const register = async (req: any, res: any) => {
 }
 
 export const login = async (req: any, res: any) => {
-
+    // #swagger.description = 'login with phone and password for a user' 
     const body = req.body;
     var userCredentials = {
       phone: body.phone,
@@ -117,6 +118,7 @@ export const login = async (req: any, res: any) => {
   
   
   export const logout =  async (req:any , res:any) => {
+    // #swagger.description = 'logout a user'
     let token: any = req.headers.authorization;
     if (!token) {
       res.status(400).send({

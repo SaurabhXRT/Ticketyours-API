@@ -83,9 +83,9 @@ var CinemaHallReview = /*#__PURE__*/ function(Model) {
 }(Model);
 CinemaHallReview.init({
     id: {
-        type: DataTypes.UUID,
-        primaryKey: true,
-        defaultValue: DataTypes.UUIDV4
+        type: DataTypes.INTEGER,
+        autoIncrement: true,
+        primaryKey: true
     },
     star: {
         type: DataTypes.INTEGER,
@@ -104,7 +104,7 @@ CinemaHallReview.init({
         allowNull: false
     },
     cinemaHallId: {
-        type: DataTypes.UUID,
+        type: DataTypes.INTEGER,
         allowNull: true
     }
 }, {

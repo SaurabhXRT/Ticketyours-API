@@ -1,14 +1,15 @@
 import { Model, DataTypes } from 'sequelize';
 import { centralDatabase } from "../../config/dbconfig.js";
 
-class Movie extends Model {}
+class Movie extends Model {
+}
 
 Movie.init(
   {
     id: {
-      type: DataTypes.UUID,
-      primaryKey: true,
-      defaultValue: DataTypes.UUIDV4,
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
+      primaryKey: true
     },
     title: {
       type: DataTypes.STRING,

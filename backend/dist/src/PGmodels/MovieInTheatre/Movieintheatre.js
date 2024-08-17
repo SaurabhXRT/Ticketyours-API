@@ -83,13 +83,9 @@ var MovieInTheatre = /*#__PURE__*/ function(Model) {
 }(Model);
 MovieInTheatre.init({
     id: {
-        type: DataTypes.UUID,
-        primaryKey: true,
-        defaultValue: DataTypes.UUIDV4
-    },
-    cinemaHallId: {
-        type: DataTypes.UUID,
-        allowNull: false
+        type: DataTypes.INTEGER,
+        autoIncrement: true,
+        primaryKey: true
     },
     title: {
         type: DataTypes.STRING,
@@ -116,8 +112,8 @@ MovieInTheatre.init({
         allowNull: false
     },
     movieId: {
-        type: DataTypes.UUID,
-        primaryKey: true
+        type: DataTypes.INTEGER,
+        allowNull: false
     }
 }, {
     sequelize: centralDatabase.getInstance(),

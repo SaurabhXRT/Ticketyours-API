@@ -1,5 +1,4 @@
 import mongoose, { Schema } from "mongoose";
-// Define the CinemaOperator schema
 var cinemaOperatorSchema = new Schema({
     name: {
         type: String,
@@ -33,7 +32,6 @@ var cinemaOperatorSchema = new Schema({
         default: Date.now
     }
 });
-// Update `updated_at` field before saving
 cinemaOperatorSchema.pre("save", function(next) {
     this.updated_at = new Date();
     next();

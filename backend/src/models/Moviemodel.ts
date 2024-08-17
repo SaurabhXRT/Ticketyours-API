@@ -1,6 +1,5 @@
 import mongoose, { Document, Schema } from 'mongoose';
 
-// Define the interface for the MovieInCinemaHall schema
 interface MovieInCinemaHall extends Document {
   movie_id: mongoose.Types.ObjectId;
   cinema_hall_id: mongoose.Types.ObjectId;
@@ -15,7 +14,6 @@ interface MovieInCinemaHall extends Document {
   updated_at: Date;
 }
 
-// Define the MovieInCinemaHall schema
 const movieInCinemaHallSchema = new Schema<MovieInCinemaHall>({
   movie_id: {
     type: Schema.Types.ObjectId,
@@ -67,7 +65,7 @@ const movieInCinemaHallSchema = new Schema<MovieInCinemaHall>({
   }
 });
 
-// Update `updated_at` field before saving
+
 movieInCinemaHallSchema.pre<MovieInCinemaHall>('save', function(next) {
   this.updated_at = new Date();
   next();

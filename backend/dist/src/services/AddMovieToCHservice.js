@@ -141,10 +141,12 @@ function _ts_generator(thisArg, body) {
         };
     }
 }
-import MovieInCinemaHall from "../models/Moviemodel.js";
-import CinemaHall from "../models/cinema_hall/CinemaHall.js";
-import { MovieService } from "./MovieService.js";
-import CityModel from "../models/city/City.model.js";
+import { MovieInTheatre } from '../PGmodels/MovieInTheatre/Movieintheatre.js';
+import { CinemaHallMovie } from '../PGmodels/CinemaHall/CinemahallMovie.js';
+import { CityCheck } from '../PGmodels/CityCheck/CityCheck.js';
+import { CityMovie } from '../PGmodels/City/CityMovie.js';
+import { Movie } from '../PGmodels/Movie/Movie.js';
+import { centralDatabase } from ".././config/dbconfig.js";
 export var AddMovieService = /*#__PURE__*/ function() {
     "use strict";
     function AddMovieService() {
@@ -153,171 +155,144 @@ export var AddMovieService = /*#__PURE__*/ function() {
     _create_class(AddMovieService, [
         {
             key: "addMovieToCinemaHall",
-            value: function addMovieToCinemaHall(operatorId, cinemaHallId, movieId) {
-                var _this = this;
+            value: function addMovieToCinemaHall(operatorId, cinemaHallId, movieId, cityId) {
                 return _async_to_generator(function() {
-                    var session, cinemaHall, service, movieData, newMovieInCinemaHall, city, error;
+                    var sequelize, transaction, existingEntry, movie, movieInTheatre, cityMovieExists, error;
                     return _ts_generator(this, function(_state) {
                         switch(_state.label){
                             case 0:
+                                sequelize = centralDatabase.getInstance();
                                 return [
                                     4,
-                                    MovieInCinemaHall.startSession()
+                                    sequelize.transaction()
                                 ];
                             case 1:
-                                session = _state.sent();
-                                session.startTransaction();
+                                transaction = _state.sent();
                                 _state.label = 2;
                             case 2:
                                 _state.trys.push([
                                     2,
-                                    10,
                                     12,
-                                    13
+                                    ,
+                                    14
                                 ]);
                                 return [
                                     4,
-                                    CinemaHall.findOne({
-                                        _id: cinemaHallId,
-                                        operator_id: operatorId
-                                    }).session(session)
+                                    MovieInTheatre.findOne({
+                                        where: {
+                                            movieId: movieId
+                                        }
+                                    })
                                 ];
                             case 3:
-                                cinemaHall = _state.sent();
-                                if (!cinemaHall) {
-                                    throw new Error("Cinema hall not found or does not belong to the operator");
+                                existingEntry = _state.sent();
+                                if (existingEntry) {
+                                    return [
+                                        2,
+                                        "This movie is already in your cinema hall"
+                                    ];
                                 }
-                                service = new MovieService();
                                 return [
                                     4,
-                                    service.getMovieDetailById(movieId)
+                                    Movie.findByPk(movieId)
                                 ];
                             case 4:
-                                movieData = _state.sent();
+                                movie = _state.sent();
+                                if (!movie) {
+                                    return [
+                                        2,
+                                        "Movie not found"
+                                    ];
+                                }
                                 return [
                                     4,
-                                    MovieInCinemaHall.create([
-                                        {
-                                            movie_id: movieId,
-                                            cinema_hall_id: cinemaHallId,
-                                            title: movieData.title,
-                                            description: movieData.description,
-                                            genre: movieData.genre,
-                                            duration: movieData.duration,
-                                            release_date: movieData.release_date,
-                                            end_date: movieData.end_date,
-                                            poster_url: movieData.poster_url,
-                                            created_at: new Date(),
-                                            updated_at: new Date()
-                                        }
-                                    ], {
-                                        session: session
+                                    MovieInTheatre.create({
+                                        movieId: movie.id,
+                                        title: movie.title,
+                                        description: movie.description,
+                                        genre: movie.genre,
+                                        duration: movie.duration,
+                                        releaseDate: movie.releaseDate,
+                                        posterUrl: movie.posterUrl
+                                    }, {
+                                        transaction: transaction
                                     })
                                 ];
                             case 5:
-                                newMovieInCinemaHall = _state.sent();
+                                movieInTheatre = _state.sent();
                                 return [
                                     4,
-                                    CinemaHall.findByIdAndUpdate(cinemaHallId, {
-                                        $push: {
-                                            movies: newMovieInCinemaHall[0]._id
-                                        }
+                                    CinemaHallMovie.create({
+                                        cinemaHallId: cinemaHallId,
+                                        CinemahallmovieId: movieInTheatre.id
                                     }, {
-                                        new: true,
-                                        session: session
+                                        transaction: transaction
                                     })
                                 ];
                             case 6:
                                 _state.sent();
                                 return [
                                     4,
-                                    CityModel.findOne({
-                                        _id: cinemaHall.city_id
-                                    }).session(session)
+                                    CityCheck.create({
+                                        movieId: movieId,
+                                        cinemaHallId: cinemaHallId,
+                                        cityId: cityId
+                                    }, {
+                                        transaction: transaction
+                                    })
                                 ];
                             case 7:
-                                city = _state.sent();
-                                if (!city) {
-                                    throw new Error("City not found for the given cinema hall");
-                                }
-                                return [
-                                    4,
-                                    _this.updateCityMovies(city._id, newMovieInCinemaHall[0]._id, session)
-                                ];
-                            case 8:
                                 _state.sent();
                                 return [
                                     4,
-                                    session.commitTransaction()
+                                    CityMovie.findOne({
+                                        where: {
+                                            cityId: cityId,
+                                            movieId: movieId
+                                        },
+                                        transaction: transaction
+                                    })
+                                ];
+                            case 8:
+                                cityMovieExists = _state.sent();
+                                if (!!cityMovieExists) return [
+                                    3,
+                                    10
+                                ];
+                                return [
+                                    4,
+                                    CityMovie.create({
+                                        cityId: cityId,
+                                        movieId: movieId
+                                    }, {
+                                        transaction: transaction
+                                    })
                                 ];
                             case 9:
                                 _state.sent();
-                                return [
-                                    2,
-                                    cinemaHall.toJSON()
-                                ];
+                                _state.label = 10;
                             case 10:
-                                error = _state.sent();
                                 return [
                                     4,
-                                    session.abortTransaction()
+                                    transaction.commit()
                                 ];
                             case 11:
                                 _state.sent();
-                                console.error("Error adding movie to cinema hall:", error);
-                                throw new Error("Failed to add movie to cinema hall");
-                            case 12:
-                                session.endSession();
                                 return [
-                                    7
+                                    2,
+                                    movieInTheatre
+                                ];
+                            case 12:
+                                error = _state.sent();
+                                return [
+                                    4,
+                                    transaction.rollback()
                                 ];
                             case 13:
-                                return [
-                                    2
-                                ];
-                        }
-                    });
-                })();
-            }
-        },
-        {
-            key: "updateCityMovies",
-            value: // Helper function to check and update CityModel
-            function updateCityMovies(cityId, movieId, session) {
-                return _async_to_generator(function() {
-                    var city, movieAlreadyInCity;
-                    return _ts_generator(this, function(_state) {
-                        switch(_state.label){
-                            case 0:
-                                return [
-                                    4,
-                                    CityModel.findById(cityId).session(session)
-                                ];
-                            case 1:
-                                city = _state.sent();
-                                if (!city) {
-                                    throw new Error("City not found");
-                                }
-                                movieAlreadyInCity = city.cinemaMovies.includes(movieId);
-                                if (!!movieAlreadyInCity) return [
-                                    3,
-                                    3
-                                ];
-                                return [
-                                    4,
-                                    CityModel.findByIdAndUpdate(cityId, {
-                                        $push: {
-                                            cinemaMovies: movieId
-                                        }
-                                    }, {
-                                        new: true,
-                                        session: session
-                                    })
-                                ];
-                            case 2:
                                 _state.sent();
-                                _state.label = 3;
-                            case 3:
+                                console.error("Error adding movie to cinema hall:", error);
+                                throw new Error("Failed to add movie to cinema hall");
+                            case 14:
                                 return [
                                     2
                                 ];

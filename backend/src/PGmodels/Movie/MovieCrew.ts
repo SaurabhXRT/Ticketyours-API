@@ -6,12 +6,12 @@ class MovieCrew extends Model {}
 MovieCrew.init(
   {
     movieId: {
-      type: DataTypes.UUID,
-      primaryKey: true,
+      type: DataTypes.INTEGER,
+      allowNull: false,
     },
     crewId: {
-      type: DataTypes.UUID,
-      primaryKey: true,
+      type: DataTypes.INTEGER,
+      allowNull: false,
     },
   },
   {

@@ -1,6 +1,5 @@
 import mongoose, { Document, Schema } from 'mongoose';
 
-// Define the interface for the Movie schema
 interface Movie extends Document {
   title: string;
   description: string;
@@ -13,7 +12,6 @@ interface Movie extends Document {
   updated_at: Date;
 }
 
-// Define the Movie schema
 const movieSchema = new Schema<Movie>({
   title: {
     type: String,
@@ -55,7 +53,7 @@ const movieSchema = new Schema<Movie>({
   }
 });
 
-// Update `updated_at` field before saving
+
 movieSchema.pre<Movie>('save', function(next) {
   this.updated_at = new Date();
   next();

@@ -1,11 +1,12 @@
-import { ShowtimeSlotService } from "../services/ShowtimeService.js";
-const showtimeservice = new ShowtimeSlotService();
+import { ShowtimeService } from "../services/ShowtimeService.js";
+const showtimeservice = new ShowtimeService();
 
-export const getShowtimesByMovieIdAndCinemaHallIdController = async (req: any, res: any) => {
-  const { movieId, cinemaHallId } = req.params;
+export const getShowtimesByScreenIdController = async (req: any, res: any) => {
+    // #swagger.description = 'get showtime for a movie'
+  const { screenId } = req.params;
 
   try {
-    const showtimes = await showtimeservice.getShowtimesByMovieIdAndCinemaHallId(movieId, cinemaHallId);
+    const showtimes = await showtimeservice.getShowtimesByScreenId(screenId);
     res.status(200).json({
       code: 'showtimes/fetch-success',
       message: 'Showtimes fetched successfully',
@@ -19,11 +20,13 @@ export const getShowtimesByMovieIdAndCinemaHallIdController = async (req: any, r
   }
 };
 
-export const getShowtimesByCinemaHallIdController = async (req: any, res: any) => {
-  const { cinemaHallId } = req.params;
+export const getShowtimesByScreenIdAndDateController = async (req: any, res: any) => {
+    // #swagger.description = 'get showtime for the selected date'
+  const { screenId } = req.params;
+  const { selectedDate } = req.body
 
   try {
-    const showtimes = await showtimeservice.getShowtimesByCinemaHallId(cinemaHallId);
+    const showtimes = await showtimeservice.getShowtimesByScreenIdAndDate(screenId, selectedDate);
     res.status(200).json({
       code: 'showtimes/fetch-success',
       message: 'Showtimes fetched successfully',
@@ -37,21 +40,3 @@ export const getShowtimesByCinemaHallIdController = async (req: any, res: any) =
   }
 };
 
-export const getShowtimeSlots = async (req: any, res: any) => {
-  const { movieId, cinemaHallId } = req.params;
-  const selectedDate = new Date(req.query.date as string);
-
-  try {
-    const showtimes = await showtimeservice.getShowtimesByMovieIdAndCinemaHallIdAndDate(movieId, cinemaHallId, selectedDate);
-    res.status(200).json({
-      code: 'showtimes/fetch-success',
-      message: 'Showtimes fetched successfully',
-      data: showtimes,
-    });
-  } catch (error) {
-    res.status(404).json({
-      code: 'showtimes/not-found',
-      message: error.message,
-    });
-  }
-};

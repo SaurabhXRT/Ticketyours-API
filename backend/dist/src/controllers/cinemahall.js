@@ -130,6 +130,7 @@ export var getCinemaHalls = function() {
         return _ts_generator(this, function(_state) {
             switch(_state.label){
                 case 0:
+                    // #swagger.description = 'get all the cinemhall in a city using cityid'
                     cityId = req.params.cityId;
                     _state.label = 1;
                 case 1:
@@ -181,6 +182,7 @@ export var getCinemaHallsByCityAndMovie = function() {
         return _ts_generator(this, function(_state) {
             switch(_state.label){
                 case 0:
+                    // #swagger.description = 'get all the cinemhall in which a particular movie is running using cityid and movieid '
                     cityId = req.params.cityId;
                     movieId = req.params.movieId;
                     _state.label = 1;
@@ -197,6 +199,15 @@ export var getCinemaHallsByCityAndMovie = function() {
                     ];
                 case 2:
                     cinemaHalls = _state.sent();
+                    if (cinemaHalls === "No cinema halls found for this movie in the specified city") {
+                        res.status(404).send({
+                            code: "cinemahalls/not-found",
+                            message: "No cinema halls found for this movie in the specified city"
+                        });
+                        return [
+                            2
+                        ];
+                    }
                     res.status(200).json({
                         code: "cinemahalls/fetch-success",
                         message: "Cinema halls for the movie fetched successfully",

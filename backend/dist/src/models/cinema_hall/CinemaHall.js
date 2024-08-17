@@ -1,5 +1,5 @@
 import mongoose, { Schema } from "mongoose";
-// Define the CinemaHall schema
+// CinemaHall schema
 var cinemaHallSchema = new Schema({
     operator_id: {
         type: Schema.Types.ObjectId,
@@ -51,7 +51,6 @@ var cinemaHallSchema = new Schema({
         required: true
     }
 });
-// Update `updated_at` field before saving
 cinemaHallSchema.pre("save", function(next) {
     this.updated_at = new Date();
     next();

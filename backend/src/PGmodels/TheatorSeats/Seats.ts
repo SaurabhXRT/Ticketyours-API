@@ -1,49 +1,38 @@
 import { Model, DataTypes } from 'sequelize';
 import { centralDatabase } from '../../config/dbconfig.js';
 
-class Seat extends Model {}
+class SeatStatus extends Model {}
 
-Seat.init(
+SeatStatus.init(
   {
     id: {
-      type: DataTypes.UUID,
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
       primaryKey: true,
-      defaultValue: DataTypes.UUIDV4,
     },
     showtimeId: {
-      type: DataTypes.UUID,
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    seatRow: {
+      type: DataTypes.STRING,
       allowNull: false,
     },
     seatNumber: {
-      type: DataTypes.STRING,
+      type: DataTypes.INTEGER,
       allowNull: false,
     },
-    seatPrice: {
-      type: DataTypes.DECIMAL(10, 2),
+    status: {
+      type: DataTypes.ENUM('available', 'booked', 'reserved'),
       allowNull: false,
-    },
-    seatType: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    bookingStatus: {
-      type: DataTypes.ENUM('available', 'booked', 'locked'),
       defaultValue: 'available',
-    },
-    createdAt: {
-      type: DataTypes.DATE,
-      defaultValue: DataTypes.NOW,
-    },
-    updatedAt: {
-      type: DataTypes.DATE,
-      defaultValue: DataTypes.NOW,
     },
   },
   {
     sequelize: centralDatabase.getInstance(),
-    modelName: 'Seat',
+    modelName: 'SeatStatus',
     timestamps: true,
   }
 );
 
-export { Seat };
+export { SeatStatus };

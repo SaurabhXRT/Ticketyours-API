@@ -9,6 +9,19 @@ function _class_call_check(instance, Constructor) {
         throw new TypeError("Cannot call a class as a function");
     }
 }
+function _define_property(obj, key, value) {
+    if (key in obj) {
+        Object.defineProperty(obj, key, {
+            value: value,
+            enumerable: true,
+            configurable: true,
+            writable: true
+        });
+    } else {
+        obj[key] = value;
+    }
+    return obj;
+}
 function _get_prototype_of(o) {
     _get_prototype_of = Object.setPrototypeOf ? Object.getPrototypeOf : function getPrototypeOf(o) {
         return o.__proto__ || Object.getPrototypeOf(o);
@@ -69,32 +82,51 @@ function _create_super(Derived) {
         return _possible_constructor_return(this, result);
     };
 }
-import { Model, DataTypes } from 'sequelize';
-import { centralDatabase } from '../../config/dbconfig.js';
+import { Model, DataTypes } from "sequelize";
+import { centralDatabase } from "../../config/dbconfig.js";
 var CinemaOperator = /*#__PURE__*/ function(Model) {
     "use strict";
     _inherits(CinemaOperator, Model);
     var _super = _create_super(CinemaOperator);
     function CinemaOperator() {
         _class_call_check(this, CinemaOperator);
-        return _super.apply(this, arguments);
+        var _this;
+        _this = _super.apply(this, arguments);
+        _define_property(_assert_this_initialized(_this), "id", void 0);
+        _define_property(_assert_this_initialized(_this), "name", void 0);
+        _define_property(_assert_this_initialized(_this), "city_name", void 0);
+        _define_property(_assert_this_initialized(_this), "email", void 0);
+        _define_property(_assert_this_initialized(_this), "passwordHash", void 0);
+        _define_property(_assert_this_initialized(_this), "phone", void 0);
+        _define_property(_assert_this_initialized(_this), "dob", void 0);
+        _define_property(_assert_this_initialized(_this), "profileImage", void 0);
+        _define_property(_assert_this_initialized(_this), "govIdType", void 0);
+        _define_property(_assert_this_initialized(_this), "govIdNumber", void 0);
+        _define_property(_assert_this_initialized(_this), "govIdImage", void 0);
+        // Timestamps
+        _define_property(_assert_this_initialized(_this), "createdAt", void 0);
+        _define_property(_assert_this_initialized(_this), "updatedAt", void 0);
+        return _this;
     }
     return CinemaOperator;
 }(Model);
 CinemaOperator.init({
     id: {
-        type: DataTypes.UUID,
-        primaryKey: true,
-        defaultValue: DataTypes.UUIDV4
+        type: DataTypes.INTEGER,
+        autoIncrement: true,
+        primaryKey: true
     },
     name: {
         type: DataTypes.STRING,
         allowNull: false
     },
+    city_name: {
+        type: DataTypes.STRING,
+        allowNull: true
+    },
     email: {
         type: DataTypes.STRING,
-        allowNull: false,
-        unique: true
+        allowNull: false
     },
     passwordHash: {
         type: DataTypes.STRING,
@@ -123,20 +155,10 @@ CinemaOperator.init({
     govIdImage: {
         type: DataTypes.STRING,
         allowNull: true
-    },
-    createdAt: {
-        type: DataTypes.DATE,
-        allowNull: false,
-        defaultValue: DataTypes.NOW
-    },
-    updatedAt: {
-        type: DataTypes.DATE,
-        allowNull: false,
-        defaultValue: DataTypes.NOW
     }
 }, {
     sequelize: centralDatabase.getInstance(),
-    modelName: 'CinemaOperator',
+    modelName: "CinemaOperator",
     timestamps: true
 });
 export { CinemaOperator };

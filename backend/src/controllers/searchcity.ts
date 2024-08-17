@@ -1,10 +1,10 @@
-// src/controllers/city.ts
 //import { Request, Response } from "express";
 import { CityService } from "../services/CityService.js";
 
 const cityService = new CityService();
 
 export const getAllCities = async (req: any, res: any) => {
+  // #swagger.description = 'get all the city'
   try {
     const cities = await cityService.getAllCities();
     res.status(200).json({
@@ -22,6 +22,7 @@ export const getAllCities = async (req: any, res: any) => {
 };
 
 export const searchCities = async (req: any, res: any) => {
+  // #swagger.description = 'searcyh the city by giving cityname'
   const { city } = req.query;
 
   if (!city) {

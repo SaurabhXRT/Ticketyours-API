@@ -1,5 +1,5 @@
 import { Schema } from 'mongoose';
-// Define the Location schema
+//Location schema
 var locationSchema = new Schema({
     street: {
         type: String,

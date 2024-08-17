@@ -4,7 +4,7 @@ import { OperatorMovieService } from '../../services/OperatorMovieService.js';
 const Service = new OperatorMovieService();
 
 export const searchMoviesByName = async (req: Request, res: Response) => {
-
+// #swagger.description = 'search a movie by the operator while adding a movie to the registered cinemahall'
   const { name } = req.query;
 
   if (typeof name !== 'string') {

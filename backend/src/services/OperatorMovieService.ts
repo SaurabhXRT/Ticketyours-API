@@ -1,11 +1,14 @@
-import Movie from "../models/Movies.js";  
-
+import { Movie } from "../PGmodels/Movie/Movie.js";  
+import { Op } from 'sequelize';
 export class OperatorMovieService {
   async searchMoviesByName(title: string) {
     try {
-    
-      const movies = await Movie.find({
-        title: { $regex: new RegExp(title, 'i') }  
+      const movies = await Movie.findAll({
+        where: {
+          title: {
+            [Op.iLike]: `%${title}%` 
+          }
+        }
       });
       return movies;
     } catch (error) {

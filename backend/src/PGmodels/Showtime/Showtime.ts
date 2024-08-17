@@ -5,30 +5,25 @@ class Showtime extends Model {}
 
 Showtime.init(
   {
-    id: {
-      type: DataTypes.UUID,
-      primaryKey: true,
-      defaultValue: DataTypes.UUIDV4,
-    },
-    movieInCinemaHallId: {
-      type: DataTypes.UUID,
-      allowNull: false,
-    },
     screenId: {
-      type: DataTypes.UUID,
+      type: DataTypes.INTEGER,
       allowNull: false,
     },
-    showTime: {
-      type: DataTypes.DATE,
+    cinemaHallId: {
+      type: DataTypes.INTEGER,
       allowNull: false,
     },
-    createdAt: {
-      type: DataTypes.DATE,
-      defaultValue: DataTypes.NOW,
+    startTime: {
+      type: DataTypes.TIME,
+      allowNull: false,
     },
-    updatedAt: {
-      type: DataTypes.DATE,
-      defaultValue: DataTypes.NOW,
+    endTime: {
+      type: DataTypes.TIME,
+      allowNull: false,
+    },
+    showTimeDate: {
+      type: DataTypes.DATEONLY,
+      allowNull: false,
     },
   },
   {

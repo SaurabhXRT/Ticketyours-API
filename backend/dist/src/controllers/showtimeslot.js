@@ -122,15 +122,16 @@ function _ts_generator(thisArg, body) {
         };
     }
 }
-import { ShowtimeSlotService } from "../services/ShowtimeService.js";
-var showtimeservice = new ShowtimeSlotService();
-export var getShowtimesByMovieIdAndCinemaHallIdController = function() {
+import { ShowtimeService } from "../services/ShowtimeService.js";
+var showtimeservice = new ShowtimeService();
+export var getShowtimesByScreenIdController = function() {
     var _ref = _async_to_generator(function(req, res) {
-        var _req_params, movieId, cinemaHallId, showtimes, error;
+        var screenId, showtimes, error;
         return _ts_generator(this, function(_state) {
             switch(_state.label){
                 case 0:
-                    _req_params = req.params, movieId = _req_params.movieId, cinemaHallId = _req_params.cinemaHallId;
+                    // #swagger.description = 'get showtime for a movie'
+                    screenId = req.params.screenId;
                     _state.label = 1;
                 case 1:
                     _state.trys.push([
@@ -141,7 +142,7 @@ export var getShowtimesByMovieIdAndCinemaHallIdController = function() {
                     ]);
                     return [
                         4,
-                        showtimeservice.getShowtimesByMovieIdAndCinemaHallId(movieId, cinemaHallId)
+                        showtimeservice.getShowtimesByScreenId(screenId)
                     ];
                 case 2:
                     showtimes = _state.sent();
@@ -171,17 +172,19 @@ export var getShowtimesByMovieIdAndCinemaHallIdController = function() {
             }
         });
     });
-    return function getShowtimesByMovieIdAndCinemaHallIdController(req, res) {
+    return function getShowtimesByScreenIdController(req, res) {
         return _ref.apply(this, arguments);
     };
 }();
-export var getShowtimesByCinemaHallIdController = function() {
+export var getShowtimesByScreenIdAndDateController = function() {
     var _ref = _async_to_generator(function(req, res) {
-        var cinemaHallId, showtimes, error;
+        var screenId, selectedDate, showtimes, error;
         return _ts_generator(this, function(_state) {
             switch(_state.label){
                 case 0:
-                    cinemaHallId = req.params.cinemaHallId;
+                    // #swagger.description = 'get showtime for the selected date'
+                    screenId = req.params.screenId;
+                    selectedDate = req.body.selectedDate;
                     _state.label = 1;
                 case 1:
                     _state.trys.push([
@@ -192,7 +195,7 @@ export var getShowtimesByCinemaHallIdController = function() {
                     ]);
                     return [
                         4,
-                        showtimeservice.getShowtimesByCinemaHallId(cinemaHallId)
+                        showtimeservice.getShowtimesByScreenIdAndDate(screenId, selectedDate)
                     ];
                 case 2:
                     showtimes = _state.sent();
@@ -222,59 +225,7 @@ export var getShowtimesByCinemaHallIdController = function() {
             }
         });
     });
-    return function getShowtimesByCinemaHallIdController(req, res) {
-        return _ref.apply(this, arguments);
-    };
-}();
-export var getShowtimeSlots = function() {
-    var _ref = _async_to_generator(function(req, res) {
-        var _req_params, movieId, cinemaHallId, selectedDate, showtimes, error;
-        return _ts_generator(this, function(_state) {
-            switch(_state.label){
-                case 0:
-                    _req_params = req.params, movieId = _req_params.movieId, cinemaHallId = _req_params.cinemaHallId;
-                    selectedDate = new Date(req.query.date);
-                    _state.label = 1;
-                case 1:
-                    _state.trys.push([
-                        1,
-                        3,
-                        ,
-                        4
-                    ]);
-                    return [
-                        4,
-                        showtimeservice.getShowtimesByMovieIdAndCinemaHallIdAndDate(movieId, cinemaHallId, selectedDate)
-                    ];
-                case 2:
-                    showtimes = _state.sent();
-                    res.status(200).json({
-                        code: 'showtimes/fetch-success',
-                        message: 'Showtimes fetched successfully',
-                        data: showtimes
-                    });
-                    return [
-                        3,
-                        4
-                    ];
-                case 3:
-                    error = _state.sent();
-                    res.status(404).json({
-                        code: 'showtimes/not-found',
-                        message: error.message
-                    });
-                    return [
-                        3,
-                        4
-                    ];
-                case 4:
-                    return [
-                        2
-                    ];
-            }
-        });
-    });
-    return function getShowtimeSlots(req, res) {
+    return function getShowtimesByScreenIdAndDateController(req, res) {
         return _ref.apply(this, arguments);
     };
 }();

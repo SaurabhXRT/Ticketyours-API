@@ -130,6 +130,7 @@ export var searchMoviesByName = function() {
         return _ts_generator(this, function(_state) {
             switch(_state.label){
                 case 0:
+                    // #swagger.description = 'search a movie by the operator while adding a movie to the registered cinemahall'
                     name = req.query.name;
                     if (typeof name !== 'string') {
                         return [

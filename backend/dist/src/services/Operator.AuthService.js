@@ -141,10 +141,10 @@ function _ts_generator(thisArg, body) {
         };
     }
 }
-import bcrypt from "bcrypt";
-import CinemaOperator from "../models/Cinema_operator.js";
-import jsonwebtoken from "jsonwebtoken";
-import LoginSession from "../models/Loginsession.js";
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
+import { CinemaOperator } from '../PGmodels/Operator/Operator.js';
+import { OperatorLoginSession } from '../PGmodels/LoginSession/Operator.Loginsession.js';
 export var OperatorAuthService = /*#__PURE__*/ function() {
     "use strict";
     function OperatorAuthService() {
@@ -161,7 +161,9 @@ export var OperatorAuthService = /*#__PURE__*/ function() {
                                 return [
                                     4,
                                     CinemaOperator.findOne({
-                                        phone: phone
+                                        where: {
+                                            phone: phone
+                                        }
                                     })
                                 ];
                             case 1:
@@ -182,21 +184,20 @@ export var OperatorAuthService = /*#__PURE__*/ function() {
                     return _ts_generator(this, function(_state) {
                         switch(_state.label){
                             case 0:
-                                newOperator = new CinemaOperator({
-                                    name: operatorCredentials.name,
-                                    email: operatorCredentials.email,
-                                    password_hash: operatorCredentials.password,
-                                    phone: operatorCredentials.phone,
-                                    cinema_halls: []
-                                });
                                 return [
                                     4,
-                                    newOperator.save()
+                                    CinemaOperator.create({
+                                        name: operatorCredentials.name,
+                                        email: operatorCredentials.email,
+                                        passwordHash: operatorCredentials.password,
+                                        phone: operatorCredentials.phone
+                                    })
                                 ];
                             case 1:
+                                newOperator = _state.sent();
                                 return [
                                     2,
-                                    _state.sent()
+                                    newOperator
                                 ];
                         }
                     });
@@ -257,7 +258,7 @@ export var OperatorAuthService = /*#__PURE__*/ function() {
             value: function loginWithPassword(userCredentials) {
                 var _this = this;
                 return _async_to_generator(function() {
-                    var user, isPasswordCorrect, secrect, token, loginSession;
+                    var user, isPasswordCorrect, secret, token;
                     return _ts_generator(this, function(_state) {
                         switch(_state.label){
                             case 0:
@@ -273,9 +274,11 @@ export var OperatorAuthService = /*#__PURE__*/ function() {
                                         "User not found"
                                     ];
                                 }
+                                user = user.toJSON();
+                                console.log(user);
                                 return [
                                     4,
-                                    _this.comparePassword(userCredentials.password, user.password_hash)
+                                    bcrypt.compare(userCredentials.password, user.passwordHash)
                                 ];
                             case 2:
                                 isPasswordCorrect = _state.sent();
@@ -285,24 +288,24 @@ export var OperatorAuthService = /*#__PURE__*/ function() {
                                         "incorrect password"
                                     ];
                                 }
-                                secrect = process.env.JWT_SECRET;
-                                token = jsonwebtoken.sign({
-                                    id: user._id
-                                }, secrect, {
+                                secret = process.env.JWT_SECRET;
+                                token = jwt.sign({
+                                    operatorId: user.id
+                                }, secret, {
                                     expiresIn: "30d"
                                 });
                                 return [
                                     4,
-                                    LoginSession.create({
-                                        userId: user._id,
+                                    OperatorLoginSession.create({
+                                        operatorId: user.id,
                                         token: token
                                     })
                                 ];
                             case 3:
-                                loginSession = _state.sent();
+                                _state.sent();
                                 return [
                                     2,
-                                    loginSession
+                                    token
                                 ];
                         }
                     });
@@ -319,13 +322,15 @@ export var OperatorAuthService = /*#__PURE__*/ function() {
                             case 0:
                                 return [
                                     4,
-                                    LoginSession.findOne({
-                                        token: token
+                                    OperatorLoginSession.findOne({
+                                        where: {
+                                            token: token
+                                        }
                                     })
                                 ];
                             case 1:
                                 loginSession = _state.sent();
-                                if (loginSession === null) {
+                                if (!loginSession) {
                                     return [
                                         2,
                                         "Invalid token"
@@ -333,8 +338,10 @@ export var OperatorAuthService = /*#__PURE__*/ function() {
                                 }
                                 return [
                                     4,
-                                    LoginSession.deleteOne({
-                                        token: token
+                                    OperatorLoginSession.destroy({
+                                        where: {
+                                            token: token
+                                        }
                                     })
                                 ];
                             case 2:

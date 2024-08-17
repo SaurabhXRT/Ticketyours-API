@@ -1,41 +1,64 @@
-import express, { Request, Response } from "express";
-import { ShowtimeSlotService } from "../../services/AddShowtimeservice.js";
+import { Request, Response } from "express";
+import { ShowtimeService } from "../../services/AddShowtimeservice.js";
 
-const service = new ShowtimeSlotService();
+const service = new ShowtimeService();
 
-export const createShowtimeSlot = async (req: Request, res: Response) => {
-    
-  const {cinemaHallId, movieId, date, startTime, endTime} = req.body;
-  const operatorId = req.operator._id;
-  
-  if ( !cinemaHallId || !movieId || !date || !startTime || !endTime ) {
+export const CreateShowtime = async (req: Request, res: Response) => {
+  // #swagger.description = 'create a showtime for a movie which has been alloted a screen'
+  const { movieInTheatreId, screenId, startTime, endTime, showTimeDate, cinemaHallId } = req.body;
+
+  if (!movieInTheatreId || !screenId || !startTime || !endTime || !showTimeDate || cinemaHallId) {
     return res.status(400).json({
       code: "fields/empty",
-      message: "All fields ( cinemaHallId, movieId, date, startTime, endTime) are required",
+      message: "All fields are required",
     });
+  }
+
+  const showtimeData = {
+    movieInTheatreId,
+    screenId,
+    cinemaHallId,
+    startTime,
+    endTime,
+    showTimeDate
   }
 
   try {
-    const newShowtimeSlot = await service.createShowtimeSlot(
-      operatorId,
-      cinemaHallId,
-      movieId,
-      new Date(date),
-      new Date(startTime),
-      new Date(endTime),
-    );
+    const newShowtime = await service.createShowtime(showtimeData);
 
     res.status(201).json({
-      code: "showtime-slot/created",
-      message: "Showtime slot created successfully",
-      data: newShowtimeSlot,
+      code: "showtime/created",
+      message: "Showtime has been created successfully",
+      data: newShowtime,
     });
+
   } catch (error) {
-    console.error("Error creating showtime slot:", error);
+    console.error("Error creating showtime:", error);
+
+    if(error.message.includes("Screen not found.")){
+      return res.status(404).json({
+        code: 'screen/not-found',
+        message: "Screen not found or does not belong to your cinema hall.",
+      });
+    }
+
+    if(error.mesage.includes("Movie in Theatre not found.")){
+      return res.status(404).json({
+        code: "movie/not-found",
+        message: "movie does not found"
+      });
+    }
+
+    if(error.message.includes("There is already a showtime scheduled")){
+      return res.status(401).send({
+        code: "showtime/already-exist",
+        message: "There is already a showtime scheduled that overlaps with the provided time."
+      });
+    }
+
     res.status(500).json({
       code: "server/internal-error",
-      message: error.message || "An internal server error occurred while creating the showtime slot.",
+      message: error.message || "An internal server error occurred while creating the showtime.",
     });
   }
 };
-

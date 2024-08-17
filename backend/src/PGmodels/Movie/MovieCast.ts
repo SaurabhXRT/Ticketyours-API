@@ -6,12 +6,12 @@ class MovieCast extends Model {}
 MovieCast.init(
   {
     movieId: {
-      type: DataTypes.UUID,
-      primaryKey: true,
+      type: DataTypes.INTEGER,
+      allowNull: false,
     },
     castId: {
-      type: DataTypes.UUID,
-      primaryKey: true,
+      type: DataTypes.INTEGER,
+      allowNull: false,
     },
   },
   {

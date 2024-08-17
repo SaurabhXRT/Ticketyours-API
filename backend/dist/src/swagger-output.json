@@ -21,19 +21,9 @@
         }
       }
     },
-    "/error": {
-      "get": {
-        "description": "",
-        "responses": {
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      }
-    },
     "/operator/register": {
       "post": {
-        "description": "",
+        "description": "Register a new cinemhall operator",
         "parameters": [
           {
             "name": "body",
@@ -72,7 +62,7 @@
     },
     "/operator/login": {
       "post": {
-        "description": "",
+        "description": "login cinemhall operator",
         "parameters": [
           {
             "name": "body",
@@ -111,7 +101,7 @@
     },
     "/operator/logout": {
       "post": {
-        "description": "",
+        "description": "logout cinemhall operator",
         "parameters": [
           {
             "name": "authorization",
@@ -134,7 +124,7 @@
     },
     "/operator/v1/register-cinemhall": {
       "post": {
-        "description": "",
+        "description": "register a cinemhall by the operator and authorization is required",
         "parameters": [
           {
             "name": "authorization",
@@ -150,10 +140,7 @@
                 "name": {
                   "example": "any"
                 },
-                "street": {
-                  "example": "any"
-                },
-                "cityId": {
+                "location": {
                   "example": "any"
                 },
                 "state": {
@@ -162,10 +149,7 @@
                 "zipcode": {
                   "example": "any"
                 },
-                "totalseats": {
-                  "example": "any"
-                },
-                "totalSeats": {
+                "cityId": {
                   "example": "any"
                 }
               }
@@ -190,7 +174,7 @@
     },
     "/operator/v1/addmovietoch": {
       "post": {
-        "description": "",
+        "description": "add a movie to the registered cinemhall by the operator it required cinemhallid movieid and cityid in the body",
         "parameters": [
           {
             "name": "authorization",
@@ -208,6 +192,9 @@
                 },
                 "movieId": {
                   "example": "any"
+                },
+                "cityId": {
+                  "example": "any"
                 }
               }
             }
@@ -222,6 +209,9 @@
           },
           "401": {
             "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found"
           },
           "500": {
             "description": "Internal Server Error"
@@ -231,7 +221,63 @@
     },
     "/operator/v2/create-showtime": {
       "post": {
-        "description": "",
+        "description": "create a showtime for a movie which has been alloted a screen",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "movieInTheatreId": {
+                  "example": "any"
+                },
+                "screenId": {
+                  "example": "any"
+                },
+                "startTime": {
+                  "example": "any"
+                },
+                "endTime": {
+                  "example": "any"
+                },
+                "showTimeDate": {
+                  "example": "any"
+                },
+                "cinemaHallId": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/operator/v3/create-theatre-layout": {
+      "post": {
+        "description": "create a theatre layout for the cinemhall",
         "parameters": [
           {
             "name": "authorization",
@@ -247,16 +293,7 @@
                 "cinemaHallId": {
                   "example": "any"
                 },
-                "movieId": {
-                  "example": "any"
-                },
-                "date": {
-                  "example": "any"
-                },
-                "startTime": {
-                  "example": "any"
-                },
-                "endTime": {
+                "seatArrangement": {
                   "example": "any"
                 }
               }
@@ -279,10 +316,45 @@
         }
       }
     },
-    "/operator/v3/create-seating-arrangement": {
-      "post": {
-        "description": "",
+    "/operator/v3/get-theatre-layout/{cinemaHallId}": {
+      "get": {
+        "description": "fetch the theatre layout",
         "parameters": [
+          {
+            "name": "cinemaHallId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/operator/v4/allotMovietoscreen/{cinemaHallId}": {
+      "post": {
+        "description": "allot a movie to the any screen of the cinemhallid",
+        "parameters": [
+          {
+            "name": "cinemaHallId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
           {
             "name": "authorization",
             "in": "header",
@@ -294,10 +366,10 @@
             "schema": {
               "type": "object",
               "properties": {
-                "cinema_hall_id": {
+                "screenId": {
                   "example": "any"
                 },
-                "seatConfigurations": {
+                "movieInTheatreId": {
                   "example": "any"
                 }
               }
@@ -314,6 +386,12 @@
           "401": {
             "description": "Unauthorized"
           },
+          "404": {
+            "description": "Not Found"
+          },
+          "409": {
+            "description": "Conflict"
+          },
           "500": {
             "description": "Internal Server Error"
           }
@@ -322,7 +400,7 @@
     },
     "/operator/v4/movie-search": {
       "get": {
-        "description": "",
+        "description": "search a movie by the operator while adding a movie to the registered cinemahall",
         "parameters": [
           {
             "name": "authorization",
@@ -351,9 +429,76 @@
         }
       }
     },
+    "/operator/v4/delete-movieintheatre": {
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/operator/v5/addscreentocinemhall/{cinemaHallId}": {
+      "post": {
+        "description": "add screen to the cinemahall",
+        "parameters": [
+          {
+            "name": "cinemaHallId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "screenType": {
+                  "example": "any"
+                },
+                "seatCount": {
+                  "example": "any"
+                },
+                "screenNumber": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
     "/auth/register": {
       "post": {
-        "description": "",
+        "description": "Register a new user",
         "parameters": [
           {
             "name": "body",
@@ -395,7 +540,7 @@
     },
     "/auth/login": {
       "post": {
-        "description": "",
+        "description": "login with phone and password for a user",
         "parameters": [
           {
             "name": "body",
@@ -434,7 +579,7 @@
     },
     "/v1/cities": {
       "get": {
-        "description": "",
+        "description": "get all the city",
         "responses": {
           "200": {
             "description": "OK"
@@ -447,7 +592,7 @@
     },
     "/v1/cities/search": {
       "get": {
-        "description": "",
+        "description": "searcyh the city by giving cityname",
         "parameters": [
           {
             "name": "city",
@@ -468,9 +613,9 @@
         }
       }
     },
-    "/v2/cities/{cityId}": {
+    "/v2/cinemahall/{cityId}": {
       "get": {
-        "description": "",
+        "description": "get all the cinemhall in a city using cityid",
         "parameters": [
           {
             "name": "cityId",
@@ -485,6 +630,156 @@
           },
           "404": {
             "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/v2/cinemahall/{cityId}/movies/{movieId}": {
+      "get": {
+        "description": "get all the cinemhall in which a particular movie is running using cityid and movieid ",
+        "parameters": [
+          {
+            "name": "cityId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "movieId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/v3/movies/city/{cityId}": {
+      "get": {
+        "description": "get all the movie which is available to watch in a city using cityid",
+        "parameters": [
+          {
+            "name": "cityId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/v3/movies/cinemahall/{cinemaHallId}": {
+      "get": {
+        "description": "get all the movies running in a cinemhall using cinemhallid",
+        "parameters": [
+          {
+            "name": "cinemaHallId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/v3/movies/moviedetail/{movieId}": {
+      "get": {
+        "description": "gte the moviedetails using movieid",
+        "parameters": [
+          {
+            "name": "movieId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/v4/showtimes/{screenId}": {
+      "get": {
+        "description": "get showtime for a movie",
+        "parameters": [
+          {
+            "name": "screenId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/v4/showtimesbydate/{screenId}": {
+      "get": {
+        "description": "get showtime for the selected date",
+        "parameters": [
+          {
+            "name": "screenId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/v5/get-theatre-layout/{showtimeId}": {
+      "get": {
+        "description": "get theatrea layout with seatstatus",
+        "parameters": [
+          {
+            "name": "showtimeId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
           },
           "500": {
             "description": "Internal Server Error"
@@ -492,158 +787,33 @@
         }
       }
     },
-    "/v3/cinemahall/{cityId}": {
-      "get": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "cityId",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "404": {
-            "description": "Not Found"
-          }
-        }
-      }
-    },
-    "/v3/cinemahall/{cityId}/movies/{movieId}": {
-      "get": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "cityId",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "movieId",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "404": {
-            "description": "Not Found"
-          }
-        }
-      }
-    },
-    "/v4/movies/{cityId}": {
-      "get": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "cityId",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "404": {
-            "description": "Not Found"
-          }
-        }
-      }
-    },
-    "/v4/movies/{cinemaHallId}": {
-      "get": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "cinemaHallId",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "404": {
-            "description": "Not Found"
-          }
-        }
-      }
-    },
-    "/v4/movies/{movieId}": {
-      "get": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "movieId",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "404": {
-            "description": "Not Found"
-          }
-        }
-      }
-    },
-    "/v5/showtimes/{movieId}/{cinemaHallId}": {
-      "get": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "movieId",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "cinemaHallId",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "date",
-            "in": "query",
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "404": {
-            "description": "Not Found"
-          }
-        }
-      }
-    },
-    "/v5/seatdetails/{showtimeId}": {
-      "get": {
-        "description": "",
+    "/v6/reserve-seat/{showtimeId}": {
+      "post": {
+        "description": "reserved the seat",
         "parameters": [
           {
             "name": "showtimeId",
             "in": "path",
             "required": true,
             "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "seatRow": {
+                  "example": "any"
+                },
+                "seatNumber": {
+                  "example": "any"
+                },
+                "status": {
+                  "example": "any"
+                }
+              }
+            }
           }
         ],
         "responses": {

@@ -1,4 +1,3 @@
-//import { Request, Response, NextFunction } from 'express';
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {
     try {
         var info = gen[key](arg);
@@ -144,8 +143,10 @@ function _ts_generator(thisArg, body) {
 }
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv-flow';
-import LoginSession from '../models/Loginsession.js';
-import User from '../models/User.js';
+import { UserLoginSession } from '../PGmodels/LoginSession/User.Loginsession.js';
+import { OperatorLoginSession } from '../PGmodels/LoginSession/Operator.Loginsession.js';
+// import { User } from '../PGmodels/User/User.js';
+// import { CinemaOperator } from '../PGmodels/Operator/Operator.js';
 dotenv.config();
 export var AuthMiddleware = /*#__PURE__*/ function() {
     "use strict";
@@ -157,7 +158,7 @@ export var AuthMiddleware = /*#__PURE__*/ function() {
             key: "verifyToken",
             value: function verifyToken(req, res, next) {
                 return _async_to_generator(function() {
-                    var token, isValid, userId, error;
+                    var token, isValid, _ref, userId, operatorId, error;
                     return _ts_generator(this, function(_state) {
                         switch(_state.label){
                             case 0:
@@ -185,20 +186,25 @@ export var AuthMiddleware = /*#__PURE__*/ function() {
                                 if (!isValid) {
                                     return [
                                         2,
-                                        res.status(401).send("Unauthorized")
+                                        res.status(401).send("Invalid token")
                                     ];
                                 }
                                 return [
                                     4,
-                                    AuthMiddleware.getUserIdFromToken(token)
+                                    AuthMiddleware.getActorIdFromToken(token)
                                 ];
                             case 3:
-                                userId = _state.sent();
-                                // let checkIdMobileVerified = await AuthMiddleware.isMobileVerified(userId);
-                                // if (!checkIdMobileVerified) {
-                                //     return res.status(403).send("Mobile not verified");
-                                // }
-                                req.userId = userId;
+                                _ref = _state.sent(), userId = _ref.userId, operatorId = _ref.operatorId;
+                                if (userId) {
+                                    req.userId = userId;
+                                } else if (operatorId) {
+                                    req.operatorId = operatorId;
+                                } else {
+                                    return [
+                                        2,
+                                        res.status(401).send("Unauthorized")
+                                    ];
+                                }
                                 next();
                                 return [
                                     3,
@@ -206,6 +212,7 @@ export var AuthMiddleware = /*#__PURE__*/ function() {
                                 ];
                             case 4:
                                 error = _state.sent();
+                                console.error("Token verification error:", error);
                                 return [
                                     2,
                                     res.status(401).send("Unauthorized")
@@ -223,62 +230,17 @@ export var AuthMiddleware = /*#__PURE__*/ function() {
             key: "validateToken",
             value: function validateToken(token) {
                 return _async_to_generator(function() {
-                    var secrect, decoded, loginSession, error;
-                    return _ts_generator(this, function(_state) {
-                        switch(_state.label){
-                            case 0:
-                                _state.trys.push([
-                                    0,
-                                    2,
-                                    ,
-                                    3
-                                ]);
-                                secrect = process.env.JWT_SECRET;
-                                decoded = jwt.verify(token, secrect);
-                                return [
-                                    4,
-                                    LoginSession.findOne({
-                                        where: {
-                                            userId: decoded.id,
-                                            token: token
-                                        }
-                                    })
-                                ];
-                            case 1:
-                                loginSession = _state.sent();
-                                return [
-                                    2,
-                                    loginSession === null ? false : true
-                                ];
-                            case 2:
-                                error = _state.sent();
-                                return [
-                                    2,
-                                    false
-                                ];
-                            case 3:
-                                return [
-                                    2
-                                ];
-                        }
-                    });
-                })();
-            }
-        },
-        {
-            key: "getUserIdFromToken",
-            value: function getUserIdFromToken(token) {
-                return _async_to_generator(function() {
-                    var secrect, decoded;
+                    var secret;
                     return _ts_generator(this, function(_state) {
                         try {
-                            secrect = process.env.JWT_SECRET;
-                            decoded = jwt.verify(token, secrect);
+                            secret = process.env.JWT_SECRET;
+                            jwt.verify(token, secret);
                             return [
                                 2,
-                                decoded.id
+                                true
                             ];
                         } catch (error) {
+                            console.error("Token validation error:", error);
                             return [
                                 2,
                                 false
@@ -292,33 +254,90 @@ export var AuthMiddleware = /*#__PURE__*/ function() {
             }
         },
         {
-            key: "isMobileVerified",
-            value: function isMobileVerified(userId) {
+            key: "getActorIdFromToken",
+            value: function getActorIdFromToken(token) {
                 return _async_to_generator(function() {
-                    var check;
+                    var secret, decoded, loginSession, error;
                     return _ts_generator(this, function(_state) {
                         switch(_state.label){
                             case 0:
+                                _state.trys.push([
+                                    0,
+                                    5,
+                                    ,
+                                    6
+                                ]);
+                                secret = process.env.JWT_SECRET;
+                                decoded = jwt.verify(token, secret);
+                                console.log(decoded);
+                                if (!decoded.userId) return [
+                                    3,
+                                    2
+                                ];
                                 return [
                                     4,
-                                    User.findOne({
+                                    UserLoginSession.findOne({
                                         where: {
-                                            userId: userId,
-                                            isPhoneVerified: true
+                                            userId: decoded.userId,
+                                            token: token
                                         }
                                     })
                                 ];
                             case 1:
-                                check = _state.sent();
-                                if (check !== null) {
+                                loginSession = _state.sent();
+                                if (loginSession) {
                                     return [
                                         2,
-                                        true
+                                        {
+                                            userId: decoded.userId
+                                        }
                                     ];
                                 }
                                 return [
+                                    3,
+                                    4
+                                ];
+                            case 2:
+                                if (!decoded.operatorId) return [
+                                    3,
+                                    4
+                                ];
+                                return [
+                                    4,
+                                    OperatorLoginSession.findOne({
+                                        where: {
+                                            operatorId: decoded.operatorId,
+                                            token: token
+                                        }
+                                    })
+                                ];
+                            case 3:
+                                loginSession = _state.sent();
+                                if (loginSession) {
+                                    return [
+                                        2,
+                                        {
+                                            operatorId: decoded.operatorId
+                                        }
+                                    ];
+                                }
+                                _state.label = 4;
+                            case 4:
+                                console.log('Login session not found');
+                                return [
                                     2,
-                                    false
+                                    {}
+                                ];
+                            case 5:
+                                error = _state.sent();
+                                console.error("Get ID from token error:", error);
+                                return [
+                                    2,
+                                    {}
+                                ];
+                            case 6:
+                                return [
+                                    2
                                 ];
                         }
                     });

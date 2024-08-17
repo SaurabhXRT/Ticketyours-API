@@ -122,7 +122,7 @@ function _ts_generator(thisArg, body) {
         };
     }
 }
-import Movie from '../models/Movies.js';
+import { Movie } from '../PGmodels/Movie/Movie.js';
 var moviesData = [
     {
         title: "The Shawshank Redemption",
@@ -314,77 +314,67 @@ var moviesData = [
 ];
 var seedMovies = function() {
     var _ref = _async_to_generator(function() {
-        var _iteratorNormalCompletion, _didIteratorError, _iteratorError, _iterator, _step, movie, newMovie, err, err1;
+        var _iteratorNormalCompletion, _didIteratorError, _iteratorError, _iterator, _step, movie, err, err1;
         return _ts_generator(this, function(_state) {
             switch(_state.label){
                 case 0:
                     _state.trys.push([
                         0,
-                        10,
+                        9,
                         ,
-                        11
+                        10
                     ]);
-                    return [
-                        4,
-                        Movie.deleteMany({})
-                    ];
-                case 1:
-                    _state.sent();
                     _iteratorNormalCompletion = true, _didIteratorError = false, _iteratorError = undefined;
-                    _state.label = 2;
-                case 2:
+                    _state.label = 1;
+                case 1:
                     _state.trys.push([
-                        2,
+                        1,
+                        6,
                         7,
-                        8,
-                        9
+                        8
                     ]);
                     _iterator = moviesData[Symbol.iterator]();
-                    _state.label = 3;
-                case 3:
+                    _state.label = 2;
+                case 2:
                     if (!!(_iteratorNormalCompletion = (_step = _iterator.next()).done)) return [
                         3,
-                        6
+                        5
                     ];
                     movie = _step.value;
-                    newMovie = new Movie({
-                        title: movie.title,
-                        description: movie.description,
-                        genre: movie.genre,
-                        duration: movie.duration,
-                        release_date: movie.release_date,
-                        end_date: movie.release_date,
-                        poster_url: movie.poster_url,
-                        created_at: new Date(),
-                        updated_at: new Date()
-                    });
                     return [
                         4,
-                        newMovie.save()
+                        Movie.create({
+                            title: movie.title,
+                            description: movie.description,
+                            genre: movie.genre,
+                            duration: movie.duration,
+                            releaseDate: movie.release_date,
+                            posterUrl: movie.poster_url
+                        })
                     ];
-                case 4:
+                case 3:
                     _state.sent();
-                    _state.label = 5;
-                case 5:
+                    _state.label = 4;
+                case 4:
                     _iteratorNormalCompletion = true;
                     return [
                         3,
-                        3
+                        2
                     ];
-                case 6:
+                case 5:
                     return [
                         3,
-                        9
+                        8
                     ];
-                case 7:
+                case 6:
                     err = _state.sent();
                     _didIteratorError = true;
                     _iteratorError = err;
                     return [
                         3,
-                        9
+                        8
                     ];
-                case 8:
+                case 7:
                     try {
                         if (!_iteratorNormalCompletion && _iterator.return != null) {
                             _iterator.return();
@@ -397,21 +387,21 @@ var seedMovies = function() {
                     return [
                         7
                     ];
-                case 9:
+                case 8:
                     console.log('Database seeded with movies!');
                     return [
                         3,
-                        11
+                        10
                     ];
-                case 10:
+                case 9:
                     err1 = _state.sent();
                     console.error('Error seeding movies:', err1.message);
                     process.exit(1);
                     return [
                         3,
-                        11
+                        10
                     ];
-                case 11:
+                case 10:
                     return [
                         2
                     ];

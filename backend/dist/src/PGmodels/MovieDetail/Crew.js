@@ -83,9 +83,9 @@ var Crew = /*#__PURE__*/ function(Model) {
 }(Model);
 Crew.init({
     id: {
-        type: DataTypes.UUID,
-        primaryKey: true,
-        defaultValue: DataTypes.UUIDV4
+        type: DataTypes.INTEGER,
+        autoIncrement: true,
+        primaryKey: true
     },
     name: {
         type: DataTypes.STRING,

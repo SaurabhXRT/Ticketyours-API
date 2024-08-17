@@ -83,9 +83,9 @@ var Movie = /*#__PURE__*/ function(Model) {
 }(Model);
 Movie.init({
     id: {
-        type: DataTypes.UUID,
-        primaryKey: true,
-        defaultValue: DataTypes.UUIDV4
+        type: DataTypes.INTEGER,
+        autoIncrement: true,
+        primaryKey: true
     },
     title: {
         type: DataTypes.STRING,

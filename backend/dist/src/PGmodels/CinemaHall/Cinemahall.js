@@ -83,9 +83,9 @@ var CinemaHall = /*#__PURE__*/ function(Model) {
 }(Model);
 CinemaHall.init({
     id: {
-        type: DataTypes.UUID,
-        primaryKey: true,
-        defaultValue: DataTypes.UUIDV4
+        type: DataTypes.INTEGER,
+        autoIncrement: true,
+        primaryKey: true
     },
     name: {
         type: DataTypes.STRING,
@@ -104,16 +104,8 @@ CinemaHall.init({
         allowNull: false
     },
     operatorId: {
-        type: DataTypes.UUID,
+        type: DataTypes.INTEGER,
         allowNull: false
-    },
-    cityId: {
-        type: DataTypes.UUID,
-        allowNull: false
-    },
-    images: {
-        type: DataTypes.ARRAY(DataTypes.STRING),
-        allowNull: true
     }
 }, {
     sequelize: centralDatabase.getInstance(),

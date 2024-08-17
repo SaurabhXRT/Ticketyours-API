@@ -1,12 +1,13 @@
 import express from "express";
 //import CinemaOperator from "@/src/models/Cinema_operator.js";
 import {OperatorAuthService} from "../../services/Operator.AuthService.js";
-import { Request, Response } from 'express';
+//import { Request, Response } from 'express';
 const router = express.Router();
 
 const service = new OperatorAuthService();
 
 export const register = async (req: any, res: any) => {
+  // #swagger.description = 'Register a new cinemhall operator'
   const body = req.body;
   const operatorCredentials = {
     name: body.name,
@@ -15,7 +16,6 @@ export const register = async (req: any, res: any) => {
     phone: body.phone
   };
 
-  // If there is no name or email provided then reject the request.
   if (!(body.name || body.email)) {
     return res.status(400).json({
       code: "fields/empty-primary-field",
@@ -24,7 +24,7 @@ export const register = async (req: any, res: any) => {
   }
   
   try {
-    // Check if user with the same mobile number exists
+  
     const existingUser = await service.get(operatorCredentials.phone);
     if (existingUser) {
       return res.status(400).json({
@@ -33,11 +33,10 @@ export const register = async (req: any, res: any) => {
       });
     }
 
-    // Hash password
+   
     const hashedPassword = await service.hashPassword(operatorCredentials.password);
     operatorCredentials.password = hashedPassword;
 
-    // Create user
     const user = await service.create(operatorCredentials);
 
     res.status(200).json({
@@ -56,14 +55,14 @@ export const register = async (req: any, res: any) => {
 }
 
 export const login = async (req: any, res: any) => {
-
+// #swagger.description = 'login cinemhall operator'
     const body = req.body;
     var userCredentials = {
       phone: body.phone,
       password: body.password as string,
     };
     
-    // If there is no username or email provided then reject the request.
+   
     if (!(body.phone|| body.password)) {
       res
         .status(400)
@@ -75,10 +74,9 @@ export const login = async (req: any, res: any) => {
     }
   
     try {
-      //Verify a user
+     
       let user = await service.loginWithPassword(userCredentials);
   
-      // If user does not exists send a user not found message.
       if (user === "User not found") {
         res
           .status(404)
@@ -116,6 +114,7 @@ export const login = async (req: any, res: any) => {
   
   // logout 
   export const logout =  async (req:any , res:any) => {
+    // #swagger.description = "logout cinemhall operator"
     let token: any = req.headers.authorization;
     if (!token) {
       res.status(400).send({

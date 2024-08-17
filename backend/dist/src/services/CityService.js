@@ -46,6 +46,19 @@ function _create_class(Constructor, protoProps, staticProps) {
     if (staticProps) _defineProperties(Constructor, staticProps);
     return Constructor;
 }
+function _define_property(obj, key, value) {
+    if (key in obj) {
+        Object.defineProperty(obj, key, {
+            value: value,
+            enumerable: true,
+            configurable: true,
+            writable: true
+        });
+    } else {
+        obj[key] = value;
+    }
+    return obj;
+}
 function _ts_generator(thisArg, body) {
     var f, y, t, g, _ = {
         label: 0,
@@ -141,8 +154,10 @@ function _ts_generator(thisArg, body) {
         };
     }
 }
-import City from "../models/city/City.js";
-import CityModel from "../models/city/City.model.js";
+import { Op } from "sequelize";
+import { City } from "../PGmodels/City/City.js";
+// import { CinemaHall } from "../PGmodels/CinemaHall/Cinemahall.js";
+// import { Movie } from "../PGmodels/Movie/Movie.js";
 export var CityService = /*#__PURE__*/ function() {
     "use strict";
     function CityService() {
@@ -165,7 +180,7 @@ export var CityService = /*#__PURE__*/ function() {
                                 ]);
                                 return [
                                     4,
-                                    City.find()
+                                    City.findAll()
                                 ];
                             case 1:
                                 cities = _state.sent();
@@ -190,7 +205,7 @@ export var CityService = /*#__PURE__*/ function() {
             key: "searchCities",
             value: function searchCities(query) {
                 return _async_to_generator(function() {
-                    var regex, cities, error;
+                    var cities, error;
                     return _ts_generator(this, function(_state) {
                         switch(_state.label){
                             case 0:
@@ -200,11 +215,12 @@ export var CityService = /*#__PURE__*/ function() {
                                     ,
                                     3
                                 ]);
-                                regex = new RegExp(query, "i");
                                 return [
                                     4,
-                                    City.find({
-                                        name: regex
+                                    City.findAll({
+                                        where: {
+                                            name: _define_property({}, Op.iLike, "%".concat(query, "%"))
+                                        }
                                     })
                                 ];
                             case 1:
@@ -217,48 +233,6 @@ export var CityService = /*#__PURE__*/ function() {
                                 error = _state.sent();
                                 console.error("Error searching cities:", error);
                                 throw new Error("Failed to search cities");
-                            case 3:
-                                return [
-                                    2
-                                ];
-                        }
-                    });
-                })();
-            }
-        },
-        {
-            key: "getCityDetails",
-            value: function getCityDetails(cityId) {
-                return _async_to_generator(function() {
-                    var cityDetails, error;
-                    return _ts_generator(this, function(_state) {
-                        switch(_state.label){
-                            case 0:
-                                _state.trys.push([
-                                    0,
-                                    2,
-                                    ,
-                                    3
-                                ]);
-                                return [
-                                    4,
-                                    CityModel.findOne({
-                                        cityId: cityId
-                                    }).populate("CinemaHall").populate("Movie")
-                                ];
-                            case 1:
-                                cityDetails = _state.sent();
-                                if (!cityDetails) {
-                                    throw new Error("City details not found");
-                                }
-                                return [
-                                    2,
-                                    cityDetails
-                                ];
-                            case 2:
-                                error = _state.sent();
-                                console.error("Error fetching city details:", error);
-                                throw new Error("Failed to fetch city details ");
                             case 3:
                                 return [
                                     2

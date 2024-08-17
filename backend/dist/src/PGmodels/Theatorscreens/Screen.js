@@ -83,12 +83,12 @@ var Screen = /*#__PURE__*/ function(Model) {
 }(Model);
 Screen.init({
     id: {
-        type: DataTypes.UUID,
-        primaryKey: true,
-        defaultValue: DataTypes.UUIDV4
+        type: DataTypes.INTEGER,
+        autoIncrement: true,
+        primaryKey: true
     },
     cinemaHallId: {
-        type: DataTypes.UUID,
+        type: DataTypes.INTEGER,
         allowNull: false
     },
     screenNumber: {
@@ -99,13 +99,9 @@ Screen.init({
         type: DataTypes.INTEGER,
         allowNull: false
     },
-    createdAt: {
-        type: DataTypes.DATE,
-        defaultValue: DataTypes.NOW
-    },
-    updatedAt: {
-        type: DataTypes.DATE,
-        defaultValue: DataTypes.NOW
+    screenType: {
+        type: DataTypes.ENUM('2D', '3D'),
+        allowNull: false
     }
 }, {
     sequelize: centralDatabase.getInstance(),

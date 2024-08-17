@@ -1,16 +1,29 @@
-import CityModel from "../models/city/City.model.js";
-import CinemaHall from "../models/cinema_hall/CinemaHall.js";
-import Movie from "../models/Movies.js";
+import { CinemaHallMovie } from "../PGmodels/CinemaHall/CinemahallMovie.js";
+import { CityMovie } from "../PGmodels/City/CityMovie.js";
+import { Movie } from '../PGmodels/Movie/Movie.js';
+import { Crew } from '../PGmodels/MovieDetail/Crew.js';
+import { Cast } from '../PGmodels/MovieDetail/Cast.js';
+import { MovieInTheatre } from "../PGmodels/MovieInTheatre/Movieintheatre.js";
+
 
 export class MovieService {
 
   async getMoviesByCityId(cityId: string) {
     try {
-      const city = await CityModel.findOne({cityId: cityId}).populate('MovieInCinemaHall');
-      if (!city) {
-        throw new Error("City not found");
+      const cityMovies = await CityMovie.findAll({
+        where: { cityId },
+        include: [{
+          model: Movie,
+          as: 'movie',
+          attributes: ['title', 'posterUrl', 'genre', 'releaseDate', 'duration', 'description'],
+        }],
+      });
+  
+      if (!cityMovies || cityMovies.length === 0) {
+        return "No movies found for this city";
       }
-      const movies = city.cinemaMovies;
+  
+      const movies = cityMovies.map(cityMovie => cityMovie.movie);
       return movies;
     } catch (error) {
       console.error(`Error fetching movies for city ${cityId}:`, error);
@@ -20,15 +33,21 @@ export class MovieService {
 
   async getMoviesByCinemaHallId(cinemaHallId: string) {
     try {
-      // Find the cinema hall by ID and populate the movies field
-      const cinemaHall = await CinemaHall.findById(cinemaHallId).populate('movies');
+  
+      const moviesInCinemaHall = await CinemaHallMovie.findAll({
+        where: { cinemaHallId },
+        include: [{
+          model: MovieInTheatre,
+          as: "movieInTheatre",
+          attributes: ['title', 'posterUrl', 'genre', 'releaseDate', 'duration', 'description'],
+        }]
+      });
 
-      if (!cinemaHall) {
-        throw new Error(`Cinema hall with ID ${cinemaHallId} not found`);
+      if (!moviesInCinemaHall || moviesInCinemaHall.length === 0) {
+        return null;
       }
 
-      // Extract the movies from the cinema hall object
-      const movies = cinemaHall.movies;
+      const movies = moviesInCinemaHall.map(chm => chm.movieInTheatre);
       return movies;
     } catch (error) {
       console.error(`Error fetching movies for cinema hall ${cinemaHallId}:`, error);
@@ -36,29 +55,44 @@ export class MovieService {
     }
   }
 
-  async getMovieDetailById(movieId: string){
+  async getMovieDetailById(movieId: any) {
     try {
-        const moviedetail = await Movie.findById(movieId);
-        if(!moviedetail){
-            throw new Error("movie does not exist");
-        }
-        return moviedetail.toJSON();
-
-    } catch (error){
-      console.error(`Error fetching moviedetails`, error);
-      throw new Error(`Failed to fetch movies details`);
-    }
-  }
-
-  async searchMoviesByName(title: string) {
-    try {
-      const movies = await Movie.find({
-        title: { $regex: new RegExp(title, 'i') }
+      const movie = await Movie.findByPk(movieId, {
+        include: [
+          {
+            model: Cast,
+            through: { attributes: [] },
+            as: 'casts'
+          },
+          {
+            model: Crew,
+            through: { attributes: [] }, 
+            as: 'crews'
+          }
+        ],
       });
-      return movies;
+  
+      if (!movie) {
+        throw new Error('Movie does not exist');
+      }
+  
+      // Convert the movie instance to a JSON object
+      return movie.toJSON();
     } catch (error) {
-      console.error(`Error searching movies by name ${title}:`, error);
-      throw new Error(`Failed to search movies by name ${title}`);
+      console.error(`Error fetching movie details:`, error);
+      throw new Error(`Failed to fetch movie details`);
     }
   }
+
+  // async searchMoviesByName(title: string) {
+  //   try {
+  //     const movies = await Movie.find({
+  //       title: { $regex: new RegExp(title, 'i') }
+  //     });
+  //     return movies;
+  //   } catch (error) {
+  //     console.error(`Error searching movies by name ${title}:`, error);
+  //     throw new Error(`Failed to search movies by name ${title}`);
+  //   }
+  // }
 }

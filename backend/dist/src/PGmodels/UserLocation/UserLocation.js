@@ -100,6 +100,6 @@ UserLocationsModel.init({
 }, {
     modelName: "UserLocation",
     sequelize: centralDatabase.getInstance(),
-    timestamps: false
+    timestamps: true
 });
 export default UserLocationsModel;

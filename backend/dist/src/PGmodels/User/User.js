@@ -94,8 +94,7 @@ User.init({
     },
     username: {
         type: DataTypes.STRING,
-        allowNull: false,
-        unique: true
+        allowNull: false
     },
     phone: {
         type: DataTypes.STRING(20),
@@ -104,11 +103,7 @@ User.init({
     },
     email: {
         type: DataTypes.STRING,
-        allowNull: false,
-        unique: true,
-        validate: {
-            isEmail: true
-        }
+        allowNull: false
     },
     password: {
         type: DataTypes.STRING,

@@ -141,9 +141,12 @@ function _ts_generator(thisArg, body) {
         };
     }
 }
-import CityModel from "../models/city/City.model.js";
-import CinemaHall from "../models/cinema_hall/CinemaHall.js";
-import Movie from "../models/Movies.js";
+import { CinemaHallMovie } from "../PGmodels/CinemaHall/CinemahallMovie.js";
+import { CityMovie } from "../PGmodels/City/CityMovie.js";
+import { Movie } from '../PGmodels/Movie/Movie.js';
+import { Crew } from '../PGmodels/MovieDetail/Crew.js';
+import { Cast } from '../PGmodels/MovieDetail/Cast.js';
+import { MovieInTheatre } from "../PGmodels/MovieInTheatre/Movieintheatre.js";
 export var MovieService = /*#__PURE__*/ function() {
     "use strict";
     function MovieService() {
@@ -154,7 +157,7 @@ export var MovieService = /*#__PURE__*/ function() {
             key: "getMoviesByCityId",
             value: function getMoviesByCityId(cityId) {
                 return _async_to_generator(function() {
-                    var city, movies, error;
+                    var cityMovies, movies, error;
                     return _ts_generator(this, function(_state) {
                         switch(_state.label){
                             case 0:
@@ -166,16 +169,37 @@ export var MovieService = /*#__PURE__*/ function() {
                                 ]);
                                 return [
                                     4,
-                                    CityModel.findOne({
-                                        cityId: cityId
-                                    }).populate('MovieInCinemaHall')
+                                    CityMovie.findAll({
+                                        where: {
+                                            cityId: cityId
+                                        },
+                                        include: [
+                                            {
+                                                model: Movie,
+                                                as: 'movie',
+                                                attributes: [
+                                                    'title',
+                                                    'posterUrl',
+                                                    'genre',
+                                                    'releaseDate',
+                                                    'duration',
+                                                    'description'
+                                                ]
+                                            }
+                                        ]
+                                    })
                                 ];
                             case 1:
-                                city = _state.sent();
-                                if (!city) {
-                                    throw new Error("City not found");
+                                cityMovies = _state.sent();
+                                if (!cityMovies || cityMovies.length === 0) {
+                                    return [
+                                        2,
+                                        "No movies found for this city"
+                                    ];
                                 }
-                                movies = city.cinemaMovies;
+                                movies = cityMovies.map(function(cityMovie) {
+                                    return cityMovie.movie;
+                                });
                                 return [
                                     2,
                                     movies
@@ -197,7 +221,7 @@ export var MovieService = /*#__PURE__*/ function() {
             key: "getMoviesByCinemaHallId",
             value: function getMoviesByCinemaHallId(cinemaHallId) {
                 return _async_to_generator(function() {
-                    var cinemaHall, movies, error;
+                    var moviesInCinemaHall, movies, error;
                     return _ts_generator(this, function(_state) {
                         switch(_state.label){
                             case 0:
@@ -209,15 +233,37 @@ export var MovieService = /*#__PURE__*/ function() {
                                 ]);
                                 return [
                                     4,
-                                    CinemaHall.findById(cinemaHallId).populate('movies')
+                                    CinemaHallMovie.findAll({
+                                        where: {
+                                            cinemaHallId: cinemaHallId
+                                        },
+                                        include: [
+                                            {
+                                                model: MovieInTheatre,
+                                                as: "movieInTheatre",
+                                                attributes: [
+                                                    'title',
+                                                    'posterUrl',
+                                                    'genre',
+                                                    'releaseDate',
+                                                    'duration',
+                                                    'description'
+                                                ]
+                                            }
+                                        ]
+                                    })
                                 ];
                             case 1:
-                                cinemaHall = _state.sent();
-                                if (!cinemaHall) {
-                                    throw new Error("Cinema hall with ID ".concat(cinemaHallId, " not found"));
+                                moviesInCinemaHall = _state.sent();
+                                if (!moviesInCinemaHall || moviesInCinemaHall.length === 0) {
+                                    return [
+                                        2,
+                                        null
+                                    ];
                                 }
-                                // Extract the movies from the cinema hall object
-                                movies = cinemaHall.movies;
+                                movies = moviesInCinemaHall.map(function(chm) {
+                                    return chm.movieInTheatre;
+                                });
                                 return [
                                     2,
                                     movies
@@ -239,7 +285,7 @@ export var MovieService = /*#__PURE__*/ function() {
             key: "getMovieDetailById",
             value: function getMovieDetailById(movieId) {
                 return _async_to_generator(function() {
-                    var moviedetail, error;
+                    var movie, error;
                     return _ts_generator(this, function(_state) {
                         switch(_state.label){
                             case 0:
@@ -251,62 +297,39 @@ export var MovieService = /*#__PURE__*/ function() {
                                 ]);
                                 return [
                                     4,
-                                    Movie.findById(movieId)
-                                ];
-                            case 1:
-                                moviedetail = _state.sent();
-                                if (!moviedetail) {
-                                    throw new Error("movie does not exist");
-                                }
-                                return [
-                                    2,
-                                    moviedetail.toJSON()
-                                ];
-                            case 2:
-                                error = _state.sent();
-                                console.error("Error fetching moviedetails", error);
-                                throw new Error("Failed to fetch movies details");
-                            case 3:
-                                return [
-                                    2
-                                ];
-                        }
-                    });
-                })();
-            }
-        },
-        {
-            key: "searchMoviesByName",
-            value: function searchMoviesByName(title) {
-                return _async_to_generator(function() {
-                    var movies, error;
-                    return _ts_generator(this, function(_state) {
-                        switch(_state.label){
-                            case 0:
-                                _state.trys.push([
-                                    0,
-                                    2,
-                                    ,
-                                    3
-                                ]);
-                                return [
-                                    4,
-                                    Movie.find({
-                                        title: {
-                                            $regex: new RegExp(title, 'i')
-                                        }
+                                    Movie.findByPk(movieId, {
+                                        include: [
+                                            {
+                                                model: Cast,
+                                                through: {
+                                                    attributes: []
+                                                },
+                                                as: 'casts'
+                                            },
+                                            {
+                                                model: Crew,
+                                                through: {
+                                                    attributes: []
+                                                },
+                                                as: 'crews'
+                                            }
+                                        ]
                                     })
                                 ];
                             case 1:
-                                movies = _state.sent();
+                                movie = _state.sent();
+                                if (!movie) {
+                                    throw new Error('Movie does not exist');
+                                }
+                                // Convert the movie instance to a JSON object
                                 return [
                                     2,
-                                    movies
+                                    movie.toJSON()
                                 ];
                             case 2:
                                 error = _state.sent();
-                                console.error("Error searching movies by name ".concat(title, ":"), error);
-                                throw new Error("Failed to search movies by name ".concat(title));
+                                console.error("Error fetching movie details:", error);
+                                throw new Error("Failed to fetch movie details");
                             case 3:
                                 return [
                                     2

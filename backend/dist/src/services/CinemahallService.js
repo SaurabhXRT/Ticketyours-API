@@ -141,8 +141,11 @@ function _ts_generator(thisArg, body) {
         };
     }
 }
-import CinemaHall from "../models/cinema_hall/CinemaHall.js";
-import CityModel from "../models/city/City.model.js";
+import { CinemaHall } from "../PGmodels/CinemaHall/Cinemahall.js";
+import { CityCinemaHall } from "../PGmodels/City/CityCinemhalll.js";
+import { CityCheck } from "../PGmodels/CityCheck/CityCheck.js";
+// import { Movie } from "../models/movie/Movie.js";
+// import { MovieCinemaHall } from "../models/movie/MovieCinemaHall.js"; 
 export var CinemaHallService = /*#__PURE__*/ function() {
     "use strict";
     function CinemaHallService() {
@@ -153,7 +156,7 @@ export var CinemaHallService = /*#__PURE__*/ function() {
             key: "getCinemaHallsByCityId",
             value: function getCinemaHallsByCityId(cityId) {
                 return _async_to_generator(function() {
-                    var city, cinemaHalls, error;
+                    var cityCinemaHalls, cinemaHalls, error;
                     return _ts_generator(this, function(_state) {
                         switch(_state.label){
                             case 0:
@@ -165,24 +168,37 @@ export var CinemaHallService = /*#__PURE__*/ function() {
                                 ]);
                                 return [
                                     4,
-                                    CityModel.findOne({
-                                        cityId: cityId
-                                    }).populate('CinemaHall')
+                                    CityCinemaHall.findAll({
+                                        where: {
+                                            cityId: cityId
+                                        },
+                                        include: [
+                                            {
+                                                model: CinemaHall,
+                                                as: "cinemaHall",
+                                                attributes: [
+                                                    'id',
+                                                    'name',
+                                                    'location',
+                                                    'zipcode'
+                                                ]
+                                            }
+                                        ]
+                                    })
                                 ];
                             case 1:
-                                city = _state.sent();
-                                if (!city) {
-                                    throw new Error("City not found");
-                                }
-                                cinemaHalls = city.cinemaHalls;
+                                cityCinemaHalls = _state.sent();
+                                cinemaHalls = cityCinemaHalls.map(function(cityCinemaHall) {
+                                    return cityCinemaHall.cinemaHall.toJSON();
+                                });
                                 return [
                                     2,
                                     cinemaHalls
                                 ];
                             case 2:
                                 error = _state.sent();
-                                console.error("Error fetching cinema halls for city ".concat(cityId, ":"), error);
-                                throw new Error("Failed to fetch cinema halls for city ".concat(cityId));
+                                console.error("Error fetching cinema halls for city ID ".concat(cityId, ":"), error);
+                                throw new Error("Failed to fetch cinema halls for city ID ".concat(cityId));
                             case 3:
                                 return [
                                     2
@@ -196,7 +212,7 @@ export var CinemaHallService = /*#__PURE__*/ function() {
             key: "getCinemaHallsByCityIdAndMovieId",
             value: function getCinemaHallsByCityIdAndMovieId(cityId, movieId) {
                 return _async_to_generator(function() {
-                    var cinemaHalls, error;
+                    var cityChecks, cinemaHalls, error;
                     return _ts_generator(this, function(_state) {
                         switch(_state.label){
                             case 0:
@@ -208,66 +224,43 @@ export var CinemaHallService = /*#__PURE__*/ function() {
                                 ]);
                                 return [
                                     4,
-                                    CinemaHall.find({
-                                        "city_id": cityId,
-                                        "movies": movieId
+                                    CityCheck.findAll({
+                                        where: {
+                                            cityId: cityId,
+                                            movieId: movieId
+                                        },
+                                        include: [
+                                            {
+                                                model: CinemaHall,
+                                                as: 'cinemaHall',
+                                                attributes: [
+                                                    'name',
+                                                    'location',
+                                                    'zipcode'
+                                                ]
+                                            }
+                                        ]
                                     })
                                 ];
                             case 1:
-                                cinemaHalls = _state.sent();
-                                if (!cinemaHalls.length) {
-                                    throw new Error("No cinema halls found for this movie in the specified city");
+                                cityChecks = _state.sent();
+                                if (!cityChecks || cityChecks.length === 0) {
+                                    return [
+                                        2,
+                                        "No cinema halls found for this movie in the specified city"
+                                    ];
                                 }
+                                cinemaHalls = cityChecks.map(function(cityCheck) {
+                                    return cityCheck.cinemaHall;
+                                });
                                 return [
                                     2,
                                     cinemaHalls
                                 ];
                             case 2:
                                 error = _state.sent();
-                                console.error("Error fetching cinema halls for movie ".concat(movieId, " in city ").concat(cityId, ":"), error);
-                                throw new Error("Failed to fetch cinema halls for movie ".concat(movieId, " in city ").concat(cityId));
-                            case 3:
-                                return [
-                                    2
-                                ];
-                        }
-                    });
-                })();
-            }
-        },
-        {
-            key: "getCinemaHallsByOperatorId",
-            value: function getCinemaHallsByOperatorId(operatorId) {
-                return _async_to_generator(function() {
-                    var cinemaHalls, error;
-                    return _ts_generator(this, function(_state) {
-                        switch(_state.label){
-                            case 0:
-                                _state.trys.push([
-                                    0,
-                                    2,
-                                    ,
-                                    3
-                                ]);
-                                return [
-                                    4,
-                                    CinemaHall.find({
-                                        operator_id: operatorId
-                                    }).select("name movies")
-                                ];
-                            case 1:
-                                cinemaHalls = _state.sent();
-                                if (!cinemaHalls.length) {
-                                    throw new Error("No cinema halls found for the specified operator");
-                                }
-                                return [
-                                    2,
-                                    cinemaHalls
-                                ];
-                            case 2:
-                                error = _state.sent();
-                                console.error("Error fetching cinema halls for operator ".concat(operatorId, ":"), error);
-                                throw new Error("Failed to fetch cinema halls for operator ".concat(operatorId));
+                                console.error("Error fetching cinema halls for city ID ".concat(cityId, " and movie ID ").concat(movieId, ":"), error);
+                                throw new Error("Failed to fetch cinema halls for city ID ".concat(cityId, " and movie ID ").concat(movieId));
                             case 3:
                                 return [
                                     2

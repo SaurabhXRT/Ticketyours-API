@@ -3,8 +3,8 @@ import {getMoviesByCityId,getMoviesByCinemaHallId,getMovieDetailById} from "../c
 
 const router = express.Router();
 
-router.get("/movies/:cityId", getMoviesByCityId);
-router.get("/movies/:cinemaHallId", getMoviesByCinemaHallId);
-router.get("/movies/:movieId",getMovieDetailById);
+router.get("/movies/city/:cityId", getMoviesByCityId);
+router.get("/movies/cinemahall/:cinemaHallId", getMoviesByCinemaHallId);
+router.get("/movies/moviedetail/:movieId",getMovieDetailById);
 
 export default router;

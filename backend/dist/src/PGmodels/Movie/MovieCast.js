@@ -83,12 +83,12 @@ var MovieCast = /*#__PURE__*/ function(Model) {
 }(Model);
 MovieCast.init({
     movieId: {
-        type: DataTypes.UUID,
-        primaryKey: true
+        type: DataTypes.INTEGER,
+        allowNull: false
     },
     castId: {
-        type: DataTypes.UUID,
-        primaryKey: true
+        type: DataTypes.INTEGER,
+        allowNull: false
     }
 }, {
     sequelize: centralDatabase.getInstance(),

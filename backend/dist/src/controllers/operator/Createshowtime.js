@@ -122,25 +122,33 @@ function _ts_generator(thisArg, body) {
         };
     }
 }
-import { ShowtimeSlotService } from "../../services/AddShowtimeservice.js";
-var service = new ShowtimeSlotService();
-export var createShowtimeSlot = function() {
+import { ShowtimeService } from "../../services/AddShowtimeservice.js";
+var service = new ShowtimeService();
+export var CreateShowtime = function() {
     var _ref = _async_to_generator(function(req, res) {
-        var _req_body, cinemaHallId, movieId, date, startTime, endTime, operatorId, newShowtimeSlot, error;
+        var _req_body, movieInTheatreId, screenId, startTime, endTime, showTimeDate, cinemaHallId, showtimeData, newShowtime, error;
         return _ts_generator(this, function(_state) {
             switch(_state.label){
                 case 0:
-                    _req_body = req.body, cinemaHallId = _req_body.cinemaHallId, movieId = _req_body.movieId, date = _req_body.date, startTime = _req_body.startTime, endTime = _req_body.endTime;
-                    operatorId = req.operator._id;
-                    if (!cinemaHallId || !movieId || !date || !startTime || !endTime) {
+                    // #swagger.description = 'create a showtime for a movie which has been alloted a screen'
+                    _req_body = req.body, movieInTheatreId = _req_body.movieInTheatreId, screenId = _req_body.screenId, startTime = _req_body.startTime, endTime = _req_body.endTime, showTimeDate = _req_body.showTimeDate, cinemaHallId = _req_body.cinemaHallId;
+                    if (!movieInTheatreId || !screenId || !startTime || !endTime || !showTimeDate || cinemaHallId) {
                         return [
                             2,
                             res.status(400).json({
                                 code: "fields/empty",
-                                message: "All fields ( cinemaHallId, movieId, date, startTime, endTime) are required"
+                                message: "All fields are required"
                             })
                         ];
                     }
+                    showtimeData = {
+                        movieInTheatreId: movieInTheatreId,
+                        screenId: screenId,
+                        cinemaHallId: cinemaHallId,
+                        startTime: startTime,
+                        endTime: endTime,
+                        showTimeDate: showTimeDate
+                    };
                     _state.label = 1;
                 case 1:
                     _state.trys.push([
@@ -151,14 +159,14 @@ export var createShowtimeSlot = function() {
                     ]);
                     return [
                         4,
-                        service.createShowtimeSlot(operatorId, cinemaHallId, movieId, new Date(date), new Date(startTime), new Date(endTime))
+                        service.createShowtime(showtimeData)
                     ];
                 case 2:
-                    newShowtimeSlot = _state.sent();
+                    newShowtime = _state.sent();
                     res.status(201).json({
-                        code: "showtime-slot/created",
-                        message: "Showtime slot created successfully",
-                        data: newShowtimeSlot
+                        code: "showtime/created",
+                        message: "Showtime has been created successfully",
+                        data: newShowtime
                     });
                     return [
                         3,
@@ -166,10 +174,37 @@ export var createShowtimeSlot = function() {
                     ];
                 case 3:
                     error = _state.sent();
-                    console.error("Error creating showtime slot:", error);
+                    console.error("Error creating showtime:", error);
+                    if (error.message.includes("Screen not found.")) {
+                        return [
+                            2,
+                            res.status(404).json({
+                                code: 'screen/not-found',
+                                message: "Screen not found or does not belong to your cinema hall."
+                            })
+                        ];
+                    }
+                    if (error.mesage.includes("Movie in Theatre not found.")) {
+                        return [
+                            2,
+                            res.status(404).json({
+                                code: "movie/not-found",
+                                message: "movie does not found"
+                            })
+                        ];
+                    }
+                    if (error.message.includes("There is already a showtime scheduled")) {
+                        return [
+                            2,
+                            res.status(401).send({
+                                code: "showtime/already-exist",
+                                message: "There is already a showtime scheduled that overlaps with the provided time."
+                            })
+                        ];
+                    }
                     res.status(500).json({
                         code: "server/internal-error",
-                        message: error.message || "An internal server error occurred while creating the showtime slot."
+                        message: error.message || "An internal server error occurred while creating the showtime."
                     });
                     return [
                         3,
@@ -182,7 +217,7 @@ export var createShowtimeSlot = function() {
             }
         });
     });
-    return function createShowtimeSlot(req, res) {
+    return function CreateShowtime(req, res) {
         return _ref.apply(this, arguments);
     };
 }();

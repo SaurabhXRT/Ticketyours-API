@@ -1,5 +1,4 @@
 import mongoose, { Schema } from 'mongoose';
-// Define the booking schema
 var bookingSchema = new Schema({
     booking_id: {
         type: Schema.Types.ObjectId,
@@ -9,7 +8,6 @@ var bookingSchema = new Schema({
 }, {
     _id: false
 });
-// Define the user schema
 var userSchema = new Schema({
     name: {
         type: String,
@@ -47,7 +45,6 @@ var userSchema = new Schema({
         required: true
     }
 });
-// Update `updated_at` field before saving
 userSchema.pre('save', function(next) {
     this.updated_at = new Date();
     next();

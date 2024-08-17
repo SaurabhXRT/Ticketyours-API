@@ -83,12 +83,12 @@ var CinemaHallMovie = /*#__PURE__*/ function(Model) {
 }(Model);
 CinemaHallMovie.init({
     cinemaHallId: {
-        type: DataTypes.UUID,
-        primaryKey: true
+        type: DataTypes.INTEGER,
+        allowNull: false
     },
     CinemahallmovieId: {
-        type: DataTypes.UUID,
-        primaryKey: true
+        type: DataTypes.INTEGER,
+        allowNull: false
     }
 }, {
     sequelize: centralDatabase.getInstance(),

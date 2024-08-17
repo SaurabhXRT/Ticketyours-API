@@ -1,10 +1,12 @@
-import City from "../models/city/City.js";
-import CityModel from "../models/city/City.model.js";
+import { Op } from "sequelize";
+import { City } from "../PGmodels/City/City.js";
+// import { CinemaHall } from "../PGmodels/CinemaHall/Cinemahall.js";
+// import { Movie } from "../PGmodels/Movie/Movie.js";
 
 export class CityService {
   async getAllCities() {
     try {
-      const cities = await City.find();
+      const cities = await City.findAll();
       return cities;
     } catch (error) {
       console.error("Error fetching all cities:", error);
@@ -14,8 +16,13 @@ export class CityService {
 
   async searchCities(query: string) {
     try {
-      const regex = new RegExp(query, "i"); 
-      const cities = await City.find({ name: regex });
+      const cities = await City.findAll({
+        where: {
+          name: {
+            [Op.iLike]: `%${query}%`
+          }
+        }
+      });
       return cities;
     } catch (error) {
       console.error("Error searching cities:", error);
@@ -23,20 +30,4 @@ export class CityService {
     }
   }
 
-  async getCityDetails(cityId: string) {
-    try {
-      const cityDetails = await CityModel.findOne({cityId: cityId})
-        .populate("CinemaHall")
-        .populate("Movie");
-      
-      if (!cityDetails) {
-        throw new Error("City details not found");
-      }
-      
-      return cityDetails;
-    } catch (error) {
-      console.error(`Error fetching city details:`, error);
-      throw new Error(`Failed to fetch city details `);
-    }
-  }
 }

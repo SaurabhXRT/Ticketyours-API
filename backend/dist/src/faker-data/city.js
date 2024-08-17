@@ -122,147 +122,136 @@ function _ts_generator(thisArg, body) {
         };
     }
 }
-import mongoose from "mongoose";
-import City from "../models/city/City.js";
-import CityModel from "../models/city/City.model.js";
+import { City } from "../PGmodels/City/City.js";
+import logger from "../logger/logger.js";
 var seedCities = function() {
     var _ref = _async_to_generator(function() {
-        var cities, session, i, city, savedCity, cityModel, err;
+        var cities, _iteratorNormalCompletion, _didIteratorError, _iteratorError, _iterator, _step, city, err, err1;
         return _ts_generator(this, function(_state) {
             switch(_state.label){
                 case 0:
                     cities = [
                         {
-                            name: 'Mumbai',
-                            state: 'Maharashtra'
+                            name: "Mumbai",
+                            state: "Maharashtra"
                         },
                         {
-                            name: 'Delhi',
-                            state: 'Delhi'
+                            name: "Delhi",
+                            state: "Delhi"
                         },
                         {
-                            name: 'Bengaluru',
-                            state: 'Karnataka'
+                            name: "Bengaluru",
+                            state: "Karnataka"
                         },
                         {
-                            name: 'Hyderabad',
-                            state: 'Telangana'
+                            name: "Hyderabad",
+                            state: "Telangana"
                         },
                         {
-                            name: 'Ahmedabad',
-                            state: 'Gujarat'
+                            name: "Ahmedabad",
+                            state: "Gujarat"
                         },
                         {
-                            name: 'Chennai',
-                            state: 'Tamil Nadu'
+                            name: "Chennai",
+                            state: "Tamil Nadu"
                         },
                         {
-                            name: 'Kolkata',
-                            state: 'West Bengal'
+                            name: "Kolkata",
+                            state: "West Bengal"
                         },
                         {
-                            name: 'Surat',
-                            state: 'Gujarat'
+                            name: "Surat",
+                            state: "Gujarat"
                         },
                         {
-                            name: 'Pune',
-                            state: 'Maharashtra'
+                            name: "Pune",
+                            state: "Maharashtra"
                         },
                         {
-                            name: 'Jaipur',
-                            state: 'Rajasthan'
+                            name: "Jaipur",
+                            state: "Rajasthan"
                         }
                     ];
                     _state.label = 1;
                 case 1:
                     _state.trys.push([
                         1,
-                        11,
+                        10,
                         ,
-                        12
+                        11
                     ]);
-                    return [
-                        4,
-                        mongoose.startSession()
-                    ];
+                    _iteratorNormalCompletion = true, _didIteratorError = false, _iteratorError = undefined;
+                    _state.label = 2;
                 case 2:
-                    session = _state.sent();
-                    session.startTransaction();
-                    return [
-                        4,
-                        City.deleteMany({}).session(session)
-                    ];
+                    _state.trys.push([
+                        2,
+                        7,
+                        8,
+                        9
+                    ]);
+                    _iterator = cities[Symbol.iterator]();
+                    _state.label = 3;
                 case 3:
-                    _state.sent();
+                    if (!!(_iteratorNormalCompletion = (_step = _iterator.next()).done)) return [
+                        3,
+                        6
+                    ];
+                    city = _step.value;
                     return [
                         4,
-                        CityModel.deleteMany({}).session(session)
+                        City.create(city)
                     ];
                 case 4:
                     _state.sent();
-                    i = 0;
                     _state.label = 5;
                 case 5:
-                    if (!(i < cities.length)) return [
+                    _iteratorNormalCompletion = true;
+                    return [
+                        3,
+                        3
+                    ];
+                case 6:
+                    return [
                         3,
                         9
                     ];
-                    city = new City({
-                        name: cities[i].name,
-                        state: cities[i].state
-                    });
-                    return [
-                        4,
-                        city.save({
-                            session: session
-                        })
-                    ];
-                case 6:
-                    savedCity = _state.sent();
-                    cityModel = new CityModel({
-                        name: savedCity.name,
-                        state: savedCity.state,
-                        cityId: savedCity._id,
-                        cinemaHalls: [],
-                        cinemaMovies: []
-                    });
-                    return [
-                        4,
-                        cityModel.save({
-                            session: session
-                        })
-                    ];
                 case 7:
-                    _state.sent();
-                    _state.label = 8;
-                case 8:
-                    i++;
+                    err = _state.sent();
+                    _didIteratorError = true;
+                    _iteratorError = err;
                     return [
                         3,
-                        5
+                        9
+                    ];
+                case 8:
+                    try {
+                        if (!_iteratorNormalCompletion && _iterator.return != null) {
+                            _iterator.return();
+                        }
+                    } finally{
+                        if (_didIteratorError) {
+                            throw _iteratorError;
+                        }
+                    }
+                    return [
+                        7
                     ];
                 case 9:
-                    return [
-                        4,
-                        session.commitTransaction()
-                    ];
-                case 10:
-                    _state.sent();
-                    session.endSession();
-                    console.log('Database seeded with cities and city models!');
+                    console.log("Database seeded with cities!");
                     return [
                         3,
-                        12
+                        11
                     ];
-                case 11:
-                    err = _state.sent();
-                    console.error('Error seeding cities:', err.message);
+                case 10:
+                    err1 = _state.sent();
+                    logger.log(err1);
+                    console.error("Error seeding cities:", err1.message);
                     process.exit(1);
                     return [
                         3,
-                        12
+                        11
                     ];
-                case 12:
+                case 11:
                     return [
                         2
                     ];

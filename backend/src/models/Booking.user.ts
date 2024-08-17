@@ -53,7 +53,6 @@ const userBookingSchema = new Schema<UserBooking>({
   }
 });
 
-// Update `updated_at` field before saving
 userBookingSchema.pre<UserBooking>('save', function(next) {
   this.updated_at = new Date();
   next();

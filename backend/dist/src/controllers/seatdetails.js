@@ -124,13 +124,21 @@ function _ts_generator(thisArg, body) {
 }
 import { SeatDetailService } from '../services/SeatDetailService.js';
 var seatDetailService = new SeatDetailService();
-export var getSeatDetails = function() {
+export var reserveSeatStatus = function() {
     var _ref = _async_to_generator(function(req, res) {
-        var showtimeId, seatDetails, error;
+        var showtimeId, _req_body, seatRow, seatNumber, status, seatdata, seatReserved, error;
         return _ts_generator(this, function(_state) {
             switch(_state.label){
                 case 0:
+                    // #swagger.description = 'reserved the seat'
                     showtimeId = req.params.showtimeId;
+                    _req_body = req.body, seatRow = _req_body.seatRow, seatNumber = _req_body.seatNumber, status = _req_body.status;
+                    seatdata = {
+                        showtimeId: showtimeId,
+                        seatRow: seatRow,
+                        seatNumber: seatNumber,
+                        status: status
+                    };
                     _state.label = 1;
                 case 1:
                     _state.trys.push([
@@ -141,14 +149,14 @@ export var getSeatDetails = function() {
                     ]);
                     return [
                         4,
-                        seatDetailService.getSeatDetailsByShowtimeId(showtimeId)
+                        seatDetailService.reserveseatStatus(seatdata)
                     ];
                 case 2:
-                    seatDetails = _state.sent();
+                    seatReserved = _state.sent();
                     res.status(200).json({
-                        code: "seatdetails/fetch-success",
-                        message: "Seat details fetched successfully",
-                        data: seatDetails
+                        code: "seatdetails/seat-reserved",
+                        message: "Seat status updated to reserved successfully",
+                        data: seatReserved
                     });
                     return [
                         3,
@@ -171,7 +179,7 @@ export var getSeatDetails = function() {
             }
         });
     });
-    return function getSeatDetails(req, res) {
+    return function reserveSeatStatus(req, res) {
         return _ref.apply(this, arguments);
     };
 }();

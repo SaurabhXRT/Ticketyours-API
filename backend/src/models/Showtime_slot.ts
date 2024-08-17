@@ -1,6 +1,6 @@
 import mongoose, { Document, Schema } from "mongoose";
 
-// Define the interface for the Seat schema
+
 interface Seat extends Document {
   seat_number: string;
   seat_type: string;
@@ -9,7 +9,6 @@ interface Seat extends Document {
   locked_until?: Date;
 }
 
-// Define the Seat schema
 const SeatSchema = new Schema<Seat>({
   seat_number: {
     type: String,
@@ -31,7 +30,7 @@ const SeatSchema = new Schema<Seat>({
   locked_until: { type: Date },
 });
 
-// Define the interface for the ShowtimeSlot schema
+
 interface ShowtimeSlot extends Document {
   movie_id: mongoose.Types.ObjectId;
   cinema_hall_id: mongoose.Types.ObjectId;
@@ -43,7 +42,6 @@ interface ShowtimeSlot extends Document {
   updated_at: Date;
 }
 
-// Define the ShowtimeSlot schema
 const ShowtimeSlotSchema = new Schema<ShowtimeSlot>({
   movie_id: {
     type: Schema.Types.ObjectId,

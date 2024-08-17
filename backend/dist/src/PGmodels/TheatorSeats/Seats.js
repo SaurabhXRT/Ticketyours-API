@@ -71,53 +71,42 @@ function _create_super(Derived) {
 }
 import { Model, DataTypes } from 'sequelize';
 import { centralDatabase } from '../../config/dbconfig.js';
-var Seat = /*#__PURE__*/ function(Model) {
+var SeatStatus = /*#__PURE__*/ function(Model) {
     "use strict";
-    _inherits(Seat, Model);
-    var _super = _create_super(Seat);
-    function Seat() {
-        _class_call_check(this, Seat);
+    _inherits(SeatStatus, Model);
+    var _super = _create_super(SeatStatus);
+    function SeatStatus() {
+        _class_call_check(this, SeatStatus);
         return _super.apply(this, arguments);
     }
-    return Seat;
+    return SeatStatus;
 }(Model);
-Seat.init({
+SeatStatus.init({
     id: {
-        type: DataTypes.UUID,
-        primaryKey: true,
-        defaultValue: DataTypes.UUIDV4
+        type: DataTypes.INTEGER,
+        autoIncrement: true,
+        primaryKey: true
     },
     showtimeId: {
-        type: DataTypes.UUID,
+        type: DataTypes.INTEGER,
+        allowNull: false
+    },
+    seatRow: {
+        type: DataTypes.STRING,
         allowNull: false
     },
     seatNumber: {
-        type: DataTypes.STRING,
+        type: DataTypes.INTEGER,
         allowNull: false
     },
-    seatPrice: {
-        type: DataTypes.DECIMAL(10, 2),
-        allowNull: false
-    },
-    seatType: {
-        type: DataTypes.STRING,
-        allowNull: false
-    },
-    bookingStatus: {
-        type: DataTypes.ENUM('available', 'booked', 'locked'),
+    status: {
+        type: DataTypes.ENUM('available', 'booked', 'reserved'),
+        allowNull: false,
         defaultValue: 'available'
-    },
-    createdAt: {
-        type: DataTypes.DATE,
-        defaultValue: DataTypes.NOW
-    },
-    updatedAt: {
-        type: DataTypes.DATE,
-        defaultValue: DataTypes.NOW
     }
 }, {
     sequelize: centralDatabase.getInstance(),
-    modelName: 'Seat',
+    modelName: 'SeatStatus',
     timestamps: true
 });
-export { Seat };
+export { SeatStatus };

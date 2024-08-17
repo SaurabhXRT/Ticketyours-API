@@ -1,5 +1,4 @@
 import mongoose, { Schema } from "mongoose";
-// Define the Seat schema
 var SeatSchema = new Schema({
     seat_number: {
         type: String,
@@ -26,7 +25,6 @@ var SeatSchema = new Schema({
         type: Date
     }
 });
-// Define the ShowtimeSlot schema
 var ShowtimeSlotSchema = new Schema({
     movie_id: {
         type: Schema.Types.ObjectId,

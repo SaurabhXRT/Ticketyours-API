@@ -126,12 +126,13 @@ import { AddMovieService } from "../../services/AddMovieToCHservice.js";
 var service = new AddMovieService();
 export var addMovieToCinemaHall = function() {
     var _ref = _async_to_generator(function(req, res) {
-        var _req_body, cinemaHallId, movieId, operatorId, newMovie, error;
+        var _req_body, cinemaHallId, movieId, cityId, operatorId, newMovie, error;
         return _ts_generator(this, function(_state) {
             switch(_state.label){
                 case 0:
-                    _req_body = req.body, cinemaHallId = _req_body.cinemaHallId, movieId = _req_body.movieId;
-                    operatorId = req.operator._id;
+                    // #swagger.description = 'add a movie to the registered cinemhall by the operator it required cinemhallid movieid and cityid in the body'
+                    _req_body = req.body, cinemaHallId = _req_body.cinemaHallId, movieId = _req_body.movieId, cityId = _req_body.cityId;
+                    operatorId = req.operatorId;
                     if (!operatorId || !cinemaHallId || !movieId) {
                         return [
                             2,
@@ -151,10 +152,27 @@ export var addMovieToCinemaHall = function() {
                     ]);
                     return [
                         4,
-                        service.addMovieToCinemaHall(operatorId, cinemaHallId, movieId)
+                        service.addMovieToCinemaHall(operatorId, cinemaHallId, movieId, cityId)
                     ];
                 case 2:
                     newMovie = _state.sent();
+                    if (newMovie === "This movie is already in your cinema hall") {
+                        res.status(401).send({
+                            code: "movie/already-present",
+                            message: "This movie is already in your cinema hall"
+                        });
+                        return [
+                            2
+                        ];
+                    } else if (newMovie === "Movie not found") {
+                        res.status(404).send({
+                            code: "movie/not-found",
+                            message: "The movie you want to add doesnt exist"
+                        });
+                        return [
+                            2
+                        ];
+                    }
                     res.status(201).json({
                         code: "movie/added",
                         message: "Movie added to cinema hall successfully",

@@ -147,7 +147,7 @@ import jsonwebtoken from "jsonwebtoken";
 import bcrypt from "bcrypt";
 // import dotenv from "dotenv-flow";
 // dotenv.config();
-import { LoginSession } from "../PGmodels/LoginSession/Loginsession.js";
+import { UserLoginSession } from "../PGmodels/LoginSession/User.Loginsession.js";
 var userService = new UserService();
 export var AuthService = /*#__PURE__*/ function() {
     "use strict";
@@ -158,7 +158,6 @@ export var AuthService = /*#__PURE__*/ function() {
         {
             key: "loginWithPassword",
             value: //const userservice = new UserService();
-            // login user with passsowrd and email
             function loginWithPassword(data) {
                 return _async_to_generator(function() {
                     var user, isPasswordCorrect, secrect, token, loginSession;
@@ -189,7 +188,6 @@ export var AuthService = /*#__PURE__*/ function() {
                                         "incorrect password"
                                     ];
                                 }
-                                // generate token
                                 secrect = process.env.JWT_SECRET;
                                 token = jsonwebtoken.sign({
                                     id: user.id
@@ -198,7 +196,7 @@ export var AuthService = /*#__PURE__*/ function() {
                                 });
                                 return [
                                     4,
-                                    LoginSession.create({
+                                    UserLoginSession.create({
                                         userId: user.id,
                                         token: token
                                     })
@@ -216,8 +214,7 @@ export var AuthService = /*#__PURE__*/ function() {
         },
         {
             key: "logout",
-            value: // logout user
-            function logout(token) {
+            value: function logout(token) {
                 return _async_to_generator(function() {
                     var loginSession;
                     return _ts_generator(this, function(_state) {
@@ -225,7 +222,7 @@ export var AuthService = /*#__PURE__*/ function() {
                             case 0:
                                 return [
                                     4,
-                                    LoginSession.findOne({
+                                    UserLoginSession.findOne({
                                         where: {
                                             token: token
                                         }
@@ -241,7 +238,7 @@ export var AuthService = /*#__PURE__*/ function() {
                                 }
                                 return [
                                     4,
-                                    LoginSession.destroy({
+                                    UserLoginSession.destroy({
                                         where: {
                                             token: token
                                         }

@@ -1,16 +1,15 @@
 import mongoose, { Document, Schema } from 'mongoose';
 
-// Define the interface for the City schema
+// interface for the City schema
 export interface City extends Document {
   name: string;
   state: string;
-  // Optionally add other fields as needed
   // country: string;
   createdAt: Date;
   updatedAt: Date;
 }
 
-// Define the City schema
+// City schema
 const citySchema = new Schema<City>({
   name: {
     type: String,
@@ -21,13 +20,12 @@ const citySchema = new Schema<City>({
     type: String,
     required: true
   },
-  // Optionally define additional fields
   // country: {
   //     type: String,
   //     required: true
   // }
 }, {
-  timestamps: true // Automatically add createdAt and updatedAt fields
+  timestamps: true 
 });
 
 const City = mongoose.model<City>('City', citySchema);

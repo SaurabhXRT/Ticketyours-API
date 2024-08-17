@@ -130,6 +130,7 @@ export var getMoviesByCityId = function() {
         return _ts_generator(this, function(_state) {
             switch(_state.label){
                 case 0:
+                    // #swagger.description = 'get all the movie which is available to watch in a city using cityid'
                     cityId = req.params.cityId;
                     _state.label = 1;
                 case 1:
@@ -145,6 +146,15 @@ export var getMoviesByCityId = function() {
                     ];
                 case 2:
                     movies = _state.sent();
+                    if (movies === "No movies found for this city") {
+                        res.status(404).send({
+                            code: "movies/not-found",
+                            message: "No movies found for this city"
+                        });
+                        return [
+                            2
+                        ];
+                    }
                     res.status(200).json({
                         code: "movies/fetch-success",
                         message: "Movies fetched successfully",
@@ -181,6 +191,7 @@ export var getMoviesByCinemaHallId = function() {
         return _ts_generator(this, function(_state) {
             switch(_state.label){
                 case 0:
+                    // #swagger.description = 'get all the movies running in a cinemhall using cinemhallid'
                     cinemaHallId = req.params.cinemaHallId;
                     _state.label = 1;
                 case 1:
@@ -196,6 +207,15 @@ export var getMoviesByCinemaHallId = function() {
                     ];
                 case 2:
                     movies = _state.sent();
+                    if (movies === null) {
+                        res.status(404).send({
+                            code: "movies/not-found",
+                            message: "no movies in this cinemhall"
+                        });
+                        return [
+                            2
+                        ];
+                    }
                     res.status(200).json({
                         code: "movies/fetch-success",
                         message: "Movies fetched successfully",
@@ -232,6 +252,7 @@ export var getMovieDetailById = function() {
         return _ts_generator(this, function(_state) {
             switch(_state.label){
                 case 0:
+                    // #swagger.description = 'gte the moviedetails using movieid'
                     movieId = req.params.movieId;
                     _state.label = 1;
                 case 1:

@@ -46,6 +46,19 @@ function _create_class(Constructor, protoProps, staticProps) {
     if (staticProps) _defineProperties(Constructor, staticProps);
     return Constructor;
 }
+function _define_property(obj, key, value) {
+    if (key in obj) {
+        Object.defineProperty(obj, key, {
+            value: value,
+            enumerable: true,
+            configurable: true,
+            writable: true
+        });
+    } else {
+        obj[key] = value;
+    }
+    return obj;
+}
 function _ts_generator(thisArg, body) {
     var f, y, t, g, _ = {
         label: 0,
@@ -141,7 +154,8 @@ function _ts_generator(thisArg, body) {
         };
     }
 }
-import Movie from "../models/Movies.js";
+import { Movie } from "../PGmodels/Movie/Movie.js";
+import { Op } from 'sequelize';
 export var OperatorMovieService = /*#__PURE__*/ function() {
     "use strict";
     function OperatorMovieService() {
@@ -164,9 +178,9 @@ export var OperatorMovieService = /*#__PURE__*/ function() {
                                 ]);
                                 return [
                                     4,
-                                    Movie.find({
-                                        title: {
-                                            $regex: new RegExp(title, 'i')
+                                    Movie.findAll({
+                                        where: {
+                                            title: _define_property({}, Op.iLike, "%".concat(title, "%"))
                                         }
                                     })
                                 ];

@@ -1,10 +1,16 @@
-//import { Request, Response, NextFunction } from 'express';
-import jwt from 'jsonwebtoken';
+import jwt, { JwtPayload } from 'jsonwebtoken';
 import dotenv from 'dotenv-flow';
-import LoginSession from '../models/Loginsession.js';
-import User from '../models/User.js';
+import { UserLoginSession } from '../PGmodels/LoginSession/User.Loginsession.js';
+import { OperatorLoginSession } from '../PGmodels/LoginSession/Operator.Loginsession.js';
+// import { User } from '../PGmodels/User/User.js';
+// import { CinemaOperator } from '../PGmodels/Operator/Operator.js';
 
 dotenv.config();
+
+interface CustomJwtPayload extends JwtPayload {
+    userId?: string;
+    operatorId?: string;
+}
 
 export class AuthMiddleware {
     static async verifyToken(req: any, res: any, next: any) {
@@ -15,61 +21,74 @@ export class AuthMiddleware {
         try {
             const isValid = await AuthMiddleware.validateToken(token);
             if (!isValid) {
+                return res.status(401).send("Invalid token");
+            }
+
+            const { userId, operatorId } = await AuthMiddleware.getActorIdFromToken(token);
+            if (userId) {
+                req.userId = userId;
+            } else if (operatorId) {
+                req.operatorId = operatorId;
+            } else {
                 return res.status(401).send("Unauthorized");
             }
-            const userId = await AuthMiddleware.getUserIdFromToken(token);
-            // let checkIdMobileVerified = await AuthMiddleware.isMobileVerified(userId);
-            // if (!checkIdMobileVerified) {
-            //     return res.status(403).send("Mobile not verified");
-            // }
-            req.userId = userId;
-            next();
 
+            next();
         } catch (error) {
+            console.error("Token verification error:", error);
             return res.status(401).send("Unauthorized");
         }
-
-
     }
 
     static async validateToken(token: string) {
         try {
-            const secrect: any = process.env.JWT_SECRET;
-            const decoded: any = jwt.verify(token, secrect);
-            const loginSession = await LoginSession.findOne({
-                where: {
-                    userId: decoded.id,
-                    token: token,
-                }
-            });
-            return loginSession === null ? false : true;
-        } catch (error) {
-            return false;
-        }
-
-    }
-
-    static async getUserIdFromToken(token: string) {
-        try {
-            const secrect: any = process.env.JWT_SECRET;
-            const decoded: any = jwt.verify(token, secrect);
-            return decoded.id;
-        } catch (error) {
-            return false;
-        }
-    }
-
-    private static async isMobileVerified(userId: string) {
-        let check = await User.findOne({
-            where: {
-                userId: userId,
-                isPhoneVerified: true
-            }
-        });
-
-        if (check !== null) {
+            const secret: string = process.env.JWT_SECRET!;
+            jwt.verify(token, secret);
             return true;
+        } catch (error) {
+            console.error("Token validation error:", error);
+            return false;
         }
-        return false;
+    }
+
+    static async getActorIdFromToken(token: string) {
+        try {
+            const secret: string = process.env.JWT_SECRET!;
+            const decoded = jwt.verify(token, secret) as CustomJwtPayload;
+            console.log(decoded);
+
+            let loginSession: UserLoginSession | OperatorLoginSession;
+            if (decoded.userId) {
+                loginSession = await UserLoginSession.findOne({
+                    where: {
+                        userId: decoded.userId,
+                        token: token,
+                    }
+                });
+                if (loginSession) {
+                    return { 
+                        userId: decoded.userId 
+                    };
+                }
+            } else if (decoded.operatorId) {
+                loginSession = await OperatorLoginSession.findOne({
+                    where: {
+                        operatorId: decoded.operatorId,
+                        token: token,
+                    }
+                });
+                if (loginSession) {
+                    return {
+                         operatorId: decoded.operatorId 
+                        };
+                }
+            }
+
+            console.log('Login session not found');
+            return {};
+        } catch (error) {
+            console.error("Get ID from token error:", error);
+            return {};
+        }
     }
 }

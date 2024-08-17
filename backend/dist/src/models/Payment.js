@@ -1,5 +1,4 @@
 import mongoose, { Schema } from 'mongoose';
-// Define the Payment schema
 var PaymentSchema = new Schema({
     user_id: {
         type: Schema.Types.ObjectId,
@@ -44,7 +43,6 @@ var PaymentSchema = new Schema({
         default: Date.now
     }
 });
-// Update `updated_at` field before saving
 PaymentSchema.pre('save', function(next) {
     this.updated_at = new Date();
     next();

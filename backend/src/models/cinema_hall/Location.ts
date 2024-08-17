@@ -1,6 +1,6 @@
 import mongoose, { Document, Schema } from 'mongoose';
 
-// Define the interface for the Location schema
+// interface for the Location schema
 interface ILocation extends Document {
   street: string;
   city_id: mongoose.Types.ObjectId;
@@ -9,7 +9,7 @@ interface ILocation extends Document {
   //country: string;
 }
 
-// Define the Location schema
+//Location schema
 const locationSchema = new Schema<ILocation>({
   street: {
     type: String,

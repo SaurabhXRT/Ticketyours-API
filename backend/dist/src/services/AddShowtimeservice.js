@@ -46,6 +46,19 @@ function _create_class(Constructor, protoProps, staticProps) {
     if (staticProps) _defineProperties(Constructor, staticProps);
     return Constructor;
 }
+function _define_property(obj, key, value) {
+    if (key in obj) {
+        Object.defineProperty(obj, key, {
+            value: value,
+            enumerable: true,
+            configurable: true,
+            writable: true
+        });
+    } else {
+        obj[key] = value;
+    }
+    return obj;
+}
 function _ts_generator(thisArg, body) {
     var f, y, t, g, _ = {
         label: 0,
@@ -141,126 +154,106 @@ function _ts_generator(thisArg, body) {
         };
     }
 }
-import ShowtimeSlot from "../models/Showtime_slot.js";
-import CinemaHall from "../models/cinema_hall/CinemaHall.js";
-//import Movie from "../models/movie/Movie";
-import MovieInCinemaHall from "../models/Moviemodel.js";
-import SeatingArrangement from "../models/Seatingarrangement.js";
-export var ShowtimeSlotService = /*#__PURE__*/ function() {
+import { Showtime } from "../PGmodels/Showtime/Showtime.js";
+import { Screen } from "../PGmodels/Theatorscreens/Screen.js";
+import { MovieInTheatre } from "../PGmodels/MovieInTheatre/Movieintheatre.js";
+import { Op } from "sequelize";
+export var ShowtimeService = /*#__PURE__*/ function() {
     "use strict";
-    function ShowtimeSlotService() {
-        _class_call_check(this, ShowtimeSlotService);
+    function ShowtimeService() {
+        _class_call_check(this, ShowtimeService);
     }
-    _create_class(ShowtimeSlotService, [
+    _create_class(ShowtimeService, [
         {
-            key: "createShowtimeSlot",
-            value: function createShowtimeSlot(operatorId, cinemaHallId, movieId, date, startTime, endTime) {
+            key: "createShowtime",
+            value: function createShowtime(data) {
                 return _async_to_generator(function() {
-                    var session, cinemaHall, movie, seatingArrangement, seats, newShowtimeSlot, error;
+                    var movieInTheatreId, screenId, cinemaHallId, startTime, endTime, showTimeDate, screen, movieInTheatre, existingShowtime, newShowtime, error;
                     return _ts_generator(this, function(_state) {
                         switch(_state.label){
                             case 0:
-                                return [
-                                    4,
-                                    ShowtimeSlot.startSession()
-                                ];
+                                movieInTheatreId = data.movieInTheatreId, screenId = data.screenId, cinemaHallId = data.cinemaHallId, startTime = data.startTime, endTime = data.endTime, showTimeDate = data.showTimeDate;
+                                _state.label = 1;
                             case 1:
-                                session = _state.sent();
-                                session.startTransaction();
-                                _state.label = 2;
-                            case 2:
                                 _state.trys.push([
-                                    2,
-                                    8,
-                                    10,
-                                    11
+                                    1,
+                                    6,
+                                    ,
+                                    7
                                 ]);
                                 return [
                                     4,
-                                    CinemaHall.findOne({
-                                        _id: cinemaHallId,
-                                        operator_id: operatorId
-                                    }).session(session)
+                                    Screen.findByPk(screenId)
+                                ];
+                            case 2:
+                                screen = _state.sent();
+                                if (!screen) {
+                                    throw new Error("Screen not found.");
+                                }
+                                return [
+                                    4,
+                                    MovieInTheatre.findByPk(movieInTheatreId)
                                 ];
                             case 3:
-                                cinemaHall = _state.sent();
-                                if (!cinemaHall) {
-                                    throw new Error("Cinema hall not found or does not belong to the operator");
+                                movieInTheatre = _state.sent();
+                                if (!movieInTheatre) {
+                                    throw new Error("Movie in Theatre not found.");
                                 }
                                 return [
                                     4,
-                                    MovieInCinemaHall.findById(movieId).session(session)
+                                    Showtime.findOne({
+                                        where: _define_property({
+                                            screenId: screenId
+                                        }, Op.or, [
+                                            {
+                                                startTime: _define_property({}, Op.between, [
+                                                    startTime,
+                                                    endTime
+                                                ])
+                                            },
+                                            {
+                                                endTime: _define_property({}, Op.between, [
+                                                    startTime,
+                                                    endTime
+                                                ])
+                                            },
+                                            _define_property({}, Op.and, [
+                                                {
+                                                    startTime: _define_property({}, Op.lte, startTime)
+                                                },
+                                                {
+                                                    endTime: _define_property({}, Op.gte, endTime)
+                                                }
+                                            ])
+                                        ])
+                                    })
                                 ];
                             case 4:
-                                movie = _state.sent();
-                                if (!movie) {
-                                    throw new Error("Movie not found");
+                                existingShowtime = _state.sent();
+                                if (existingShowtime) {
+                                    throw new Error("There is already a showtime scheduled that overlaps with the provided time.");
                                 }
                                 return [
                                     4,
-                                    SeatingArrangement.findOne({
-                                        cinema_hall_id: cinemaHallId
+                                    Showtime.create({
+                                        screenId: screenId,
+                                        cinemaHallId: cinemaHallId,
+                                        startTime: startTime,
+                                        endTime: endTime,
+                                        showTimeDate: showTimeDate
                                     })
                                 ];
                             case 5:
-                                seatingArrangement = _state.sent();
-                                if (!seatingArrangement) {
-                                    throw new Error("Seating arrangement not found for the specified cinema hall");
-                                }
-                                // Clone the seats from the seating arrangement
-                                seats = seatingArrangement.seats.map(function(seat) {
-                                    return {
-                                        seat_number: seat.seat_number,
-                                        seat_type: seat.seat_type,
-                                        price: seat.price,
-                                        status: "available"
-                                    };
-                                });
-                                // Create the showtime slot
-                                newShowtimeSlot = new ShowtimeSlot({
-                                    movie_id: movieId,
-                                    cinema_hall_id: cinemaHallId,
-                                    start_time: startTime,
-                                    end_time: endTime,
-                                    date: date,
-                                    seats: seats,
-                                    created_at: new Date(),
-                                    updated_at: new Date()
-                                });
-                                return [
-                                    4,
-                                    newShowtimeSlot.save({
-                                        session: session
-                                    })
-                                ];
-                            case 6:
-                                _state.sent();
-                                return [
-                                    4,
-                                    session.commitTransaction()
-                                ];
-                            case 7:
-                                _state.sent();
+                                newShowtime = _state.sent();
                                 return [
                                     2,
-                                    newShowtimeSlot.toJSON()
+                                    newShowtime
                                 ];
-                            case 8:
+                            case 6:
                                 error = _state.sent();
-                                return [
-                                    4,
-                                    session.abortTransaction()
-                                ];
-                            case 9:
-                                _state.sent();
-                                console.error("Error creating showtime slot:", error);
-                                throw new Error("Failed to create showtime slot");
-                            case 10:
-                                session.endSession();
-                                return [
-                                    7
-                                ];
-                            case 11:
+                                console.log(error.message);
+                                throw new Error("error creating showtime");
+                            case 7:
                                 return [
                                     2
                                 ];
@@ -270,5 +263,5 @@ export var ShowtimeSlotService = /*#__PURE__*/ function() {
             }
         }
     ]);
-    return ShowtimeSlotService;
+    return ShowtimeService;
 }();

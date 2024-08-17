@@ -1,5 +1,4 @@
 import mongoose, { Schema } from 'mongoose';
-// Define the MovieInCinemaHall schema
 var movieInCinemaHallSchema = new Schema({
     movie_id: {
         type: Schema.Types.ObjectId,
@@ -50,7 +49,6 @@ var movieInCinemaHallSchema = new Schema({
         required: true
     }
 });
-// Update `updated_at` field before saving
 movieInCinemaHallSchema.pre('save', function(next) {
     this.updated_at = new Date();
     next();

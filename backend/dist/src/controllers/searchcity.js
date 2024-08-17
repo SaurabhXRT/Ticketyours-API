@@ -1,4 +1,3 @@
-// src/controllers/city.ts
 //import { Request, Response } from "express";
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {
     try {
@@ -181,6 +180,7 @@ export var searchCities = function() {
         return _ts_generator(this, function(_state) {
             switch(_state.label){
                 case 0:
+                    // #swagger.description = 'searcyh the city by giving cityname'
                     city = req.query.city;
                     if (!city) {
                         return [

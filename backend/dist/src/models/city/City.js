@@ -1,5 +1,5 @@
 import mongoose, { Schema } from 'mongoose';
-// Define the City schema
+// City schema
 var citySchema = new Schema({
     name: {
         type: String,
@@ -11,7 +11,7 @@ var citySchema = new Schema({
         required: true
     }
 }, {
-    timestamps: true // Automatically add createdAt and updatedAt fields
+    timestamps: true
 });
 var City = mongoose.model('City', citySchema);
 export default City;

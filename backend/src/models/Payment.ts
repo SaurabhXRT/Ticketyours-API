@@ -1,6 +1,5 @@
 import mongoose, { Document, Schema } from 'mongoose';
 
-// Define the interface for the Payment schema
 interface IPayment extends Document {
   user_id: mongoose.Types.ObjectId;
   // razorpay_order_id: string;
@@ -13,7 +12,6 @@ interface IPayment extends Document {
   updated_at: Date;
 }
 
-// Define the Payment schema
 const PaymentSchema = new Schema<IPayment>({
   user_id: { 
     type: Schema.Types.ObjectId, 
@@ -55,7 +53,6 @@ const PaymentSchema = new Schema<IPayment>({
   }
 });
 
-// Update `updated_at` field before saving
 PaymentSchema.pre<IPayment>('save', function(next) {
   this.updated_at = new Date();
   next();

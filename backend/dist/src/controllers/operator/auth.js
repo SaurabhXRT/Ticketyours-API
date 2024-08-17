@@ -125,6 +125,7 @@ function _ts_generator(thisArg, body) {
 import express from "express";
 //import CinemaOperator from "@/src/models/Cinema_operator.js";
 import { OperatorAuthService } from "../../services/Operator.AuthService.js";
+//import { Request, Response } from 'express';
 var router = express.Router();
 var service = new OperatorAuthService();
 export var register = function() {
@@ -133,6 +134,7 @@ export var register = function() {
         return _ts_generator(this, function(_state) {
             switch(_state.label){
                 case 0:
+                    // #swagger.description = 'Register a new cinemhall operator'
                     body = req.body;
                     operatorCredentials = {
                         name: body.name,
@@ -140,7 +142,6 @@ export var register = function() {
                         password: body.password,
                         phone: body.phone
                     };
-                    // If there is no name or email provided then reject the request.
                     if (!(body.name || body.email)) {
                         return [
                             2,
@@ -223,12 +224,12 @@ export var login = function() {
         return _ts_generator(this, function(_state) {
             switch(_state.label){
                 case 0:
+                    // #swagger.description = 'login cinemhall operator'
                     body = req.body;
                     userCredentials = {
                         phone: body.phone,
                         password: body.password
                     };
-                    // If there is no username or email provided then reject the request.
                     if (!(body.phone || body.password)) {
                         res.status(400).send({
                             code: "fields/empty-primary-field",
@@ -252,7 +253,6 @@ export var login = function() {
                     ];
                 case 2:
                     user = _state.sent();
-                    // If user does not exists send a user not found message.
                     if (user === "User not found") {
                         res.status(404).send({
                             code: "auth/user-not-found",
@@ -309,6 +309,7 @@ export var logout = function() {
         return _ts_generator(this, function(_state) {
             switch(_state.label){
                 case 0:
+                    // #swagger.description = "logout cinemhall operator"
                     token = req.headers.authorization;
                     if (!token) {
                         res.status(400).send({
