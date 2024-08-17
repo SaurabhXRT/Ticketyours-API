@@ -40,19 +40,19 @@ connectDB();
 //operator
 server.use("/operator", operatorAuthroutes);
 server.use("/operator/v1", operatorcinemahallroutes);
-server.use("/operator/v2", operatorshowtimeroutes);
-server.use("/operator/v3", operatorcreatetheatrelayout);
-server.use("/operator/v4", operatorhmovieroutes);
-server.use("/operator/v5", operatorscreen);
+server.use("/operator/v1", operatorshowtimeroutes);
+server.use("/operator/v1", operatorcreatetheatrelayout);
+server.use("/operator/v1", operatorhmovieroutes);
+server.use("/operator/v1", operatorscreen);
 
 //api
 server.use("/auth", authroutes);
 server.use("/v1", cityRoutes);
-server.use("/v2", cinemahallroutes);
-server.use("/v3", movieroutes);
-server.use("/v4", showsroutes);
-server.use("/v5", fetchtheatrelayout);
-server.use("/v6", seatstatusroutes);
+server.use("/v1", cinemahallroutes);
+server.use("/v1", movieroutes);
+server.use("/v1", showsroutes);
+server.use("/v1", fetchtheatrelayout);
+server.use("/v1", seatstatusroutes);
 //seedCities();
 //seedMovies();
 //seedCast();

@@ -219,7 +219,7 @@
         }
       }
     },
-    "/operator/v2/create-showtime": {
+    "/operator/v1/create-showtime": {
       "post": {
         "description": "create a showtime for a movie which has been alloted a screen",
         "parameters": [
@@ -275,7 +275,7 @@
         }
       }
     },
-    "/operator/v3/create-theatre-layout": {
+    "/operator/v1/create-theatre-layout": {
       "post": {
         "description": "create a theatre layout for the cinemhall",
         "parameters": [
@@ -316,7 +316,7 @@
         }
       }
     },
-    "/operator/v3/get-theatre-layout/{cinemaHallId}": {
+    "/operator/v1/get-theatre-layout/{cinemaHallId}": {
       "get": {
         "description": "fetch the theatre layout",
         "parameters": [
@@ -345,7 +345,7 @@
         }
       }
     },
-    "/operator/v4/allotMovietoscreen/{cinemaHallId}": {
+    "/operator/v1/allotMovietoscreen/{cinemaHallId}": {
       "post": {
         "description": "allot a movie to the any screen of the cinemhallid",
         "parameters": [
@@ -398,7 +398,7 @@
         }
       }
     },
-    "/operator/v4/movie-search": {
+    "/operator/v1/movie-search": {
       "get": {
         "description": "search a movie by the operator while adding a movie to the registered cinemahall",
         "parameters": [
@@ -429,7 +429,7 @@
         }
       }
     },
-    "/operator/v4/delete-movieintheatre": {
+    "/operator/v1/delete-movieintheatre": {
       "get": {
         "description": "",
         "parameters": [
@@ -446,7 +446,7 @@
         }
       }
     },
-    "/operator/v5/addscreentocinemhall/{cinemaHallId}": {
+    "/operator/v1/addscreentocinemhall/{cinemaHallId}": {
       "post": {
         "description": "add screen to the cinemahall",
         "parameters": [
@@ -613,7 +613,7 @@
         }
       }
     },
-    "/v2/cinemahall/{cityId}": {
+    "/v1/cinemahall/{cityId}": {
       "get": {
         "description": "get all the cinemhall in a city using cityid",
         "parameters": [
@@ -634,7 +634,7 @@
         }
       }
     },
-    "/v2/cinemahall/{cityId}/movies/{movieId}": {
+    "/v1/cinemahall/{cityId}/movies/{movieId}": {
       "get": {
         "description": "get all the cinemhall in which a particular movie is running using cityid and movieid ",
         "parameters": [
@@ -661,7 +661,7 @@
         }
       }
     },
-    "/v3/movies/city/{cityId}": {
+    "/v1/movies/city/{cityId}": {
       "get": {
         "description": "get all the movie which is available to watch in a city using cityid",
         "parameters": [
@@ -682,7 +682,7 @@
         }
       }
     },
-    "/v3/movies/cinemahall/{cinemaHallId}": {
+    "/v1/movies/cinemahall/{cinemaHallId}": {
       "get": {
         "description": "get all the movies running in a cinemhall using cinemhallid",
         "parameters": [
@@ -703,7 +703,7 @@
         }
       }
     },
-    "/v3/movies/moviedetail/{movieId}": {
+    "/v1/movies/moviedetail/{movieId}": {
       "get": {
         "description": "gte the moviedetails using movieid",
         "parameters": [
@@ -724,7 +724,7 @@
         }
       }
     },
-    "/v4/showtimes/{screenId}": {
+    "/v1/showtimes/{screenId}": {
       "get": {
         "description": "get showtime for a movie",
         "parameters": [
@@ -745,7 +745,7 @@
         }
       }
     },
-    "/v4/showtimesbydate/{screenId}": {
+    "/v1/showtimesbydate/{screenId}": {
       "get": {
         "description": "get showtime for the selected date",
         "parameters": [
@@ -766,7 +766,7 @@
         }
       }
     },
-    "/v5/get-theatre-layout/{showtimeId}": {
+    "/v1/get-theatre-layout/{showtimeId}": {
       "get": {
         "description": "get theatrea layout with seatstatus",
         "parameters": [
@@ -787,7 +787,7 @@
         }
       }
     },
-    "/v6/reserve-seat/{showtimeId}": {
+    "/v1/reserve-seat/{showtimeId}": {
       "post": {
         "description": "reserved the seat",
         "parameters": [
