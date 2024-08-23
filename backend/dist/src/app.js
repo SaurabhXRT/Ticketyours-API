@@ -4,6 +4,7 @@ dotenv.config();
 import cors from "cors";
 import connectDB from "./database/db.js";
 import logger from "./logger/logger.js";
+import { setupMiddleware } from './apistatus/statusMonitor.js';
 // import seedCities from "./faker-data/city.js";
 // import seedMovies from "./faker-data/movie.js";
 // import seedCast from "./faker-data/cast.js";
@@ -25,6 +26,7 @@ import operatorhmovieroutes from "./routes/operator/movie.js";
 import operatorscreen from "./routes/operator/screen.js";
 import bodyParser from "body-parser";
 var server = express();
+setupMiddleware(server);
 server.use(bodyParser.json());
 server.use(bodyParser.urlencoded({
     extended: true
@@ -42,6 +44,12 @@ server.use(cors({
         "OPTIONS"
     ]
 }));
+// server.use(function(req, res, next) {
+//   res.header("Access-Control-Allow-Origin", "*");
+//   res.header("Access-Control-Allow-Methods", "HEAD, OPTIONS, GET, POST, PUT, PATCH, DELETE, CONNECT");
+//   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
+//   next();
+// });
 // Connect to database
 connectDB();
 //operator

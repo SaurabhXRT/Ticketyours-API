@@ -11,11 +11,28 @@ services:
     volumes:
       - ./:/app
       - /app/node_modules
-    restart: "unless-stopped"
+    restart: unless-stopped
+    environment:
+      DB_HOST: postgres  
+      DB_PORT: 5432
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: saurabhxrt
+      POSTGRES_DB: saurabhxrt
     networks:
       - backend
     depends_on:
       - postgres
+      - redis
+  proxy:
+    container_name: ticketyours_proxy
+    image: nginx:alpine
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    restart: "unless-stopped"
+    networks:
+      - backend
 
   postgres:
     container_name: ticketyours_postgres
@@ -31,10 +48,49 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
+  redis:
+    container_name: ticketyours_redis
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+    networks:
+      - backend
+    volumes:
+      - redis_data:/data
+
+  redisinsight:
+    container_name: ticketyours_redisinsight
+    image: redislabs/redisinsight:latest
+    ports:
+      - "8001:8001"
+    networks:
+      - backend
+    restart: unless-stopped
+    depends_on:
+      - redis
+
+  supabase_studio:
+    image: supabase/studio:20240729-ce42139
+    container_name: supabase_studio
+    restart: unless-stopped
+    ports:
+      - "3001:3000"
+    environment:
+      POSTGRES_URL: "postgres://postgres:saurabhxrt@postgres:5432/saurabhxrt"
+      API_URL: "http://localhost:3001"
+      ANON_KEY: ${ANON_KEY}
+      SERVICE_KEY: ${SERVICE_ROLE_KEY}
+    networks:
+      - backend
+    depends_on:
+      - postgres
+
 networks:
   backend:
     driver: bridge
 
 volumes:
   postgres_data:
+    driver: local
+  redis_data:
     driver: local

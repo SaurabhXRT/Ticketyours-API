@@ -25,7 +25,6 @@
         "resolveJsonModule": true,
         "importHelpers": true,
         "baseUrl": ".",
-        "types": ["node", "express"],
         "paths": {
             "@/*": [
                 "*"
