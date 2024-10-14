@@ -16,5 +16,5 @@ ENV NODE_ENV development
 EXPOSE 3000
 
 # Cmd script
-CMD ["npm", "run", "dev"]
+CMD ["pnpm", "run", "dev"]
 

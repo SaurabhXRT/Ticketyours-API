@@ -6,7 +6,7 @@
   "scripts": {
     "build": "swc src --out-dir dist && cpx \"src/swagger-output.json\" \"dist/src\"",
     "start": "nodemon dist/src/index.js",
-    "dev": "concurrently \"npm run watch-compile\" \"npm run watch-dev\"",
+    "dev": "concurrently \"pnpm run watch-compile\" \"pnpm run watch-dev\"",
     "watch-compile": "swc src -w --out-dir dist && cpx \"src/swagger-output.json\" \"dist/src\"",
     "watch-dev": "nodemon --watch \"dist/**/*\" -e js ./dist/server.js",
     "swagger": "node ./tsconfig-path.js"
