@@ -147,6 +147,8 @@ import { CityCheck } from '../PGmodels/CityCheck/CityCheck.js';
 import { CityMovie } from '../PGmodels/City/CityMovie.js';
 import { Movie } from '../PGmodels/Movie/Movie.js';
 import { centralDatabase } from ".././config/dbconfig.js";
+import { AllotMovieToScreenService } from "./AllotMovieToScreenService.js";
+var allotmovietoscreenservice = new AllotMovieToScreenService();
 export var AddMovieService = /*#__PURE__*/ function() {
     "use strict";
     function AddMovieService() {
@@ -155,9 +157,9 @@ export var AddMovieService = /*#__PURE__*/ function() {
     _create_class(AddMovieService, [
         {
             key: "addMovieToCinemaHall",
-            value: function addMovieToCinemaHall(operatorId, cinemaHallId, movieId, cityId) {
+            value: function addMovieToCinemaHall(operatorId, cinemaHallId, movieId, cityId, screenId, movielanguage, movieopendate, movieclosedate) {
                 return _async_to_generator(function() {
-                    var sequelize, transaction, existingEntry, movie, movieInTheatre, cityMovieExists, error;
+                    var sequelize, transaction, existingEntry, movie, movieInTheatre, cityMovieExists, movieInTheatreId, response, error;
                     return _ts_generator(this, function(_state) {
                         switch(_state.label){
                             case 0:
@@ -172,9 +174,9 @@ export var AddMovieService = /*#__PURE__*/ function() {
                             case 2:
                                 _state.trys.push([
                                     2,
-                                    12,
+                                    14,
                                     ,
-                                    14
+                                    16
                                 ]);
                                 return [
                                     4,
@@ -186,12 +188,6 @@ export var AddMovieService = /*#__PURE__*/ function() {
                                 ];
                             case 3:
                                 existingEntry = _state.sent();
-                                if (existingEntry) {
-                                    return [
-                                        2,
-                                        "This movie is already in your cinema hall"
-                                    ];
-                                }
                                 return [
                                     4,
                                     Movie.findByPk(movieId)
@@ -204,6 +200,10 @@ export var AddMovieService = /*#__PURE__*/ function() {
                                         "Movie not found"
                                     ];
                                 }
+                                if (!!existingEntry) return [
+                                    3,
+                                    6
+                                ];
                                 return [
                                     4,
                                     MovieInTheatre.create({
@@ -220,6 +220,8 @@ export var AddMovieService = /*#__PURE__*/ function() {
                                 ];
                             case 5:
                                 movieInTheatre = _state.sent();
+                                _state.label = 6;
+                            case 6:
                                 return [
                                     4,
                                     CinemaHallMovie.create({
@@ -229,7 +231,7 @@ export var AddMovieService = /*#__PURE__*/ function() {
                                         transaction: transaction
                                     })
                                 ];
-                            case 6:
+                            case 7:
                                 _state.sent();
                                 return [
                                     4,
@@ -241,7 +243,7 @@ export var AddMovieService = /*#__PURE__*/ function() {
                                         transaction: transaction
                                     })
                                 ];
-                            case 7:
+                            case 8:
                                 _state.sent();
                                 return [
                                     4,
@@ -253,11 +255,11 @@ export var AddMovieService = /*#__PURE__*/ function() {
                                         transaction: transaction
                                     })
                                 ];
-                            case 8:
+                            case 9:
                                 cityMovieExists = _state.sent();
                                 if (!!cityMovieExists) return [
                                     3,
-                                    10
+                                    11
                                 ];
                                 return [
                                     4,
@@ -268,31 +270,41 @@ export var AddMovieService = /*#__PURE__*/ function() {
                                         transaction: transaction
                                     })
                                 ];
-                            case 9:
-                                _state.sent();
-                                _state.label = 10;
                             case 10:
+                                _state.sent();
+                                _state.label = 11;
+                            case 11:
+                                movieInTheatreId = movieInTheatre.id;
+                                return [
+                                    4,
+                                    allotmovietoscreenservice.allotMovieToScreen(screenId, cinemaHallId, movieInTheatreId, operatorId, movielanguage, movieopendate, movieclosedate)
+                                ];
+                            case 12:
+                                response = _state.sent();
                                 return [
                                     4,
                                     transaction.commit()
                                 ];
-                            case 11:
+                            case 13:
                                 _state.sent();
                                 return [
                                     2,
-                                    movieInTheatre
+                                    {
+                                        movieInTheatre: movieInTheatre,
+                                        response: response
+                                    }
                                 ];
-                            case 12:
+                            case 14:
                                 error = _state.sent();
                                 return [
                                     4,
                                     transaction.rollback()
                                 ];
-                            case 13:
+                            case 15:
                                 _state.sent();
                                 console.error("Error adding movie to cinema hall:", error);
                                 throw new Error("Failed to add movie to cinema hall");
-                            case 14:
+                            case 16:
                                 return [
                                     2
                                 ];

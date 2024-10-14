@@ -14,6 +14,10 @@ TheatreLayout.init(
       type: DataTypes.INTEGER,
       allowNull: false,
     },
+    cinemaHallscreenId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
     seatArrangement: {
       type: DataTypes.JSON,
       allowNull: true,

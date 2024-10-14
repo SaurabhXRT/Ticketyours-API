@@ -1,25 +1,24 @@
 import { MovieService } from "../services/MovieService.js";
 import { redisGetAsync, redisSetAsync } from "../redis/redis.js";
-
 const movieService = new MovieService();
 
 export const getMoviesByCityId = async(req:any, res:any) => {
 // #swagger.description = 'get all the movie which is available to watch in a city using cityid'
     const cityId = req.params.cityId;
-    const cachekey = `movies:${cityId}`;
+    //const cachekey = `movies:${cityId}`;
 
   try {
-    const cachedData = await redisGetAsync(cachekey);
-    if(cachedData){
-      const movies = JSON.parse(cachedData);
-      res.status(200).json({
-        code: "movies/fetch-success",
-        message: "Movies fetched successfully",
-        data: movies,
-      });
-    }
+    // const cachedData = await redisGetAsync(cachekey);
+    // if(cachedData){
+    //   const movies = JSON.parse(cachedData);
+    //   res.status(200).json({
+    //     code: "movies/fetch-success",
+    //     message: "Movies fetched successfully",
+    //     data: movies,
+    //   });
+    // }
     const movies = await movieService.getMoviesByCityId(cityId);
-    await redisSetAsync(cachekey, JSON.stringify(movies), 'EX', 3600);
+    //await redisSetAsync(cachekey, JSON.stringify(movies), 'EX', 3600);
     if(movies === "No movies found for this city"){
       res.status(404).send({
         code: "movies/not-found",

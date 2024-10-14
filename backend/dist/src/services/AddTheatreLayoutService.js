@@ -150,7 +150,7 @@ export var TheatreLayoutService = /*#__PURE__*/ function() {
     _create_class(TheatreLayoutService, [
         {
             key: "createTheatreLayout",
-            value: function createTheatreLayout(cinemaHallId, seatArrangement) {
+            value: function createTheatreLayout(cinemaHallId, screenId, seatArrangement) {
                 return _async_to_generator(function() {
                     var layoutexist, newLayout, error;
                     return _ts_generator(this, function(_state) {
@@ -166,7 +166,8 @@ export var TheatreLayoutService = /*#__PURE__*/ function() {
                                     4,
                                     TheatreLayout.findOne({
                                         where: {
-                                            cinemaHallId: cinemaHallId
+                                            cinemaHallId: cinemaHallId,
+                                            cinemaHallscreenId: screenId
                                         }
                                     })
                                 ];
@@ -179,6 +180,7 @@ export var TheatreLayoutService = /*#__PURE__*/ function() {
                                     4,
                                     TheatreLayout.create({
                                         cinemaHallId: cinemaHallId,
+                                        cinemaHallscreenId: screenId,
                                         seatArrangement: seatArrangement
                                     })
                                 ];
@@ -190,7 +192,8 @@ export var TheatreLayoutService = /*#__PURE__*/ function() {
                                 ];
                             case 3:
                                 error = _state.sent();
-                                throw new Error('Error creating theatre layout');
+                                console.log(error);
+                                throw new Error(error);
                             case 4:
                                 return [
                                     2
@@ -202,7 +205,7 @@ export var TheatreLayoutService = /*#__PURE__*/ function() {
         },
         {
             key: "getTheatreLayout",
-            value: function getTheatreLayout(cinemaHallId) {
+            value: function getTheatreLayout(cinemaHallId, screenId) {
                 return _async_to_generator(function() {
                     var layout, error;
                     return _ts_generator(this, function(_state) {
@@ -218,7 +221,8 @@ export var TheatreLayoutService = /*#__PURE__*/ function() {
                                     4,
                                     TheatreLayout.findOne({
                                         where: {
-                                            cinemaHallId: cinemaHallId
+                                            cinemaHallId: cinemaHallId,
+                                            cinemaHallscreenId: screenId
                                         }
                                     })
                                 ];

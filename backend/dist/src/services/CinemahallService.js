@@ -141,11 +141,12 @@ function _ts_generator(thisArg, body) {
         };
     }
 }
+import { CinemaHallImage } from "../PGmodels/CinemaHall/CinemaHallImage.js";
 import { CinemaHall } from "../PGmodels/CinemaHall/Cinemahall.js";
 import { CityCinemaHall } from "../PGmodels/City/CityCinemhalll.js";
 import { CityCheck } from "../PGmodels/CityCheck/CityCheck.js";
 // import { Movie } from "../models/movie/Movie.js";
-// import { MovieCinemaHall } from "../models/movie/MovieCinemaHall.js"; 
+// import { MovieCinemaHall } from "../models/movie/MovieCinemaHall.js";
 export var CinemaHallService = /*#__PURE__*/ function() {
     "use strict";
     function CinemaHallService() {
@@ -177,10 +178,20 @@ export var CinemaHallService = /*#__PURE__*/ function() {
                                                 model: CinemaHall,
                                                 as: "cinemaHall",
                                                 attributes: [
-                                                    'id',
-                                                    'name',
-                                                    'location',
-                                                    'zipcode'
+                                                    "id",
+                                                    "name",
+                                                    "location",
+                                                    "zipcode",
+                                                    "directionsLink"
+                                                ],
+                                                include: [
+                                                    {
+                                                        model: CinemaHallImage,
+                                                        as: "images",
+                                                        attributes: [
+                                                            "imageUrl"
+                                                        ]
+                                                    }
                                                 ]
                                             }
                                         ]
@@ -232,11 +243,13 @@ export var CinemaHallService = /*#__PURE__*/ function() {
                                         include: [
                                             {
                                                 model: CinemaHall,
-                                                as: 'cinemaHall',
+                                                as: "cinemaHall",
                                                 attributes: [
-                                                    'name',
-                                                    'location',
-                                                    'zipcode'
+                                                    "id",
+                                                    "name",
+                                                    "location",
+                                                    "zipcode",
+                                                    "directionsLink"
                                                 ]
                                             }
                                         ]

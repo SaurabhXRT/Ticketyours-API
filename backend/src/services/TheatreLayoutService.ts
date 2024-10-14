@@ -3,12 +3,12 @@ import { GetTheatreLayoutService } from "./GetTheatrelayout.js";
 import { SeatStatusService } from "./SeatStatusService.js";
 
 export class TheatreLayoutService {
-  async getTheatreLayoutWithSeatStatus(showtimeId: any) {
+  async getTheatreLayoutWithSeatStatus(showtimeId: any, screenId: any) {
     try {
       const layoutService = new GetTheatreLayoutService();
       const seatStatusService = new SeatStatusService();
 
-      const { layout } = await layoutService.getLayoutByShowtimeId(showtimeId);
+      const { layout } = await layoutService.getLayoutByShowtimeId(showtimeId, screenId);
 
       if (!layout) {
         throw new Error("layout not found");

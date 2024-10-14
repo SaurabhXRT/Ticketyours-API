@@ -123,61 +123,40 @@ function _ts_generator(thisArg, body) {
     }
 }
 import { CinemaHallService } from "../services/CinemahallService.js";
-import { redisGetAsync, redisSetAsync } from "../redis/redis.js";
 var cinemaHallService = new CinemaHallService();
 export var getCinemaHalls = function() {
     var _ref = _async_to_generator(function(req, res) {
-        var cityId, cachekey, cachedData, cinemaHalls, cinemaHalls1, error;
+        var cityId, cinemaHalls, error;
         return _ts_generator(this, function(_state) {
             switch(_state.label){
                 case 0:
                     // #swagger.description = 'get all the cinemhall in a city using cityid'
                     cityId = req.params.cityId;
-                    cachekey = "cinemaHalls:".concat(cityId);
                     _state.label = 1;
                 case 1:
                     _state.trys.push([
                         1,
-                        5,
+                        3,
                         ,
-                        6
+                        4
                     ]);
-                    return [
-                        4,
-                        redisGetAsync(cachekey)
-                    ];
-                case 2:
-                    cachedData = _state.sent();
-                    if (cachedData) {
-                        cinemaHalls = JSON.parse(cachedData);
-                        res.status(200).json({
-                            code: "cinemahalls/fetch-success",
-                            message: "Cinema halls fetched successfully",
-                            data: cinemaHalls
-                        });
-                    }
                     return [
                         4,
                         cinemaHallService.getCinemaHallsByCityId(cityId)
                     ];
-                case 3:
-                    cinemaHalls1 = _state.sent();
-                    return [
-                        4,
-                        redisSetAsync(cachekey, JSON.stringify(cinemaHalls1), 'EX', 3600)
-                    ];
-                case 4:
-                    _state.sent();
+                case 2:
+                    cinemaHalls = _state.sent();
+                    //await redisSetAsync(cachekey, JSON.stringify(cinemaHalls), 'EX', 3600);
                     res.status(200).json({
                         code: "cinemahalls/fetch-success",
                         message: "Cinema halls fetched successfully",
-                        data: cinemaHalls1
+                        data: cinemaHalls
                     });
                     return [
                         3,
-                        6
+                        4
                     ];
-                case 5:
+                case 3:
                     error = _state.sent();
                     res.status(404).json({
                         code: "cinemahalls/not-found",
@@ -185,9 +164,9 @@ export var getCinemaHalls = function() {
                     });
                     return [
                         3,
-                        6
+                        4
                     ];
-                case 6:
+                case 4:
                     return [
                         2
                     ];

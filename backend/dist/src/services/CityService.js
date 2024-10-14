@@ -241,6 +241,87 @@ export var CityService = /*#__PURE__*/ function() {
                     });
                 })();
             }
+        },
+        {
+            key: "checkexistingcity",
+            value: function checkexistingcity(cityname) {
+                return _async_to_generator(function() {
+                    var existingcity, error;
+                    return _ts_generator(this, function(_state) {
+                        switch(_state.label){
+                            case 0:
+                                _state.trys.push([
+                                    0,
+                                    2,
+                                    ,
+                                    3
+                                ]);
+                                return [
+                                    4,
+                                    City.findOne({
+                                        where: {
+                                            name: cityname
+                                        }
+                                    })
+                                ];
+                            case 1:
+                                existingcity = _state.sent();
+                                return [
+                                    2,
+                                    existingcity
+                                ];
+                            case 2:
+                                error = _state.sent();
+                                console.log(error);
+                                throw new Error("error wghile checking city" + error);
+                            case 3:
+                                return [
+                                    2
+                                ];
+                        }
+                    });
+                })();
+            }
+        },
+        {
+            key: "createcity",
+            value: function createcity(citydetails) {
+                return _async_to_generator(function() {
+                    var newcity, error;
+                    return _ts_generator(this, function(_state) {
+                        switch(_state.label){
+                            case 0:
+                                _state.trys.push([
+                                    0,
+                                    2,
+                                    ,
+                                    3
+                                ]);
+                                return [
+                                    4,
+                                    City.create({
+                                        name: citydetails.name,
+                                        state: citydetails.state
+                                    })
+                                ];
+                            case 1:
+                                newcity = _state.sent();
+                                return [
+                                    2,
+                                    newcity
+                                ];
+                            case 2:
+                                error = _state.sent();
+                                console.log(error);
+                                throw new Error("error while crearting city" + error);
+                            case 3:
+                                return [
+                                    2
+                                ];
+                        }
+                    });
+                })();
+            }
         }
     ]);
     return CityService;

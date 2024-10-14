@@ -7,6 +7,6 @@ import { OperatorMiddleware } from "../../middlewares/actors/auth.operator.js";
 const router = express.Router();
 
 router.post("/register-cinemhall",  AuthMiddleware.verifyToken, OperatorMiddleware.isOperator, addcinemahall);
-router.post("/addmovietoch",AuthMiddleware.verifyToken, OperatorMiddleware.isOperator, addMovieToCinemaHall);
+router.post("/addmovietocinemahall-screen",AuthMiddleware.verifyToken, OperatorMiddleware.isOperator, addMovieToCinemaHall);
 
 export default router;

@@ -46,6 +46,19 @@ function _create_class(Constructor, protoProps, staticProps) {
     if (staticProps) _defineProperties(Constructor, staticProps);
     return Constructor;
 }
+function _define_property(obj, key, value) {
+    if (key in obj) {
+        Object.defineProperty(obj, key, {
+            value: value,
+            enumerable: true,
+            configurable: true,
+            writable: true
+        });
+    } else {
+        obj[key] = value;
+    }
+    return obj;
+}
 function _ts_generator(thisArg, body) {
     var f, y, t, g, _ = {
         label: 0,
@@ -144,6 +157,8 @@ function _ts_generator(thisArg, body) {
 import { Screen } from '../PGmodels/Theatorscreens/Screen.js';
 import { MovieScreen } from '../PGmodels/Theatorscreens/MovieScreen.js';
 import { CinemaHallMovie } from '../PGmodels/CinemaHall/CinemahallMovie.js';
+import { MovieLanguage } from '../PGmodels/Movie/Movielanguage.js';
+import { Op } from 'sequelize';
 var AllotMovieToScreenService = /*#__PURE__*/ function() {
     "use strict";
     function AllotMovieToScreenService() {
@@ -151,10 +166,57 @@ var AllotMovieToScreenService = /*#__PURE__*/ function() {
     }
     _create_class(AllotMovieToScreenService, [
         {
-            key: "allotMovieToScreen",
-            value: function allotMovieToScreen(screenId, cinemaHallId, movieInTheatreId, operatorId) {
+            key: "getMovielanguage",
+            value: function getMovielanguage(cinemaHallId, movieInTheatreId) {
                 return _async_to_generator(function() {
-                    var screen, movieInTheatre, existingMovieScreen, movieScreen;
+                    var movieInTheatre, movielanguage;
+                    return _ts_generator(this, function(_state) {
+                        switch(_state.label){
+                            case 0:
+                                return [
+                                    4,
+                                    CinemaHallMovie.findOne({
+                                        where: {
+                                            CinemahallmovieId: movieInTheatreId,
+                                            cinemaHallId: cinemaHallId
+                                        }
+                                    })
+                                ];
+                            case 1:
+                                movieInTheatre = _state.sent();
+                                if (!movieInTheatre) {
+                                    throw new Error('Movie not found in the specified cinema hall.');
+                                }
+                                return [
+                                    4,
+                                    MovieLanguage.findOne({
+                                        where: {
+                                            movieId: movieInTheatre.movieId
+                                        },
+                                        attributes: [
+                                            "language"
+                                        ]
+                                    })
+                                ];
+                            case 2:
+                                movielanguage = _state.sent();
+                                if (!movielanguage) {
+                                    throw new Error("no movie lnaguage exist");
+                                }
+                                return [
+                                    2,
+                                    movielanguage
+                                ];
+                        }
+                    });
+                })();
+            }
+        },
+        {
+            key: "allotMovieToScreen",
+            value: function allotMovieToScreen(screenId, cinemaHallId, movieInTheatreId, operatorId, movielanguage, movieopendate, movieclosedate) {
+                return _async_to_generator(function() {
+                    var screen, conflictingMovieScreen, movieScreen;
                     return _ts_generator(this, function(_state) {
                         switch(_state.label){
                             case 0:
@@ -172,38 +234,54 @@ var AllotMovieToScreenService = /*#__PURE__*/ function() {
                                 if (!screen) {
                                     throw new Error('Screen not found or does not belong to the specified cinema hall.');
                                 }
+                                screen.screenLanguage = movielanguage;
                                 return [
                                     4,
-                                    CinemaHallMovie.findOne({
-                                        where: {
-                                            CinemahallmovieId: movieInTheatreId,
-                                            cinemaHallId: cinemaHallId
-                                        }
-                                    })
+                                    screen.save()
                                 ];
                             case 2:
-                                movieInTheatre = _state.sent();
-                                if (!movieInTheatre) {
-                                    throw new Error('Movie not found in the specified cinema hall.');
-                                }
+                                _state.sent();
                                 return [
                                     4,
                                     MovieScreen.findOne({
-                                        where: {
+                                        where: _define_property({
                                             screenId: screenId
-                                        }
+                                        }, Op.or, [
+                                            {
+                                                movieopendate: _define_property({}, Op.between, [
+                                                    movieopendate,
+                                                    movieclosedate
+                                                ])
+                                            },
+                                            {
+                                                movieclosedate: _define_property({}, Op.between, [
+                                                    movieopendate,
+                                                    movieclosedate
+                                                ])
+                                            },
+                                            _define_property({}, Op.and, [
+                                                {
+                                                    movieopendate: _define_property({}, Op.lte, movieopendate)
+                                                },
+                                                {
+                                                    movieclosedate: _define_property({}, Op.gte, movieclosedate)
+                                                }
+                                            ])
+                                        ])
                                     })
                                 ];
                             case 3:
-                                existingMovieScreen = _state.sent();
-                                if (existingMovieScreen) {
-                                    throw new Error('This screen is already assigned a movie.');
+                                conflictingMovieScreen = _state.sent();
+                                if (conflictingMovieScreen) {
+                                    throw new Error('This screen already has a movie scheduled during the given date range.');
                                 }
                                 return [
                                     4,
                                     MovieScreen.create({
                                         screenId: screenId,
-                                        CinemahallmovieId: movieInTheatreId
+                                        CinemahallmovieId: movieInTheatreId,
+                                        movieopendate: movieopendate,
+                                        movieclosedate: movieclosedate
                                     })
                                 ];
                             case 4:

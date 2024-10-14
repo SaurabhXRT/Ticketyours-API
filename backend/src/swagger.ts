@@ -5,7 +5,7 @@ const doc = {
     title: 'ticketyours API',
     description: 'All RESTAPI LISTED HERE',
   },
-  host: 'localhost:3000',
+  host: process.env.SWAGGER_HOST,
 };
 
 const outputFile = './src/swagger-output.json';

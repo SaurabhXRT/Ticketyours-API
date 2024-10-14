@@ -143,10 +143,15 @@ function _ts_generator(thisArg, body) {
 }
 import { CinemaHallMovie } from "../PGmodels/CinemaHall/CinemahallMovie.js";
 import { CityMovie } from "../PGmodels/City/CityMovie.js";
-import { Movie } from '../PGmodels/Movie/Movie.js';
-import { Crew } from '../PGmodels/MovieDetail/Crew.js';
-import { Cast } from '../PGmodels/MovieDetail/Cast.js';
+import { Movie } from "../PGmodels/Movie/Movie.js";
+import { Crew } from "../PGmodels/MovieDetail/Crew.js";
+import { Cast } from "../PGmodels/MovieDetail/Cast.js";
 import { MovieInTheatre } from "../PGmodels/MovieInTheatre/Movieintheatre.js";
+import { MovieReview } from "../PGmodels/MovieRatings/Ratings.js";
+import { centralDatabase } from "../config/dbconfig.js";
+import { Movievotes } from "../PGmodels/MovieRatings/Upvotes.js";
+import { MovieLanguage } from "../PGmodels/Movie/Movielanguage.js";
+var sequelize = centralDatabase.getInstance();
 export var MovieService = /*#__PURE__*/ function() {
     "use strict";
     function MovieService() {
@@ -157,15 +162,15 @@ export var MovieService = /*#__PURE__*/ function() {
             key: "getMoviesByCityId",
             value: function getMoviesByCityId(cityId) {
                 return _async_to_generator(function() {
-                    var cityMovies, movies, error;
+                    var cityMovies, movies, detailresponse, error;
                     return _ts_generator(this, function(_state) {
                         switch(_state.label){
                             case 0:
                                 _state.trys.push([
                                     0,
-                                    2,
+                                    3,
                                     ,
-                                    3
+                                    4
                                 ]);
                                 return [
                                     4,
@@ -176,14 +181,15 @@ export var MovieService = /*#__PURE__*/ function() {
                                         include: [
                                             {
                                                 model: Movie,
-                                                as: 'movie',
+                                                as: "movie",
                                                 attributes: [
-                                                    'title',
-                                                    'posterUrl',
-                                                    'genre',
-                                                    'releaseDate',
-                                                    'duration',
-                                                    'description'
+                                                    "id",
+                                                    "title",
+                                                    "posterUrl",
+                                                    "genre",
+                                                    "releaseDate",
+                                                    "duration",
+                                                    "description"
                                                 ]
                                             }
                                         ]
@@ -201,14 +207,82 @@ export var MovieService = /*#__PURE__*/ function() {
                                     return cityMovie.movie;
                                 });
                                 return [
-                                    2,
-                                    movies
+                                    4,
+                                    Promise.all(movies.map(function() {
+                                        var _ref = _async_to_generator(function(movies) {
+                                            var _detail_get, _detail_get1, detail, rating, upvotes;
+                                            return _ts_generator(this, function(_state) {
+                                                switch(_state.label){
+                                                    case 0:
+                                                        return [
+                                                            4,
+                                                            Movie.findByPk(movies.id, {
+                                                                include: [
+                                                                    {
+                                                                        model: MovieReview,
+                                                                        as: "review",
+                                                                        attributes: [
+                                                                            [
+                                                                                sequelize.fn("AVG", sequelize.col("review.star")),
+                                                                                "rating"
+                                                                            ]
+                                                                        ]
+                                                                    },
+                                                                    {
+                                                                        model: Movievotes,
+                                                                        as: 'votes',
+                                                                        attributes: [
+                                                                            [
+                                                                                sequelize.fn("COUNT", sequelize.col("votes.upvotes")),
+                                                                                "upvotes"
+                                                                            ]
+                                                                        ]
+                                                                    }
+                                                                ],
+                                                                group: [
+                                                                    'Movie.id',
+                                                                    "review.id",
+                                                                    "votes.id"
+                                                                ]
+                                                            })
+                                                        ];
+                                                    case 1:
+                                                        detail = _state.sent();
+                                                        rating = (detail === null || detail === void 0 ? void 0 : (_detail_get = detail.get('review')) === null || _detail_get === void 0 ? void 0 : _detail_get.rating) || 0;
+                                                        upvotes = (detail === null || detail === void 0 ? void 0 : (_detail_get1 = detail.get('votes')) === null || _detail_get1 === void 0 ? void 0 : _detail_get1.upvotes) || 0;
+                                                        return [
+                                                            2,
+                                                            {
+                                                                id: movies.id,
+                                                                title: movies.title,
+                                                                posterUrl: movies.posterUrl,
+                                                                genre: movies.genre,
+                                                                releaseDate: movies.releaseDate,
+                                                                duration: movies.duration,
+                                                                description: movies.description,
+                                                                rating: rating,
+                                                                votes: upvotes
+                                                            }
+                                                        ];
+                                                }
+                                            });
+                                        });
+                                        return function(movies) {
+                                            return _ref.apply(this, arguments);
+                                        };
+                                    }()))
                                 ];
                             case 2:
+                                detailresponse = _state.sent();
+                                return [
+                                    2,
+                                    detailresponse
+                                ];
+                            case 3:
                                 error = _state.sent();
                                 console.error("Error fetching movies for city ".concat(cityId, ":"), error);
                                 throw new Error("Failed to fetch movies for city ".concat(cityId));
-                            case 3:
+                            case 4:
                                 return [
                                     2
                                 ];
@@ -242,12 +316,13 @@ export var MovieService = /*#__PURE__*/ function() {
                                                 model: MovieInTheatre,
                                                 as: "movieInTheatre",
                                                 attributes: [
-                                                    'title',
-                                                    'posterUrl',
-                                                    'genre',
-                                                    'releaseDate',
-                                                    'duration',
-                                                    'description'
+                                                    "id",
+                                                    "title",
+                                                    "posterUrl",
+                                                    "genre",
+                                                    "releaseDate",
+                                                    "duration",
+                                                    "description"
                                                 ]
                                             }
                                         ]
@@ -304,22 +379,57 @@ export var MovieService = /*#__PURE__*/ function() {
                                                 through: {
                                                     attributes: []
                                                 },
-                                                as: 'casts'
+                                                as: "casts"
                                             },
                                             {
                                                 model: Crew,
                                                 through: {
                                                     attributes: []
                                                 },
-                                                as: 'crews'
+                                                as: "crews"
+                                            },
+                                            {
+                                                model: MovieReview,
+                                                as: "review",
+                                                attributes: [
+                                                    [
+                                                        sequelize.fn("AVG", sequelize.col("review.star")),
+                                                        "rating"
+                                                    ]
+                                                ]
+                                            },
+                                            {
+                                                model: Movievotes,
+                                                as: 'votes',
+                                                attributes: [
+                                                    [
+                                                        sequelize.fn("COUNT", sequelize.col("votes.upvotes")),
+                                                        "upvotes"
+                                                    ]
+                                                ]
+                                            },
+                                            {
+                                                model: MovieLanguage,
+                                                as: "movielanguage",
+                                                attributes: [
+                                                    "language"
+                                                ]
                                             }
+                                        ],
+                                        group: [
+                                            'Movie.id',
+                                            'casts.id',
+                                            'crews.id',
+                                            "review.id",
+                                            "votes.id",
+                                            "movielanguage.id"
                                         ]
                                     })
                                 ];
                             case 1:
                                 movie = _state.sent();
                                 if (!movie) {
-                                    throw new Error('Movie does not exist');
+                                    throw new Error("Movie does not exist");
                                 }
                                 // Convert the movie instance to a JSON object
                                 return [

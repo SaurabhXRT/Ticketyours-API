@@ -7,6 +7,6 @@ import { OperatorMiddleware } from "../../middlewares/actors/auth.operator.js";
 const router = express.Router();
 
 router.post("/create-theatre-layout", AuthMiddleware.verifyToken, OperatorMiddleware.isOperator, createTheatreLayout);
-router.get("/get-theatre-layout/:cinemaHallId",AuthMiddleware.verifyToken, OperatorMiddleware.isOperator, getTheatreLayout);
+router.get("/get-theatre-layout/:cinemaHallId/screen/:screenId",AuthMiddleware.verifyToken, OperatorMiddleware.isOperator, getTheatreLayout);
 
 export default router;

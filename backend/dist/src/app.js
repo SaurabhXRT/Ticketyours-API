@@ -24,6 +24,12 @@ import operatorshowtimeroutes from "./routes/operator/showtime.js";
 import operatorcreatetheatrelayout from "./routes/operator/theatrelayout.js";
 import operatorhmovieroutes from "./routes/operator/movie.js";
 import operatorscreen from "./routes/operator/screen.js";
+import operatorcinemahalldetailroutes from "./routes/operator/getcinemahalldetail.js";
+import adminauthroutes from "./routes/admin/adminauth.js";
+import adminaddcityroutes from "./routes/admin/addcity.js";
+import otproutes from "./routes/otproutes.js";
+import screenroutes from "./routes/screen.js";
+import adminmovieroutes from "./routes/admin/adminmovie.js";
 import bodyParser from "body-parser";
 var server = express();
 setupMiddleware(server);
@@ -44,12 +50,6 @@ server.use(cors({
         "OPTIONS"
     ]
 }));
-// server.use(function(req, res, next) {
-//   res.header("Access-Control-Allow-Origin", "*");
-//   res.header("Access-Control-Allow-Methods", "HEAD, OPTIONS, GET, POST, PUT, PATCH, DELETE, CONNECT");
-//   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
-//   next();
-// });
 // Connect to database
 connectDB();
 //operator
@@ -59,6 +59,7 @@ server.use("/operator/v1", operatorshowtimeroutes);
 server.use("/operator/v1", operatorcreatetheatrelayout);
 server.use("/operator/v1", operatorhmovieroutes);
 server.use("/operator/v1", operatorscreen);
+server.use("/operator/v1", operatorcinemahalldetailroutes);
 //api
 server.use("/auth", authroutes);
 server.use("/v1", cityRoutes);
@@ -67,12 +68,18 @@ server.use("/v1", movieroutes);
 server.use("/v1", showsroutes);
 server.use("/v1", fetchtheatrelayout);
 server.use("/v1", seatstatusroutes);
+server.use("/v1", otproutes);
+server.use("/v1", screenroutes);
 //seedCities();
 //seedMovies();
 //seedCast();
 //seedMovieCast();
 //seedCrew();
 //seedMovieCrew();
+//admin
+server.use("/admin/v1", adminauthroutes);
+server.use("/admin/v1", adminaddcityroutes);
+server.use("/admin/v1", adminmovieroutes);
 process.on("uncaughtException", function(err) {
     logger.error("An error occured which was not caught");
     logger.error(err);

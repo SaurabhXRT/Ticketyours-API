@@ -151,7 +151,7 @@ export var GetTheatreLayoutService = /*#__PURE__*/ function() {
     _create_class(GetTheatreLayoutService, [
         {
             key: "getLayoutByShowtimeId",
-            value: function getLayoutByShowtimeId(showtimeId) {
+            value: function getLayoutByShowtimeId(showtimeId, screenId) {
                 return _async_to_generator(function() {
                     var showtime, cinemaHallId, layout, error;
                     return _ts_generator(this, function(_state) {
@@ -177,7 +177,8 @@ export var GetTheatreLayoutService = /*#__PURE__*/ function() {
                                     4,
                                     TheatreLayout.findOne({
                                         where: {
-                                            cinemaHallId: cinemaHallId
+                                            cinemaHallId: cinemaHallId,
+                                            cinemaHallscreenId: screenId
                                         },
                                         attributes: [
                                             'seatArrangement'

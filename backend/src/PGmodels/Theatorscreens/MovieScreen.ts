@@ -13,6 +13,14 @@ MovieScreen.init(
       type: DataTypes.INTEGER,
       allowNull: false,
     },
+    movieopendate: {
+      type: DataTypes.DATE,
+      allowNull: false,
+    },
+    movieclosedate: {
+      type: DataTypes.DATE,
+      allowNull: false,
+    }
   },
   {
     sequelize: centralDatabase.getInstance(),

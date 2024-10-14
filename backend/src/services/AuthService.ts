@@ -39,7 +39,6 @@ export class AuthService {
     return loginSession;
   }
 
-  
   async logout(token: string) {
     const loginSession: any = await UserLoginSession.findOne({
       where: {

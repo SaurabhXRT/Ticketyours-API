@@ -100,8 +100,13 @@ Screen.init({
         allowNull: false
     },
     screenType: {
-        type: DataTypes.ENUM('2D', '3D'),
+        type: DataTypes.STRING,
         allowNull: false
+    },
+    screenLanguage: {
+        type: DataTypes.STRING,
+        allowNull: true,
+        defaultValue: "english"
     }
 }, {
     sequelize: centralDatabase.getInstance(),

@@ -6,9 +6,9 @@ const theatreLayoutService = new TheatreLayoutService();
 export const getTheatreLayout = async (req: Request, res: Response) => {
     // #swagger.description = 'get theatrea layout with seatstatus'
   try {
-    const { showtimeId } = req.params;
+    const { showtimeId , screenId} = req.params;
 
-    const layout = await theatreLayoutService.getTheatreLayoutWithSeatStatus(showtimeId);
+    const layout = await theatreLayoutService.getTheatreLayoutWithSeatStatus(showtimeId, screenId);
 
     res.status(200).json({
       code: 'theatre-layout/found',

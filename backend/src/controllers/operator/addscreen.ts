@@ -57,4 +57,37 @@ export const addscreentocinemahall = async (req: Request, res: Response) => {
   }
 };
 
+export const getcinemahallscreen = async(req:any,res:any) => {
+    // #swagger.description = 'fetch all screen present in the cinemahall'
+  const operatorId = req.operatorId;
+  try{
+    const response = await service.getcinemahallScreen(operatorId);
+    if(response === "no cinemahall for this operator"){
+      return res.status(400).json({
+        code: "screen/no-cinemahall-found",
+        message: "no cinemahall for this operator" 
+      });
+    } else if(response === "there is no screen in this cinemahall"){
+      return res.status(400).json({
+        code: "screen/no-screen-found",
+        message: "there is no any screen in this cinemahall"
+      });
+    }
+    res.status(200).json({
+      code: "screen/fetched-successfully",
+      message: "screen fetched successfully",
+      data: response
+    });
+
+  } catch(error){
+    console.log(error);
+    if(error.message.includes("failed to get screen")){
+      return res.status(500).json({
+        code: "screen/not-found",
+        message: "failed to get screen"
+      });
+    }
+  }
+}
+
 

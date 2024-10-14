@@ -157,6 +157,7 @@ function _ts_generator(thisArg, body) {
 import { Showtime } from "../PGmodels/Showtime/Showtime.js";
 import { Screen } from "../PGmodels/Theatorscreens/Screen.js";
 import { MovieInTheatre } from "../PGmodels/MovieInTheatre/Movieintheatre.js";
+import { MovieScreen } from "../PGmodels/Theatorscreens/MovieScreen.js";
 import { Op } from "sequelize";
 export var ShowtimeService = /*#__PURE__*/ function() {
     "use strict";
@@ -168,7 +169,7 @@ export var ShowtimeService = /*#__PURE__*/ function() {
             key: "createShowtime",
             value: function createShowtime(data) {
                 return _async_to_generator(function() {
-                    var movieInTheatreId, screenId, cinemaHallId, startTime, endTime, showTimeDate, screen, movieInTheatre, existingShowtime, newShowtime, error;
+                    var movieInTheatreId, screenId, cinemaHallId, startTime, endTime, showTimeDate, screen, movieInTheatre, movieId, movieScreen, existingShowtime, newShowtime, error;
                     return _ts_generator(this, function(_state) {
                         switch(_state.label){
                             case 0:
@@ -177,9 +178,9 @@ export var ShowtimeService = /*#__PURE__*/ function() {
                             case 1:
                                 _state.trys.push([
                                     1,
-                                    6,
+                                    7,
                                     ,
-                                    7
+                                    8
                                 ]);
                                 return [
                                     4,
@@ -192,12 +193,35 @@ export var ShowtimeService = /*#__PURE__*/ function() {
                                 }
                                 return [
                                     4,
-                                    MovieInTheatre.findByPk(movieInTheatreId)
+                                    MovieInTheatre.findOne({
+                                        where: {
+                                            id: movieInTheatreId,
+                                            runningStatus: "running"
+                                        }
+                                    })
                                 ];
                             case 3:
                                 movieInTheatre = _state.sent();
                                 if (!movieInTheatre) {
                                     throw new Error("Movie in Theatre not found.");
+                                }
+                                movieId = movieInTheatre.movieId;
+                                return [
+                                    4,
+                                    MovieScreen.findOne({
+                                        where: {
+                                            screenId: screenId,
+                                            CinemahallmovieId: movieInTheatreId
+                                        }
+                                    })
+                                ];
+                            case 4:
+                                movieScreen = _state.sent();
+                                if (!movieScreen) {
+                                    throw new Error("Movie is not assigned to this screen.");
+                                }
+                                if (new Date(showTimeDate) < new Date(movieScreen.movieopendate) || new Date(showTimeDate) > new Date(movieScreen.movieclosedate)) {
+                                    throw new Error("Showtime date exceeds the movie's open or close date.");
                                 }
                                 return [
                                     4,
@@ -228,7 +252,7 @@ export var ShowtimeService = /*#__PURE__*/ function() {
                                         ])
                                     })
                                 ];
-                            case 4:
+                            case 5:
                                 existingShowtime = _state.sent();
                                 if (existingShowtime) {
                                     throw new Error("There is already a showtime scheduled that overlaps with the provided time.");
@@ -238,22 +262,24 @@ export var ShowtimeService = /*#__PURE__*/ function() {
                                     Showtime.create({
                                         screenId: screenId,
                                         cinemaHallId: cinemaHallId,
+                                        movieInTheatreId: movieInTheatreId,
+                                        movieId: movieId,
                                         startTime: startTime,
                                         endTime: endTime,
                                         showTimeDate: showTimeDate
                                     })
                                 ];
-                            case 5:
+                            case 6:
                                 newShowtime = _state.sent();
                                 return [
                                     2,
                                     newShowtime
                                 ];
-                            case 6:
+                            case 7:
                                 error = _state.sent();
                                 console.log(error.message);
                                 throw new Error("error creating showtime");
-                            case 7:
+                            case 8:
                                 return [
                                     2
                                 ];

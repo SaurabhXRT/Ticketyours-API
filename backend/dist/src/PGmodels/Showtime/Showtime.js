@@ -90,6 +90,14 @@ Showtime.init({
         type: DataTypes.INTEGER,
         allowNull: false
     },
+    movieInTheatreId: {
+        type: DataTypes.INTEGER,
+        allowNull: false
+    },
+    movieId: {
+        type: DataTypes.INTEGER,
+        allowNull: false
+    },
     startTime: {
         type: DataTypes.TIME,
         allowNull: false

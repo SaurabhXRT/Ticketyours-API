@@ -2,6 +2,7 @@ import jwt, { JwtPayload } from 'jsonwebtoken';
 import dotenv from 'dotenv-flow';
 import { UserLoginSession } from '../PGmodels/LoginSession/User.Loginsession.js';
 import { OperatorLoginSession } from '../PGmodels/LoginSession/Operator.Loginsession.js';
+import { AdminLoginSession } from '../PGmodels/LoginSession/Admin.Loginsession.js';
 // import { User } from '../PGmodels/User/User.js';
 // import { CinemaOperator } from '../PGmodels/Operator/Operator.js';
 
@@ -10,6 +11,7 @@ dotenv.config();
 interface CustomJwtPayload extends JwtPayload {
     userId?: string;
     operatorId?: string;
+    adminId?: string;
 }
 
 export class AuthMiddleware {
@@ -24,11 +26,13 @@ export class AuthMiddleware {
                 return res.status(401).send("Invalid token");
             }
 
-            const { userId, operatorId } = await AuthMiddleware.getActorIdFromToken(token);
+            const { userId, operatorId , adminId } = await AuthMiddleware.getActorIdFromToken(token);
             if (userId) {
                 req.userId = userId;
             } else if (operatorId) {
                 req.operatorId = operatorId;
+            }else if (adminId) {
+                req.adminId = adminId;
             } else {
                 return res.status(401).send("Unauthorized");
             }
@@ -57,7 +61,7 @@ export class AuthMiddleware {
             const decoded = jwt.verify(token, secret) as CustomJwtPayload;
             console.log(decoded);
 
-            let loginSession: UserLoginSession | OperatorLoginSession;
+            let loginSession: UserLoginSession | OperatorLoginSession | AdminLoginSession;
             if (decoded.userId) {
                 loginSession = await UserLoginSession.findOne({
                     where: {
@@ -82,8 +86,19 @@ export class AuthMiddleware {
                          operatorId: decoded.operatorId 
                         };
                 }
+            } else if (decoded.adminId){
+                loginSession = await AdminLoginSession.findOne({
+                    where: {
+                        adminId: decoded.adminId,
+                        token: token,
+                    }
+                });
+                if(loginSession){
+                    return {
+                        adminId: decoded.adminId,
+                    };
+                }
             }
-
             console.log('Login session not found');
             return {};
         } catch (error) {

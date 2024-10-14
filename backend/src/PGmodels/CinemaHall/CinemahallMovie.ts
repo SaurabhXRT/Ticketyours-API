@@ -13,6 +13,7 @@ CinemaHallMovie.init(
       type: DataTypes.INTEGER,
       allowNull: false,
     },
+    
   },
   {
     sequelize: centralDatabase.getInstance(),

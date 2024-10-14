@@ -6,17 +6,18 @@ const theatreLayoutService = new TheatreLayoutService();
 export const createTheatreLayout = async (req: Request, res: Response) => {
   // #swagger.description = 'create a theatre layout for the cinemhall'
   try {
-    const { cinemaHallId, seatArrangement } = req.body;
+    const { cinemaHallId, screenId, seatArrangement } = req.body;
 
-    if (!cinemaHallId || !seatArrangement) {
+    if (!cinemaHallId || !screenId || !seatArrangement) {
       return res.status(400).json({
         code: 'fields/empty',
-        message: 'Cinema Hall ID and Seat Arrangement are required',
+        message: 'Cinema Hall ID , screenid and Seat Arrangement are required',
       });
     }
 
     const newLayout = await theatreLayoutService.createTheatreLayout(
       cinemaHallId,
+      screenId,
       seatArrangement
     );
 
@@ -44,9 +45,9 @@ export const createTheatreLayout = async (req: Request, res: Response) => {
 export const getTheatreLayout = async (req: Request, res: Response) => {
   // #swagger.description = 'fetch the theatre layout'
 try {
-  const { cinemaHallId } = req.params;
+  const { cinemaHallId, screenId } = req.params;
 
-  const layout = await theatreLayoutService.getTheatreLayout(cinemaHallId);
+  const layout = await theatreLayoutService.getTheatreLayout(cinemaHallId,screenId);
 
   res.status(200).json({
     code: 'theatre-layout/found',

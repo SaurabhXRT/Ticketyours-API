@@ -114,6 +114,10 @@ MovieInTheatre.init({
     movieId: {
         type: DataTypes.INTEGER,
         allowNull: false
+    },
+    runningStatus: {
+        type: DataTypes.ENUM('running', 'completed'),
+        defaultValue: 'running'
     }
 }, {
     sequelize: centralDatabase.getInstance(),

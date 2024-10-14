@@ -25,6 +25,12 @@ import { MovieScreen } from "./Theatorscreens/MovieScreen.js";
 import { TheatreLayout } from "./TheatorLayout/TheatorLayout.js";
 import { Showtime } from "./Showtime/Showtime.js";
 import { SeatStatus } from "./TheatorSeats/Seats.js";
+import { Admin } from "./Admin/Admin.js";
+import { AdminLoginSession } from "./LoginSession/Admin.Loginsession.js";
+import { verificationModel } from "./Verification/Verification.model.js";
+import { Movievotes } from "./MovieRatings/Upvotes.js";
+import { MovieReview } from "./MovieRatings/Ratings.js";
+import { MovieLanguage } from "./Movie/Movielanguage.js";
 
 export async function initDatabase(db: Database, dbOptions: DbOptions) {
   await db.initInstance(dbOptions);
@@ -75,6 +81,54 @@ export async function initDatabase(db: Database, dbOptions: DbOptions) {
     through: MovieCrew,
     foreignKey: "crewId",
     as: "movies",
+  });
+
+  await Movievotes.sync();
+  logger.log("movievotes model initiated successfully");
+  await MovieReview.sync();
+  logger.log("moviereview model initiated successfully");
+
+  User.hasMany(Movievotes, {
+    foreignKey: "userId",
+    as: "votes",
+  });
+  
+  Movievotes.belongsTo(User, {
+    foreignKey: "userId",
+    as: "user",
+  });
+  
+  Movie.hasMany(Movievotes, {
+    foreignKey: "movieId",
+    as: "votes",
+  });
+  
+  Movievotes.belongsTo(Movie, {
+    foreignKey: "movieId",
+    as: "movie",
+  });
+
+  Movie.hasMany(MovieReview, {
+    foreignKey: "movieId",
+    as: "review"
+  });
+
+  MovieReview.belongsTo(Movie, {
+    foreignKey: "movieId",
+    as: "movie"
+  });
+
+  await MovieLanguage.sync();
+  logger.log("movielanguage model has been initiate dsuccessfully");
+
+  Movie.hasMany(MovieLanguage, {
+    foreignKey: "movieId",
+    as: "movielanguage",
+  });
+
+  MovieLanguage.belongsTo(Movie, {
+    foreignKey: "movieId",
+    as: "movie",
   });
 
   User.hasMany(UserLoginSession, {
@@ -213,6 +267,15 @@ export async function initDatabase(db: Database, dbOptions: DbOptions) {
   await MovieScreen.sync();
   logger.log("moviescreen model inityiated successfully");
 
+  CinemaHall.hasMany(Screen, {
+    foreignKey: "cinemaHallId",
+    as: "screens",
+  });
+  Screen.belongsTo(CinemaHall, {
+    foreignKey: "cinemaHallId",
+    as: "cinemahalls",
+  });
+
   Screen.hasOne(MovieScreen, {
     foreignKey: "screenId",
   });
@@ -237,8 +300,18 @@ export async function initDatabase(db: Database, dbOptions: DbOptions) {
     as: 'cinemaHall', 
   });
 
-  CinemaHall.hasOne(TheatreLayout, {
+  CinemaHall.hasMany(TheatreLayout, {
     foreignKey: 'cinemaHallId',
+    as: 'theatreLayouts',
+  });
+
+  TheatreLayout.belongsTo(Screen, {
+    foreignKey: 'cinemaHallscreenId',
+    as: 'screen', 
+  });
+
+  Screen.hasOne(TheatreLayout, {
+    foreignKey: 'cinemaHallscreenId',
     as: 'theatreLayouts',
   });
 
@@ -278,5 +351,42 @@ export async function initDatabase(db: Database, dbOptions: DbOptions) {
     as: "cinemhalls",
   });
 
+  MovieInTheatre.hasMany(Showtime, {
+    foreignKey: "movieInTheatreId",
+    as: "showtimes"
+  });
+
+  Showtime.belongsTo(MovieInTheatre, {
+    foreignKey: "movieInTheatreId",
+    as: "movieintheatre"
+  });
+
+  Movie.hasMany(Showtime, {
+    foreignKey: "movieId",
+    as: "showtimes",
+  });
+  Showtime.belongsTo(Movie, {
+    foreignKey: "movieId",
+    as: "movies"
+  });
+
+  await Admin.sync();
+  logger.log("admin model initiated successfully");
+
+  await AdminLoginSession.sync();
+  logger.log("adminloginsession initiated successfully");
+
+  Admin.hasMany(AdminLoginSession, {
+    foreignKey: "adminId",
+    as: "adminloginSessions",
+  });
+
+  AdminLoginSession.belongsTo(Admin, {
+    foreignKey: "adminId",
+    as: "admin",
+  });
+
+  await verificationModel.sync();
+  logger.log("verficationmodel initiated successfully");
   logger.log("All models and associations have been successfully initiated");
 }

@@ -153,24 +153,30 @@ export var SeatDetailService = /*#__PURE__*/ function() {
             key: "reserveseatStatus",
             value: function reserveseatStatus(data) {
                 return _async_to_generator(function() {
-                    var showtimeId, seatRow, seatNumber, status, showtime, updatedseatstatus, error;
+                    var transaction, showtimeId, seatRow, seatNumber, status, showtime, updatedseatstatus, error;
                     return _ts_generator(this, function(_state) {
                         switch(_state.label){
                             case 0:
-                                showtimeId = data.showtimeId, seatRow = data.seatRow, seatNumber = data.seatNumber, status = data.status;
-                                _state.label = 1;
-                            case 1:
-                                _state.trys.push([
-                                    1,
+                                return [
                                     4,
+                                    SeatStatus.sequelize.transaction()
+                                ];
+                            case 1:
+                                transaction = _state.sent();
+                                showtimeId = data.showtimeId, seatRow = data.seatRow, seatNumber = data.seatNumber, status = data.status;
+                                _state.label = 2;
+                            case 2:
+                                _state.trys.push([
+                                    2,
+                                    6,
                                     ,
-                                    5
+                                    8
                                 ]);
                                 return [
                                     4,
                                     Showtime.findByPk(showtimeId)
                                 ];
-                            case 2:
+                            case 3:
                                 showtime = _state.sent();
                                 if (!showtime) {
                                     throw new Error("Showtime not found");
@@ -178,22 +184,37 @@ export var SeatDetailService = /*#__PURE__*/ function() {
                                 return [
                                     4,
                                     SeatStatus.create({
+                                        showtimeId: showtimeId,
                                         seatRow: seatRow,
                                         seatNumber: seatNumber,
                                         status: status
+                                    }, {
+                                        transaction: transaction
                                     })
                                 ];
-                            case 3:
+                            case 4:
                                 updatedseatstatus = _state.sent();
+                                return [
+                                    4,
+                                    transaction.commit()
+                                ];
+                            case 5:
+                                _state.sent();
                                 return [
                                     2,
                                     updatedseatstatus
                                 ];
-                            case 4:
+                            case 6:
                                 error = _state.sent();
+                                return [
+                                    4,
+                                    transaction.rollback()
+                                ];
+                            case 7:
+                                _state.sent();
                                 console.error(error);
                                 throw new Error("error updating setstatus");
-                            case 5:
+                            case 8:
                                 return [
                                     2
                                 ];

@@ -212,3 +212,78 @@ export var addscreentocinemahall = function() {
         return _ref.apply(this, arguments);
     };
 }();
+export var getcinemahallscreen = function() {
+    var _ref = _async_to_generator(function(req, res) {
+        var operatorId, response, error;
+        return _ts_generator(this, function(_state) {
+            switch(_state.label){
+                case 0:
+                    // #swagger.description = 'fetch all screen present in the cinemahall'
+                    operatorId = req.operatorId;
+                    _state.label = 1;
+                case 1:
+                    _state.trys.push([
+                        1,
+                        3,
+                        ,
+                        4
+                    ]);
+                    return [
+                        4,
+                        service.getcinemahallScreen(operatorId)
+                    ];
+                case 2:
+                    response = _state.sent();
+                    if (response === "no cinemahall for this operator") {
+                        return [
+                            2,
+                            res.status(400).json({
+                                code: "screen/no-cinemahall-found",
+                                message: "no cinemahall for this operator"
+                            })
+                        ];
+                    } else if (response === "there is no screen in this cinemahall") {
+                        return [
+                            2,
+                            res.status(400).json({
+                                code: "screen/no-screen-found",
+                                message: "there is no any screen in this cinemahall"
+                            })
+                        ];
+                    }
+                    res.status(200).json({
+                        code: "screen/fetched-successfully",
+                        message: "screen fetched successfully",
+                        data: response
+                    });
+                    return [
+                        3,
+                        4
+                    ];
+                case 3:
+                    error = _state.sent();
+                    console.log(error);
+                    if (error.message.includes("failed to get screen")) {
+                        return [
+                            2,
+                            res.status(500).json({
+                                code: "screen/not-found",
+                                message: "failed to get screen"
+                            })
+                        ];
+                    }
+                    return [
+                        3,
+                        4
+                    ];
+                case 4:
+                    return [
+                        2
+                    ];
+            }
+        });
+    });
+    return function getcinemahallscreen(req, res) {
+        return _ref.apply(this, arguments);
+    };
+}();

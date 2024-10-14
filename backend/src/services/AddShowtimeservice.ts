@@ -1,6 +1,7 @@
 import { Showtime } from "../PGmodels/Showtime/Showtime.js";
 import { Screen } from "../PGmodels/Theatorscreens/Screen.js";
 import { MovieInTheatre } from "../PGmodels/MovieInTheatre/Movieintheatre.js";
+import { MovieScreen } from "../PGmodels/Theatorscreens/MovieScreen.js";
 import { Op } from "sequelize";
 
 export class ShowtimeService {
@@ -15,9 +16,31 @@ export class ShowtimeService {
         throw new Error("Screen not found.");
       }
 
-      const movieInTheatre = await MovieInTheatre.findByPk(movieInTheatreId);
+      const movieInTheatre = await MovieInTheatre.findOne({
+        where: {
+          id: movieInTheatreId,
+          runningStatus: "running", 
+        }
+      });
       if (!movieInTheatre) {
         throw new Error("Movie in Theatre not found.");
+      }
+      const  movieId = movieInTheatre.movieId;
+      const movieScreen = await MovieScreen.findOne({
+        where: {
+          screenId: screenId,
+          CinemahallmovieId: movieInTheatreId,
+        }
+      });
+
+      if (!movieScreen) {
+        throw new Error("Movie is not assigned to this screen.");
+      }
+      if (
+        new Date(showTimeDate) < new Date(movieScreen.movieopendate) ||
+        new Date(showTimeDate) > new Date(movieScreen.movieclosedate)
+      ) {
+        throw new Error("Showtime date exceeds the movie's open or close date.");
       }
 
       const existingShowtime = await Showtime.findOne({
@@ -61,6 +84,8 @@ export class ShowtimeService {
       const newShowtime = await Showtime.create({
         screenId,
         cinemaHallId,
+        movieInTheatreId,
+        movieId,
         startTime,
         endTime,
         showTimeDate,

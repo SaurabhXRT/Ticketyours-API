@@ -146,6 +146,7 @@ export var getMoviesByCityId = function() {
                     ];
                 case 2:
                     movies = _state.sent();
+                    //await redisSetAsync(cachekey, JSON.stringify(movies), 'EX', 3600);
                     if (movies === "No movies found for this city") {
                         res.status(404).send({
                             code: "movies/not-found",

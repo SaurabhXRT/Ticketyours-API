@@ -13,30 +13,30 @@ export class DeleteMovieService {
       });
 
       if (!movieInTheatre) {
-        return 'MovieInTheatre not found';
+        return "MovieInTheatre not found";
       }
 
-      const  movieId  = movieInTheatre.movieId;
+      const movieId = movieInTheatre.movieId;
 
-     
-      await MovieInTheatre.destroy({
+      const movieintheatrestatus = await MovieInTheatre.findOne({
         where: { id: movieInTheatreId },
         transaction,
       });
+      await movieintheatrestatus.update(
+        { runningStatus: "completed" },
+        { transaction }
+      );
 
-     
-      await CinemaHallMovie.destroy({
-        where: { cinemaHallId, CinemahallmovieId: movieInTheatreId },
-        transaction,
-      });
+      // await CinemaHallMovie.destroy({
+      //   where: { cinemaHallId, CinemahallmovieId: movieInTheatreId },
+      //   transaction,
+      // });
 
-    
       await CityCheck.destroy({
         where: { movieId, cinemaHallId, cityId },
         transaction,
       });
 
-   
       const movieInCityExists = await CityCheck.findOne({
         where: { movieId, cityId },
         transaction,
@@ -50,11 +50,14 @@ export class DeleteMovieService {
       }
 
       await transaction.commit();
-      return { success: true, message: 'Movie removed from cinema hall successfully' };
+      return {
+        success: true,
+        message: "Movie removed from cinema hall successfully",
+      };
     } catch (error) {
       await transaction.rollback();
-      console.error('Error removing movie from cinema hall:', error);
-      throw new Error('Failed to remove movie from cinema hall');
+      console.error("Error removing movie from cinema hall:", error);
+      throw new Error("Failed to remove movie from cinema hall");
     }
   }
 }

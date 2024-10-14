@@ -30,4 +30,34 @@ export class CityService {
     }
   }
 
+  async checkexistingcity(cityname:any){
+    try{
+      const existingcity = await City.findOne({
+        where : {
+          name: cityname,
+        }
+      });
+      return existingcity;
+
+    } catch(error){
+      console.log(error);
+      throw new Error("error wghile checking city" + error)
+    }
+
+  }
+
+  async createcity(citydetails:any){
+    try {
+      const newcity = await City.create({
+        name: citydetails.name,
+        state: citydetails.state,
+      });
+      return newcity;
+
+    } catch(error){
+      console.log(error);
+      throw new Error("error while crearting city" + error);
+    }
+  }
+
 }

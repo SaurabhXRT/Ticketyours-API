@@ -263,6 +263,70 @@ export var AddScreentoCinemaHallservice = /*#__PURE__*/ function() {
                     });
                 })();
             }
+        },
+        {
+            key: "getcinemahallScreen",
+            value: function getcinemahallScreen(operatorId) {
+                return _async_to_generator(function() {
+                    var cinemahall, cinemahallid, cinemahallscreen, error;
+                    return _ts_generator(this, function(_state) {
+                        switch(_state.label){
+                            case 0:
+                                _state.trys.push([
+                                    0,
+                                    3,
+                                    ,
+                                    4
+                                ]);
+                                return [
+                                    4,
+                                    CinemaHall.findOne({
+                                        where: {
+                                            operatorId: operatorId
+                                        }
+                                    })
+                                ];
+                            case 1:
+                                cinemahall = _state.sent();
+                                if (!cinemahall) {
+                                    return [
+                                        2,
+                                        "no cinemahall for this operator"
+                                    ];
+                                }
+                                cinemahallid = cinemahall.id;
+                                return [
+                                    4,
+                                    Screen.findOne({
+                                        where: {
+                                            cinemaHallId: cinemahallid
+                                        }
+                                    })
+                                ];
+                            case 2:
+                                cinemahallscreen = _state.sent();
+                                if (!cinemahallscreen) {
+                                    return [
+                                        2,
+                                        "there is no screen in this cinemahall"
+                                    ];
+                                }
+                                return [
+                                    2,
+                                    cinemahallscreen
+                                ];
+                            case 3:
+                                error = _state.sent();
+                                console.log(error);
+                                throw new Error("failed to get screen");
+                            case 4:
+                                return [
+                                    2
+                                ];
+                        }
+                    });
+                })();
+            }
         }
     ]);
     return AddScreentoCinemaHallservice;

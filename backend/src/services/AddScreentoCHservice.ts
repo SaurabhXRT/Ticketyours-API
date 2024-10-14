@@ -40,4 +40,31 @@ export class AddScreentoCinemaHallservice {
       throw new Error("Failed to add screen to cinema hall.");
     }
   }
+
+  async getcinemahallScreen(operatorId: string){
+    try {
+      const cinemahall = await CinemaHall.findOne({
+        where: {
+          operatorId
+        }
+      });
+      if(!cinemahall){
+        return "no cinemahall for this operator";
+      }
+      const cinemahallid = cinemahall.id;
+      const cinemahallscreen = await Screen.findOne({
+        where : {
+          cinemaHallId: cinemahallid,
+        }
+      });
+      if(!cinemahallscreen){
+        return "there is no screen in this cinemahall";
+      }
+      return cinemahallscreen;
+
+    } catch(error){
+      console.log(error);
+      throw new Error("failed to get screen");
+    }
+  }
 }

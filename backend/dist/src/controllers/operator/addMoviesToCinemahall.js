@@ -126,14 +126,15 @@ import { AddMovieService } from "../../services/AddMovieToCHservice.js";
 var service = new AddMovieService();
 export var addMovieToCinemaHall = function() {
     var _ref = _async_to_generator(function(req, res) {
-        var _req_body, cinemaHallId, movieId, cityId, operatorId, newMovie, error;
+        var _req_body, cinemaHallId, movieId, cityId, screenId, movielanguage, movieopendate, movieclosedate, operatorId, newMovie, error;
         return _ts_generator(this, function(_state) {
             switch(_state.label){
                 case 0:
-                    // #swagger.description = 'add a movie to the registered cinemhall by the operator it required cinemhallid movieid and cityid in the body'
-                    _req_body = req.body, cinemaHallId = _req_body.cinemaHallId, movieId = _req_body.movieId, cityId = _req_body.cityId;
+                    // #swagger.description = 'add a movie to the registered cinemhall screen by the operator it required screenid and movielanguage which 
+                    //language is playing in screen cinemhallid movieid and cityid in the body'
+                    _req_body = req.body, cinemaHallId = _req_body.cinemaHallId, movieId = _req_body.movieId, cityId = _req_body.cityId, screenId = _req_body.screenId, movielanguage = _req_body.movielanguage, movieopendate = _req_body.movieopendate, movieclosedate = _req_body.movieclosedate;
                     operatorId = req.operatorId;
-                    if (!operatorId || !cinemaHallId || !movieId) {
+                    if (!operatorId || !cinemaHallId || !movieId || !screenId || !movieopendate || !movieclosedate) {
                         return [
                             2,
                             res.status(400).json({
@@ -152,7 +153,7 @@ export var addMovieToCinemaHall = function() {
                     ]);
                     return [
                         4,
-                        service.addMovieToCinemaHall(operatorId, cinemaHallId, movieId, cityId)
+                        service.addMovieToCinemaHall(operatorId, cinemaHallId, movieId, cityId, screenId, movielanguage, movieopendate, movieclosedate)
                     ];
                 case 2:
                     newMovie = _state.sent();
@@ -185,6 +186,33 @@ export var addMovieToCinemaHall = function() {
                 case 3:
                     error = _state.sent();
                     console.error("Error adding movie to cinema hall:", error);
+                    if (error.message.includes('Screen not found')) {
+                        return [
+                            2,
+                            res.status(404).json({
+                                code: 'screen/not-found',
+                                message: "Screen not found or does not belong to the specified cinema hall."
+                            })
+                        ];
+                    }
+                    if (error.message.includes('Movie not found')) {
+                        return [
+                            2,
+                            res.status(404).json({
+                                code: 'movie/not-found',
+                                message: "Movie not found in the specified cinema hall."
+                            })
+                        ];
+                    }
+                    if (error.message.includes('already assigned a movie')) {
+                        return [
+                            2,
+                            res.status(409).json({
+                                code: 'screen/already-assigned',
+                                message: "This screen is already assigned a movie."
+                            })
+                        ];
+                    }
                     res.status(500).json({
                         code: "server/internal-error",
                         message: error.message || "An internal server error occurred while adding the movie to the cinema hall."

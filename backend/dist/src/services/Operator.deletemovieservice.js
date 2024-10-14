@@ -142,7 +142,6 @@ function _ts_generator(thisArg, body) {
     }
 }
 import { MovieInTheatre } from "../PGmodels/MovieInTheatre/Movieintheatre.js";
-import { CinemaHallMovie } from "../PGmodels/CinemaHall/CinemahallMovie.js";
 import { CityCheck } from "../PGmodels/CityCheck/CityCheck.js";
 import { CityMovie } from "../PGmodels/City/CityMovie.js";
 export var DeleteMovieService = /*#__PURE__*/ function() {
@@ -155,7 +154,7 @@ export var DeleteMovieService = /*#__PURE__*/ function() {
             key: "deleteMovie",
             value: function deleteMovie(movieInTheatreId, cinemaHallId, cityId) {
                 return _async_to_generator(function() {
-                    var transaction, movieInTheatre, movieId, movieInCityExists, error;
+                    var transaction, movieInTheatre, movieId, movieintheatrestatus, movieInCityExists, error;
                     return _ts_generator(this, function(_state) {
                         switch(_state.label){
                             case 0:
@@ -187,13 +186,13 @@ export var DeleteMovieService = /*#__PURE__*/ function() {
                                 if (!movieInTheatre) {
                                     return [
                                         2,
-                                        'MovieInTheatre not found'
+                                        "MovieInTheatre not found"
                                     ];
                                 }
                                 movieId = movieInTheatre.movieId;
                                 return [
                                     4,
-                                    MovieInTheatre.destroy({
+                                    MovieInTheatre.findOne({
                                         where: {
                                             id: movieInTheatreId
                                         },
@@ -201,19 +200,21 @@ export var DeleteMovieService = /*#__PURE__*/ function() {
                                     })
                                 ];
                             case 4:
-                                _state.sent();
+                                movieintheatrestatus = _state.sent();
                                 return [
                                     4,
-                                    CinemaHallMovie.destroy({
-                                        where: {
-                                            cinemaHallId: cinemaHallId,
-                                            CinemahallmovieId: movieInTheatreId
-                                        },
+                                    movieintheatrestatus.update({
+                                        runningStatus: "completed"
+                                    }, {
                                         transaction: transaction
                                     })
                                 ];
                             case 5:
                                 _state.sent();
+                                // await CinemaHallMovie.destroy({
+                                //   where: { cinemaHallId, CinemahallmovieId: movieInTheatreId },
+                                //   transaction,
+                                // });
                                 return [
                                     4,
                                     CityCheck.destroy({
@@ -267,7 +268,7 @@ export var DeleteMovieService = /*#__PURE__*/ function() {
                                     2,
                                     {
                                         success: true,
-                                        message: 'Movie removed from cinema hall successfully'
+                                        message: "Movie removed from cinema hall successfully"
                                     }
                                 ];
                             case 11:
@@ -278,8 +279,8 @@ export var DeleteMovieService = /*#__PURE__*/ function() {
                                 ];
                             case 12:
                                 _state.sent();
-                                console.error('Error removing movie from cinema hall:', error);
-                                throw new Error('Failed to remove movie from cinema hall');
+                                console.error("Error removing movie from cinema hall:", error);
+                                throw new Error("Failed to remove movie from cinema hall");
                             case 13:
                                 return [
                                     2

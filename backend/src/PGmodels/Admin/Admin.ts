@@ -1,7 +1,17 @@
 import { Model, DataTypes } from 'sequelize';
 import { centralDatabase } from "../../config/dbconfig.js";
 
-class Admin extends Model {}
+class Admin extends Model {
+  public id!: string;
+  public name!: string;
+  public email!: string;
+  public passwordHash!: string;
+  public phone!: string;
+  
+  // Timestamps
+  public readonly createdAt!: Date;
+  public readonly updatedAt!: Date;
+}
 
 Admin.init(
   {
@@ -17,12 +27,12 @@ Admin.init(
     email: {
       type: DataTypes.STRING,
       allowNull: false,
-      unique: true,
-      validate: {
-        isEmail: true,
-      },
     },
-    password: {
+    passwordHash: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    phone: {
       type: DataTypes.STRING,
       allowNull: false,
     },

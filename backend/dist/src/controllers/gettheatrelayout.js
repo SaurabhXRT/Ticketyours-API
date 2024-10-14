@@ -126,7 +126,7 @@ import { TheatreLayoutService } from '.././services/TheatreLayoutService.js';
 var theatreLayoutService = new TheatreLayoutService();
 export var getTheatreLayout = function() {
     var _ref = _async_to_generator(function(req, res) {
-        var showtimeId, layout, error;
+        var _req_params, showtimeId, screenId, layout, error;
         return _ts_generator(this, function(_state) {
             switch(_state.label){
                 case 0:
@@ -136,10 +136,10 @@ export var getTheatreLayout = function() {
                         ,
                         3
                     ]);
-                    showtimeId = req.params.showtimeId;
+                    _req_params = req.params, showtimeId = _req_params.showtimeId, screenId = _req_params.screenId;
                     return [
                         4,
-                        theatreLayoutService.getTheatreLayoutWithSeatStatus(showtimeId)
+                        theatreLayoutService.getTheatreLayoutWithSeatStatus(showtimeId, screenId)
                     ];
                 case 1:
                     layout = _state.sent();

@@ -3,7 +3,7 @@ import { Showtime } from '../PGmodels/Showtime/Showtime.js';
 
 export class GetTheatreLayoutService {
 
-  async getLayoutByShowtimeId(showtimeId: any) {
+  async getLayoutByShowtimeId(showtimeId: any, screenId:any) {
     try {
      
       const showtime = await Showtime.findByPk(showtimeId);
@@ -12,9 +12,12 @@ export class GetTheatreLayoutService {
       }
 
       const cinemaHallId = showtime.cinemaHallId;
-
+    
       const layout = await TheatreLayout.findOne({
-        where: { cinemaHallId },
+        where: { 
+          cinemaHallId : cinemaHallId,
+          cinemaHallscreenId: screenId
+        },
         attributes: ['seatArrangement'],
       });
 

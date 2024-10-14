@@ -145,6 +145,7 @@ import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv-flow';
 import { UserLoginSession } from '../PGmodels/LoginSession/User.Loginsession.js';
 import { OperatorLoginSession } from '../PGmodels/LoginSession/Operator.Loginsession.js';
+import { AdminLoginSession } from '../PGmodels/LoginSession/Admin.Loginsession.js';
 // import { User } from '../PGmodels/User/User.js';
 // import { CinemaOperator } from '../PGmodels/Operator/Operator.js';
 dotenv.config();
@@ -158,7 +159,7 @@ export var AuthMiddleware = /*#__PURE__*/ function() {
             key: "verifyToken",
             value: function verifyToken(req, res, next) {
                 return _async_to_generator(function() {
-                    var token, isValid, _ref, userId, operatorId, error;
+                    var token, isValid, _ref, userId, operatorId, adminId, error;
                     return _ts_generator(this, function(_state) {
                         switch(_state.label){
                             case 0:
@@ -194,11 +195,13 @@ export var AuthMiddleware = /*#__PURE__*/ function() {
                                     AuthMiddleware.getActorIdFromToken(token)
                                 ];
                             case 3:
-                                _ref = _state.sent(), userId = _ref.userId, operatorId = _ref.operatorId;
+                                _ref = _state.sent(), userId = _ref.userId, operatorId = _ref.operatorId, adminId = _ref.adminId;
                                 if (userId) {
                                     req.userId = userId;
                                 } else if (operatorId) {
                                     req.operatorId = operatorId;
+                                } else if (adminId) {
+                                    req.adminId = adminId;
                                 } else {
                                     return [
                                         2,
@@ -263,9 +266,9 @@ export var AuthMiddleware = /*#__PURE__*/ function() {
                             case 0:
                                 _state.trys.push([
                                     0,
-                                    5,
+                                    7,
                                     ,
-                                    6
+                                    8
                                 ]);
                                 secret = process.env.JWT_SECRET;
                                 decoded = jwt.verify(token, secret);
@@ -295,7 +298,7 @@ export var AuthMiddleware = /*#__PURE__*/ function() {
                                 }
                                 return [
                                     3,
-                                    4
+                                    6
                                 ];
                             case 2:
                                 if (!decoded.operatorId) return [
@@ -321,21 +324,49 @@ export var AuthMiddleware = /*#__PURE__*/ function() {
                                         }
                                     ];
                                 }
-                                _state.label = 4;
+                                return [
+                                    3,
+                                    6
+                                ];
                             case 4:
+                                if (!decoded.adminId) return [
+                                    3,
+                                    6
+                                ];
+                                return [
+                                    4,
+                                    AdminLoginSession.findOne({
+                                        where: {
+                                            adminId: decoded.adminId,
+                                            token: token
+                                        }
+                                    })
+                                ];
+                            case 5:
+                                loginSession = _state.sent();
+                                if (loginSession) {
+                                    return [
+                                        2,
+                                        {
+                                            adminId: decoded.adminId
+                                        }
+                                    ];
+                                }
+                                _state.label = 6;
+                            case 6:
                                 console.log('Login session not found');
                                 return [
                                     2,
                                     {}
                                 ];
-                            case 5:
+                            case 7:
                                 error = _state.sent();
                                 console.error("Get ID from token error:", error);
                                 return [
                                     2,
                                     {}
                                 ];
-                            case 6:
+                            case 8:
                                 return [
                                     2
                                 ];

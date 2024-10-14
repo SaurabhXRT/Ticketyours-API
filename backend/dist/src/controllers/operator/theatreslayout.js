@@ -126,7 +126,7 @@ import { TheatreLayoutService } from '../../services/AddTheatreLayoutService.js'
 var theatreLayoutService = new TheatreLayoutService();
 export var createTheatreLayout = function() {
     var _ref = _async_to_generator(function(req, res) {
-        var _req_body, cinemaHallId, seatArrangement, newLayout, error;
+        var _req_body, cinemaHallId, screenId, seatArrangement, newLayout, error;
         return _ts_generator(this, function(_state) {
             switch(_state.label){
                 case 0:
@@ -136,19 +136,19 @@ export var createTheatreLayout = function() {
                         ,
                         3
                     ]);
-                    _req_body = req.body, cinemaHallId = _req_body.cinemaHallId, seatArrangement = _req_body.seatArrangement;
-                    if (!cinemaHallId || !seatArrangement) {
+                    _req_body = req.body, cinemaHallId = _req_body.cinemaHallId, screenId = _req_body.screenId, seatArrangement = _req_body.seatArrangement;
+                    if (!cinemaHallId || !screenId || !seatArrangement) {
                         return [
                             2,
                             res.status(400).json({
                                 code: 'fields/empty',
-                                message: 'Cinema Hall ID and Seat Arrangement are required'
+                                message: 'Cinema Hall ID , screenid and Seat Arrangement are required'
                             })
                         ];
                     }
                     return [
                         4,
-                        theatreLayoutService.createTheatreLayout(cinemaHallId, seatArrangement)
+                        theatreLayoutService.createTheatreLayout(cinemaHallId, screenId, seatArrangement)
                     ];
                 case 1:
                     newLayout = _state.sent();
@@ -194,7 +194,7 @@ export var createTheatreLayout = function() {
 }();
 export var getTheatreLayout = function() {
     var _ref = _async_to_generator(function(req, res) {
-        var cinemaHallId, layout, error;
+        var _req_params, cinemaHallId, screenId, layout, error;
         return _ts_generator(this, function(_state) {
             switch(_state.label){
                 case 0:
@@ -204,10 +204,10 @@ export var getTheatreLayout = function() {
                         ,
                         3
                     ]);
-                    cinemaHallId = req.params.cinemaHallId;
+                    _req_params = req.params, cinemaHallId = _req_params.cinemaHallId, screenId = _req_params.screenId;
                     return [
                         4,
-                        theatreLayoutService.getTheatreLayout(cinemaHallId)
+                        theatreLayoutService.getTheatreLayout(cinemaHallId, screenId)
                     ];
                 case 1:
                     layout = _state.sent();

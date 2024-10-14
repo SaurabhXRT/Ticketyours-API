@@ -9,6 +9,19 @@ function _class_call_check(instance, Constructor) {
         throw new TypeError("Cannot call a class as a function");
     }
 }
+function _define_property(obj, key, value) {
+    if (key in obj) {
+        Object.defineProperty(obj, key, {
+            value: value,
+            enumerable: true,
+            configurable: true,
+            writable: true
+        });
+    } else {
+        obj[key] = value;
+    }
+    return obj;
+}
 function _get_prototype_of(o) {
     _get_prototype_of = Object.setPrototypeOf ? Object.getPrototypeOf : function getPrototypeOf(o) {
         return o.__proto__ || Object.getPrototypeOf(o);
@@ -77,7 +90,17 @@ var Admin = /*#__PURE__*/ function(Model) {
     var _super = _create_super(Admin);
     function Admin() {
         _class_call_check(this, Admin);
-        return _super.apply(this, arguments);
+        var _this;
+        _this = _super.apply(this, arguments);
+        _define_property(_assert_this_initialized(_this), "id", void 0);
+        _define_property(_assert_this_initialized(_this), "name", void 0);
+        _define_property(_assert_this_initialized(_this), "email", void 0);
+        _define_property(_assert_this_initialized(_this), "passwordHash", void 0);
+        _define_property(_assert_this_initialized(_this), "phone", void 0);
+        // Timestamps
+        _define_property(_assert_this_initialized(_this), "createdAt", void 0);
+        _define_property(_assert_this_initialized(_this), "updatedAt", void 0);
+        return _this;
     }
     return Admin;
 }(Model);
@@ -93,13 +116,13 @@ Admin.init({
     },
     email: {
         type: DataTypes.STRING,
-        allowNull: false,
-        unique: true,
-        validate: {
-            isEmail: true
-        }
+        allowNull: false
     },
-    password: {
+    passwordHash: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    phone: {
         type: DataTypes.STRING,
         allowNull: false
     },

@@ -123,7 +123,40 @@ function _ts_generator(thisArg, body) {
     }
 }
 import { ShowtimeService } from "../services/ShowtimeService.js";
+import { newShowtimeService } from "../services/NewShowtimeService.js";
+import logger from "../logger/logger.js";
 var showtimeservice = new ShowtimeService();
+var newshotimeservice = new newShowtimeService();
+export var getShowtimesbyMovieIdAndCityId = function() {
+    var _ref = _async_to_generator(function(req, res) {
+        var _req_params, movieId, cityId;
+        return _ts_generator(this, function(_state) {
+            _req_params = req.params, movieId = _req_params.movieId, cityId = _req_params.cityId;
+            try {} catch (error) {
+                logger.log(error);
+                if (error.message.includes("error in getting showtimes")) {
+                    return [
+                        2,
+                        res.status(500).json({
+                            code: "showtime/internal-server-error",
+                            message: "error in getting showtimes"
+                        })
+                    ];
+                }
+                res.status(500).json({
+                    code: "showtime/internal-server-error",
+                    message: "internal server error occured"
+                });
+            }
+            return [
+                2
+            ];
+        });
+    });
+    return function getShowtimesbyMovieIdAndCityId(req, res) {
+        return _ref.apply(this, arguments);
+    };
+}();
 export var getShowtimesByScreenIdController = function() {
     var _ref = _async_to_generator(function(req, res) {
         var screenId, showtimes, error;

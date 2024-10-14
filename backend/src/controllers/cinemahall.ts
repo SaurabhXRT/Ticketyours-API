@@ -6,21 +6,21 @@ const cinemaHallService = new CinemaHallService();
 export const getCinemaHalls = async(req:any , res: any) =>{
 // #swagger.description = 'get all the cinemhall in a city using cityid'
     const cityId = req.params.cityId;
-    const cachekey = `cinemaHalls:${cityId}`;
+    //const cachekey = `cinemaHalls:${cityId}`;
 
     try {
-      const cachedData = await redisGetAsync(cachekey);
-      if(cachedData){
-        const cinemaHalls = JSON.parse(cachedData);
-        res.status(200).json({
-          code: "cinemahalls/fetch-success",
-          message: "Cinema halls fetched successfully",
-          data: cinemaHalls,
-        });
-      }
-
+      // const cachedData = await redisGetAsync(cachekey);
+      // if(cachedData){
+      //   const cinemaHalls = JSON.parse(cachedData);
+      //   res.status(200).json({
+      //     code: "cinemahalls/fetch-success",
+      //     message: "Cinema halls fetched successfully",
+      //     data: cinemaHalls,
+      //   });
+      // }
+     
       const cinemaHalls = await cinemaHallService.getCinemaHallsByCityId(cityId);
-      await redisSetAsync(cachekey, JSON.stringify(cinemaHalls), 'EX', 3600);
+      //await redisSetAsync(cachekey, JSON.stringify(cinemaHalls), 'EX', 3600);
 
       res.status(200).json({
         code: "cinemahalls/fetch-success",

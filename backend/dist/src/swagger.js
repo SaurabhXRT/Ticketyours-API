@@ -4,7 +4,7 @@ var doc = {
         title: 'ticketyours API',
         description: 'All RESTAPI LISTED HERE'
     },
-    host: 'localhost:3000'
+    host: process.env.SWAGGER_HOST
 };
 var outputFile = './src/swagger-output.json';
 var routes = [

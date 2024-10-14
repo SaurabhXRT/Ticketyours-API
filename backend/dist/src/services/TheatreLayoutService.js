@@ -152,7 +152,7 @@ export var TheatreLayoutService = /*#__PURE__*/ function() {
     _create_class(TheatreLayoutService, [
         {
             key: "getTheatreLayoutWithSeatStatus",
-            value: function getTheatreLayoutWithSeatStatus(showtimeId) {
+            value: function getTheatreLayoutWithSeatStatus(showtimeId, screenId) {
                 return _async_to_generator(function() {
                     var layoutService, seatStatusService, layout, seatStatuses, updatedLayout, error;
                     return _ts_generator(this, function(_state) {
@@ -168,7 +168,7 @@ export var TheatreLayoutService = /*#__PURE__*/ function() {
                                 seatStatusService = new SeatStatusService();
                                 return [
                                     4,
-                                    layoutService.getLayoutByShowtimeId(showtimeId)
+                                    layoutService.getLayoutByShowtimeId(showtimeId, screenId)
                                 ];
                             case 1:
                                 layout = _state.sent().layout;

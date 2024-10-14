@@ -6,9 +6,8 @@ class MovieReview extends Model {}
 MovieReview.init(
   {
     id: {
-      type: DataTypes.UUID,
+      type: DataTypes.INTEGER,
       primaryKey: true,
-      defaultValue: DataTypes.UUIDV4,
     },
     star: {
       type: DataTypes.INTEGER,
@@ -27,7 +26,7 @@ MovieReview.init(
       allowNull: false,
     },
     movieId: {
-      type: DataTypes.UUID,
+      type: DataTypes.INTEGER,
       allowNull: false,
     },
   },

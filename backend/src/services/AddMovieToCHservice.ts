@@ -5,9 +5,20 @@ import { CityMovie } from '../PGmodels/City/CityMovie.js';
 import { Movie } from '../PGmodels/Movie/Movie.js';
 import { Identifier, Sequelize } from 'sequelize';
 import { centralDatabase } from ".././config/dbconfig.js"; 
+import {AllotMovieToScreenService} from "./AllotMovieToScreenService.js"
+const allotmovietoscreenservice = new AllotMovieToScreenService();
 
 export class AddMovieService {
-  async addMovieToCinemaHall(operatorId: any, cinemaHallId: any, movieId: Identifier, cityId: any) {
+  async addMovieToCinemaHall(
+    operatorId: any, 
+    cinemaHallId: any, 
+    movieId: Identifier, 
+    cityId: any,
+    screenId:any, 
+    movielanguage:any,
+    movieopendate:any,
+    movieclosedate:any
+  ) {
     const sequelize = centralDatabase.getInstance(); 
     const transaction = await sequelize.transaction();
 
@@ -19,9 +30,9 @@ export class AddMovieService {
         }
       });
 
-      if (existingEntry) {
-        return "This movie is already in your cinema hall";
-      }
+      // if (existingEntry) {
+      //   return "This movie is already in your cinema hall";
+      // }
 
      
       const movie = await Movie.findByPk(movieId);
@@ -30,16 +41,19 @@ export class AddMovieService {
       }
 
       // Add MovieInTheatre 
-      const movieInTheatre = await MovieInTheatre.create({
-        movieId: movie.id,
-        title: movie.title,
-        description: movie.description,
-        genre: movie.genre,
-        duration: movie.duration,
-        releaseDate: movie.releaseDate,
-        posterUrl: movie.posterUrl,
-      }, { transaction });
-
+      let movieInTheatre:any;
+      if(!existingEntry){
+        movieInTheatre = await MovieInTheatre.create({
+          movieId: movie.id,
+          title: movie.title,
+          description: movie.description,
+          genre: movie.genre,
+          duration: movie.duration,
+          releaseDate: movie.releaseDate,
+          posterUrl: movie.posterUrl,
+        }, { transaction });  
+      }
+     
       await CinemaHallMovie.create({
         cinemaHallId,
         CinemahallmovieId: movieInTheatre.id
@@ -66,9 +80,19 @@ export class AddMovieService {
           movieId
         }, { transaction });
       }
+      const  movieInTheatreId = movieInTheatre.id;
+      const response = await allotmovietoscreenservice.allotMovieToScreen(
+        screenId ,
+        cinemaHallId ,
+        movieInTheatreId ,
+        operatorId  ,
+        movielanguage,
+        movieopendate,
+        movieclosedate
+      );
 
       await transaction.commit();
-      return movieInTheatre; 
+      return { movieInTheatre, response}; 
     } catch (error) {
       await transaction.rollback();
       console.error("Error adding movie to cinema hall:", error);

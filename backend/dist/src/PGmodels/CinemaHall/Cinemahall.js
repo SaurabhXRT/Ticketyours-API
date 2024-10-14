@@ -103,6 +103,10 @@ CinemaHall.init({
         type: DataTypes.STRING,
         allowNull: false
     },
+    directionsLink: {
+        type: DataTypes.STRING,
+        allowNull: true
+    },
     operatorId: {
         type: DataTypes.INTEGER,
         allowNull: false

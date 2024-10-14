@@ -1,11 +1,12 @@
 import { TheatreLayout } from '../PGmodels/TheatorLayout/TheatorLayout.js';
 
 export class TheatreLayoutService {
-  async createTheatreLayout(cinemaHallId: any, seatArrangement: any) {
+  async createTheatreLayout(cinemaHallId: any, screenId: any, seatArrangement: any) {
     try {
       const layoutexist = await TheatreLayout.findOne({
         where: {
-          cinemaHallId : cinemaHallId
+          cinemaHallId : cinemaHallId,
+          cinemaHallscreenId: screenId
         }
       });
       
@@ -14,18 +15,23 @@ export class TheatreLayoutService {
       }
       const newLayout = await TheatreLayout.create({
         cinemaHallId,
+        cinemaHallscreenId: screenId,
         seatArrangement,
       });
       return newLayout;
     } catch (error) {
-      throw new Error('Error creating theatre layout');
+      console.log(error);
+      throw new Error(error);
     }
   }
 
-  async getTheatreLayout(cinemaHallId: any) {
+  async getTheatreLayout(cinemaHallId: any, screenId: any) {
     try {
       const layout = await TheatreLayout.findOne({
-        where: { cinemaHallId },
+        where: { 
+          cinemaHallId : cinemaHallId,
+          cinemaHallscreenId: screenId
+        },
       });
       if (!layout) {
         throw new Error('Theatre layout not found');
